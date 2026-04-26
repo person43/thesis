@@ -1,0 +1,13 @@
+{
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.outDir": "%DIR%/build",
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.latex.search.rootFiles.include": [
+    "thesis-body/*.tex"
+  ],
+  "latex-workshop.latex.search.rootFiles.exclude": [
+    "**/papers/**",
+    "**/build/**"
+  ]
+}
