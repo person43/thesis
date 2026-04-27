@@ -27,10 +27,19 @@
 \usepackage{rotating}
 \usepackage{xcolor}
 
+% newtxmath ties \mathsf to the active sans text font, which in this thesis
+% font stack does not provide the uppercase Greek glyphs needed for complexity
+% classes like \mathsf{\Sigma_2^P}. Use Computer Modern Sans for \mathsf so
+% sans-serif Greek renders reliably while leaving the rest of the math font
+% setup unchanged.
+\DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
+\SetMathAlphabet{\mathsf}{bold}{OT1}{cmss}{bx}{n}
+
 \addbibresource{bib/thesis.bib}
 \addbibresource{bib/hardest.bib}
+\addbibresource{bib/lop.bib}
 
-\graphicspath{{../papers/hardest/}}
+\graphicspath{{../papers/hardest/}{../papers/lop/}}
 
 \AtEveryBibitem{\clearfield{issn}}
 \AtEveryBibitem{\clearlist{issn}}

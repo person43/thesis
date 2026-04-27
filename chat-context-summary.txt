@@ -1,0 +1,89 @@
+Thesis Project Context Summary
+
+Repository and machine
+- Repository root: /Users/oliverkorten/Documents/Codex/thesis
+- Machine: MacBook (macOS)
+- Files are tracked with Git and backed up to GitHub.
+
+Authoring constraints
+- This is a PhD thesis in Computational Complexity Theory.
+- The user does not want AI-written substantive thesis prose.
+- AI assistance is limited to formatting, LaTeX structure, notation harmonization, bibliography management, chapter ordering, and body-only import of existing paper text.
+
+Template and manuscript structure
+- The thesis must follow the Columbia GSAS dissertation template.
+- The working manuscript root is:
+  /Users/oliverkorten/Documents/Codex/thesis/thesis-body/main.tex
+- We are not currently editing directly inside the original "GSAS Template" folder; instead, the working thesis root in `thesis-body/` has been adapted to follow the GSAS template.
+
+Current paper plan
+- There are 6 main research papers that form the technical basis of the thesis.
+- One paper folder, `totalfuncs`, is still missing source content and is not currently part of the active build.
+- There is an extra paper folder, `survey`, containing a survey article.
+- For now:
+  - `survey` does not have its own thesis chapter.
+  - `totalfuncs` does not have its own thesis chapter.
+  - Material from `survey` and/or `totalfuncs` may be incorporated later into the introduction, background, transitions, or other chapters.
+
+Current active chapter order
+- Chapter 1: Introduction and Background
+- Chapter 2: The Hardest Explicit Construction
+- Chapter 3: Strong vs. Weak Range Avoidance and the Linear Ordering Principle
+- Chapter 4: Derandomization from Time-Space Tradeoffs
+- Chapter 5: Stronger Cell Probe Lower Bounds via Local PRGs
+- Chapter 6: How to Construct Random Strings
+
+Current import status
+- `hardest` has already been imported into the thesis as a body-only chapter.
+- `lop` has now also been imported into the thesis as a body-only chapter.
+- “Body-only import” means:
+  - keep the paper’s main mathematical text
+  - omit standalone title/author block
+  - omit standalone abstract
+  - omit standalone acknowledgements
+  - omit standalone bibliography commands
+- The `lop` import includes its appendix proof content, but not the paper's standalone bibliography commands or standalone `\appendix` switch.
+- A thesis-level workaround was added in `thesis-body/preamble.tex` so that `\mathsf{...}` uses Computer Modern Sans; this fixes missing capital Greek glyphs in complexity classes such as `\mathsf{\Sigma_2^P}` and `\mathsf{\Pi_2^P}` under the thesis font stack.
+
+Important directories
+- Paper sources: /Users/oliverkorten/Documents/Codex/thesis/papers
+- Working thesis source: /Users/oliverkorten/Documents/Codex/thesis/thesis-body
+- Notes and planning docs: /Users/oliverkorten/Documents/Codex/thesis/notes
+- Original template reference: /Users/oliverkorten/Documents/Codex/thesis/GSAS Template
+
+LaTeX build configuration
+- Main build target: /Users/oliverkorten/Documents/Codex/thesis/thesis-body/main.tex
+- Build output directory: /Users/oliverkorten/Documents/Codex/thesis/thesis-body/build
+- Current compiled PDF:
+  /Users/oliverkorten/Documents/Codex/thesis/thesis-body/build/main.pdf
+- The thesis uses a shared preamble and shared macros:
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/preamble.tex
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/macros.tex
+- Bibliography currently includes:
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/thesis.bib
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/hardest.bib
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/lop.bib
+
+Editor and tools
+- Editor: VS Code
+- VS Code extension: LaTeX Workshop
+- TeX distribution: MacTeX
+- Source control and backup: Git + GitHub
+
+Workflow conventions
+- Use `apply_patch` for file edits when working in Codex.
+- Preserve the user’s prose authorship.
+- Prefer importing and reorganizing existing LaTeX rather than rewriting mathematical exposition.
+- Commit and push after meaningful milestones.
+- If Codex context gets too full, it is fine to start a fresh chat and reorient from the repository files plus this summary.
+
+Useful existing notes
+- /Users/oliverkorten/Documents/Codex/thesis/notes/formatting-merge-map.md
+- /Users/oliverkorten/Documents/Codex/thesis/notes/notation-decisions.md
+- /Users/oliverkorten/Documents/Codex/thesis/notes/gsas-template-integration-plan.md
+
+Current known state
+- The thesis builds successfully.
+- `hardest` is fully present as a body-only imported chapter with figures and citations integrated.
+- `lop` is fully present as a body-only imported chapter with figures, citations, and appendix proof content integrated.
+- Some non-fatal LaTeX warnings remain from overall thesis integration and placeholder sections, but the current build is usable.
