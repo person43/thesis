@@ -295,7 +295,7 @@ Finally it is important to keep in mind that for \emph{non-explicit} problems, c
 We introduce some basic notation and definitions which will be used throughout. We strongly encourage the reader not to skip Section~\ref{cellprobe:subsec:gen-vs-cell} which defines our notation for locally computable generators and cell probe data structures, and establishes the connection between them which will be used in the rest of the paper.
 \subsection{Basics}\label{cellprobe:subsec:basic-prelims}
 For a natural number $N$ use $\N =\{1,\ldots,N\}$. For a finite set $V$ and integer $k$ we use $\binom{V}{k}$ to denote the set of subsets of $V$ of size $k$. If $X$ is a finite set, $\phi:X \to \mathbb{R}$ we write $\E_{x\in X} \phi(x)$ as shorthand for $|X|^{-1}\sum_{x \in X} \phi(x)$.
-We will use boldface variables e.g. $\bm{v}$ exclusively for random variables. When $\bm{v}$ is a random variable and $A$ is a set, we write $\bm{v} \in A$ to indicate that the support of $\bm{v}$ is contained in $A$. When an expression references only a single random variable $\bm{v}$ we will use $\E \phi(\bm{v})$ for some $\phi: \supp(\bm{v}) \to \mathbb{R}$ to mean that the expectation is taken with respect to $\bm{v}$; this is in contrast to the notation $\E_{x\sim X} \phi(x)$ above, where we always include the subscript.
+We will use boldface variables e.g. $\bm{v}$ exclusively for random variables. When $\bm{v}$ is a random variable and $A$ is a set, we write $\bm{v} \in A$ to indicate that the support of $\bm{v}$ is contained in $A$. When an expression references only a single random variable $\bm{v}$ we will use $\Exp \phi(\bm{v})$ for some $\phi: \supp(\bm{v}) \to \mathbb{R}$ to mean that the expectation is taken with respect to $\bm{v}$; this is in contrast to the notation $\E_{x\sim X} \phi(x)$ above, where we always include the subscript.
 At one point we will use the set theoretic operator $\Delta$ denoting symmetric difference $a \Delta b = (a \setminus b) \cup (b \setminus a)$. For a collection of sets $(a_j)_{j \in J}$ we define $\mathop{\Delta}\limits_{j \in J} a_j$ in the natural way using the commutativity/associativity of $\Delta$ as a binary operation.
 
 In Section \ref{cellprobe:subsec:k-wise-lbs} we will deal with various vector and matrix norms, whose (standard) definitions we review here:
@@ -323,7 +323,7 @@ In other words, a distribution over $\{\pm 1\}^N$ is $\gamma$-almost $k$-wise in
 \begin{definition}[\cite{naornaor}]
 Let $\bm{f} \in \{\pm 1\}^N$ be a random variable, $\gamma\in (0,1), k \leq N$. We say that $\bm{f}$ $(\gamma,k)$-biased if, for all $X \subseteq \N$, $|X|\leq k$ we have
 \[
-\E \prod_{x\in X} \bm{f}_x \in [-\gamma,\gamma]
+\Exp \prod_{x\in X} \bm{f}_x \in [-\gamma,\gamma]
 \]
 We say that $\bm{f}$ is $\gamma$-biased if it is $(\gamma,N)$-biased.
 \end{definition}
@@ -670,7 +670,7 @@ Let $\mathcal{B} = (B_x)_{x \in \N}$ be a matrix ensemble in $\mathbb{R}^{m \tim
 \]
 \end{lemma}
 \begin{proof}
-Set $\epsilon:= 2^{-k}$, $r:= \mathrm{tr}((\sum_x B_x)^{\bowtie k})$. Say that $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]} \geq \delta] \geq \epsilon$, hence  $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \delta^k] \geq \epsilon$ and therefore $\E \norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \epsilon \delta^k$. By the trace/norm inequality, we know that for all $f$, $ \mathrm{tr}(\mathcal{B}[f]^{\bowtie k}) \geq \norm{\mathcal{B}[f]}^k $, hence we have $\E \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) \geq \epsilon \delta^k$. Since $\mathrm{tr}(B[\cdot]^{\bowtie k})$ is a degree $k$ polynomial with total monomial weight $\leq r$, we have that $|\E \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) - \E \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k})| \leq \gamma r 2^k$, hence $\E \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k}) \geq \epsilon \delta^k - \gamma r2^k \geq \frac{1}{2} \epsilon \delta^k$ and therefore, applying the other side of the trace/norm inequality, $\mathbb{E}\norm{\mathcal{B}[\bm{f}]}^k \geq \frac{\epsilon \delta^k}{2m}$. Thus $\Pr[\norm{\mathcal{B}[\bm{f}]}^k \geq   \frac{\epsilon \delta^k}{4m} ] \geq  \frac{\epsilon \delta^k}{4m} $ (we use here that $\norm{\mathcal{B}[\bm{f}]}\leq 1$ probability 1), and so $\Pr[\norm{\mathcal{B}[\bm{f}]} >  \delta (\frac{\epsilon}{4m})^{1/k} ] \geq  \frac{\epsilon \delta^k}{4m}$. Recall that $\epsilon = 2^{-k}$, so $\delta(\frac{\epsilon}{4m})^{1/k} = \delta (8m)^{1/k}$. 
+Set $\epsilon:= 2^{-k}$, $r:= \mathrm{tr}((\sum_x B_x)^{\bowtie k})$. Say that $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]} \geq \delta] \geq \epsilon$, hence  $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \delta^k] \geq \epsilon$ and therefore $\Exp \norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \epsilon \delta^k$. By the trace/norm inequality, we know that for all $f$, $ \mathrm{tr}(\mathcal{B}[f]^{\bowtie k}) \geq \norm{\mathcal{B}[f]}^k $, hence we have $\Exp \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) \geq \epsilon \delta^k$. Since $\mathrm{tr}(B[\cdot]^{\bowtie k})$ is a degree $k$ polynomial with total monomial weight $\leq r$, we have that $|\Exp \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) - \Exp \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k})| \leq \gamma r 2^k$, hence $\Exp \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k}) \geq \epsilon \delta^k - \gamma r2^k \geq \frac{1}{2} \epsilon \delta^k$ and therefore, applying the other side of the trace/norm inequality, $\mathbb{E}\norm{\mathcal{B}[\bm{f}]}^k \geq \frac{\epsilon \delta^k}{2m}$. Thus $\Pr[\norm{\mathcal{B}[\bm{f}]}^k \geq   \frac{\epsilon \delta^k}{4m} ] \geq  \frac{\epsilon \delta^k}{4m} $ (we use here that $\norm{\mathcal{B}[\bm{f}]}\leq 1$ probability 1), and so $\Pr[\norm{\mathcal{B}[\bm{f}]} >  \delta (\frac{\epsilon}{4m})^{1/k} ] \geq  \frac{\epsilon \delta^k}{4m}$. Recall that $\epsilon = 2^{-k}$, so $\delta(\frac{\epsilon}{4m})^{1/k} = \delta (8m)^{1/k}$. 
 \end{proof}
 
 It then remains only to argue that, for the ensemble $\mathcal{B}$ arising in our argument, $\norm{\mathcal{B}[\bm{f}]}$ has a suitably decaying upper tail when $\bm{f}$ is a uniformly random signing. For this we rely on the Matrix Bernstein inequality. 
@@ -783,7 +783,7 @@ Let $V^1,\ldots,V^t$ be copies of $[S]$. For each $u \subseteq [t]$, we define t
 1 = \E_{x \in X} f_x \cdot h(E_f(p_1(x)),\ldots,E_f(p_t(x)))
 = \E_{x \in X} f_x \sum_{u \subseteq [t]} \hat{h}(u) \prod_{j \in u} E_f(p_j(x)) \\
 \leq  \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot |\E_{x \in X} f_x \prod_{j \in u} E_f(p_j(x))|  
-% = |\hat{h}(\emptyset)| \cdot (\E\limits_{x \in X} f_x) +  \sum_{\emptyset \neq u \subseteq [t]} |\hat{h}(u)| \cdot |\E_{x \in X} f_x \prod_{i\in c_u(x)} E^u_f(i)|\\
+% = |\hat{h}(\emptyset)| \cdot (\Exp\limits_{x \in X} f_x) +  \sum_{\emptyset \neq u \subseteq [t]} |\hat{h}(u)| \cdot |\E_{x \in X} f_x \prod_{i\in c_u(x)} E^u_f(i)|\\
 =  \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot |\E_{x \in X} f_x \prod_{i\in c^u_x} E^u_f(i)|\\
 \leq   \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot \mathrm{Val}(\mathcal{C}_u, f)
 \leq  \sum_{u \subseteq [t]} \mathrm{Val}(\mathcal{C}_u, f)
@@ -823,17 +823,17 @@ We now observe, as in \cite{FKO,smoothed}, the following: for any $f$, if $\prod
 Hence, if we define $v(f) = \sum_{j \leq r} \mathbbm{1}\{\prod_{x \in E_j} f_x = -1\} $, then for every $f$ we have $\mathrm{Sat}(\mathcal{C},f) \leq 1 - \frac{v(f)}{N}$. We will show that with probability at least $\frac{2}{5}$, we have $v(\bm{f}) \geq \frac{r}{10}$, in which case we have $\mathrm{Sat}(\mathcal{C},f) \leq 1 - \frac{r}{10N}$ and the theorem is proven.
 Now let $\gamma=  \frac{1}{4}$ and define the random vector $\bm{g} \in \{\pm 1\}^r$, $\bm{g}_j = \prod_{x \in E_j} \bm{f}_x$. Observe that $\bm{g}$ is $\gamma$-biased inside $\{\pm 1\}^r$: for any $\emptyset \neq u \subseteq [r]$ we have
 \[
-\E\prod_{j \in u} \bm{g}_j  = \E\prod_{j \in u}\prod_{x \in E_j} \bm{f}_x= \E\prod_{x \in \cup_{j\in u} E_j} \bm{f}_x \in [-\gamma,  \gamma]
+\Exp\prod_{j \in u} \bm{g}_j  = \Exp\prod_{j \in u}\prod_{x \in E_j} \bm{f}_x= \Exp\prod_{x \in \cup_{j\in u} E_j} \bm{f}_x \in [-\gamma,  \gamma]
 \]
 using in the last step that $\bm{f}$ is $\gamma$-biased. So it suffices to show that, for $\gamma$-biased $\bm{g} \in \{\pm 1\}^r$, we have $|\sum_{j \in r} \bm{g}_j| \leq \frac{8r}{10}$ with high probability. This is standard and can be verified by inspecting the second moment:
 % the $c^{th}$ moment for some even value $c = O(1)$, in particular 
 % \begin{gather*}
-% (\frac{r}{3})^{c}\Pr[|\sum_j \bm{g}_j| > \frac{r}{3}] \leq  \E (\sum_j \bm{g}_j)^c =  \sum_{j_1,\ldots,j_c}\E \prod_{w \leq c} \bm{g}_{j_w} 
+% (\frac{r}{3})^{c}\Pr[|\sum_j \bm{g}_j| > \frac{r}{3}] \leq  \Exp (\sum_j \bm{g}_j)^c =  \sum_{j_1,\ldots,j_c}\Exp \prod_{w \leq c} \bm{g}_{j_w} 
 % \leq \gamma r^c  + (c/2)!r^{c/2}, \text{ thus}\\
 % \Pr[|\sum_j \bm{g}_j| > \frac{r}{3}] \leq 3^{c}\gamma + (c/2)! r^{-c/2} 3^c 
 % \end{gather*}
 \begin{gather*}
-\Pr[|\sum_j \bm{g}_j| > \frac{8r}{10}] \leq  (\frac{8r}{10})^{-2}\E (\sum_j \bm{g}_j)^2 =  (\frac{8r}{10})^{-2}\sum_{j,j'}\E \bm{g}_j \bm{g}_{j'} 
+\Pr[|\sum_j \bm{g}_j| > \frac{8r}{10}] \leq  (\frac{8r}{10})^{-2}\Exp (\sum_j \bm{g}_j)^2 =  (\frac{8r}{10})^{-2}\sum_{j,j'}\Exp \bm{g}_j \bm{g}_{j'} 
 \leq \frac{100}{64r^2}(\gamma r^2  + r) = \frac{100}{256} + 9r^{-1} \leq \frac{2}{5}
 \end{gather*}
 Where the final inequality follows provided $r$ is sufficiently large, which in turn follows provided $K$ is sufficiently large.
@@ -988,10 +988,10 @@ Let $G: \Sigma^S \to \{\pm 1\}^{N}$ be a locally-computable generator with time 
 We follow the proof of Theorem~\ref{cellprobe:thm:cell-csp} and indicate only those parts which need to change. The definitions of $\mathcal{C}^\p{\pi,b}$, $X^\p{\pi,b}$ remain as before; in this case we discard any such pair with $|X^\p{\pi,b}| < \epsilon2^{-tw-1}N$. Let $f,g$ be as in the statement of the theorem, and let $E_{g}$ be a canonical preimage of $g$ under $G$. For each $\pi$ let $
 \tilde{X}^\p{\pi,g} \subseteq \N $ consist of those $x$ such that $T_x(E_{g})$ reaches the leaf corresponding to $\pi$. These sets (ranging over $\pi\in \Sigma^t$) partition $\N$ and so we have
 \[
-\epsilon \leq \mathrm{Cor}(f,g)  = |\sum_{\pi\in \Sigma^t} \frac{|\tilde{X}^\p{\pi,g}|}{N} \E\limits_{x \sim \tilde{X}^\p{\pi,g}} f_xg_x|  \leq \sum_{\pi\in \Sigma^t} \frac{|\tilde{X}^\p{\pi,g}|}{N} \mathrm{Cor}_{\tilde{X}^\p{\pi,g}}(f,g)
+\epsilon \leq \mathrm{Cor}(f,g)  = |\sum_{\pi\in \Sigma^t} \frac{|\tilde{X}^\p{\pi,g}|}{N} \Exp\limits_{x \sim \tilde{X}^\p{\pi,g}} f_xg_x|  \leq \sum_{\pi\in \Sigma^t} \frac{|\tilde{X}^\p{\pi,g}|}{N} \mathrm{Cor}_{\tilde{X}^\p{\pi,g}}(f,g)
 \]
 There must then exist $\pi^{f,g}$ so that $ \frac{|\tilde{X}^\p{\pi^{f,g},g}|}{N} \mathrm{Cor}_{\tilde{X}^\p{\pi^{f,g},g}}(f,g) \geq \epsilon 2^{-tw}$, in particular $|\tilde{X}^\p{\pi^{f,g},g}| \geq \epsilon 2^{-tw} N$ and $\mathrm{Cor}_{\tilde{X}^\p{\pi^{f,g},g}}(f,g) \geq \epsilon 2^{-tw}$. 
-% \todo{something}, and $|\E\limits_{x \sim \tilde{X}^\p{\pi^{f,f'},f'}} f_xf'_x| \geq $ \todo{something}. 
+% \todo{something}, and $|\Exp\limits_{x \sim \tilde{X}^\p{\pi^{f,f'},f'}} f_xf'_x| \geq $ \todo{something}. 
 We take $\pi^{f,g}$ in place of ``$\pi^f$'' from the previous proof and $\tilde{X}^\p{\pi^{f,g},g}$ in place of ``$\tilde{X}^\p{\pi^f,f}$,'' and  and otherwise carry out essentially the same argument.
 
 % \todo{carry out the proof to confirm, then comment it out}.

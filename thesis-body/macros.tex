@@ -1,34 +1,83 @@
 % Shared macros for the thesis manuscript.
 % This file should eventually contain the canonical notation for the thesis.
 
-\newcommand{\B}{\{0,1\}}
-\newcommand{\E}{\mathop{\mathbb{E}}}
-\newcommand{\dom}{\mathrm{dom}}
-\newcommand{\supp}{\mathrm{supp}}
-\newcommand{\hmin}{H_{\infty}}
-\newcommand{\hstar}{H_{\star}}
-\newcommand{\p}[1]{{(#1)}}
-\newcommand{\poly}{\mathrm{poly}}
-\newcommand{\norm}[1]{\Vert #1 \Vert}
-\newcommand{\rank}{\mathrm{rank}}
-\newcommand{\xor}{\mathrm{XOR}}
-\newcommand{\pth}{\mathrm{path}}
-\newcommand{\ind}{\mathrm{ind}}
-\newcommand{\vals}{\mathrm{vals}}
-\newcommand{\rrank}{\mathrm{r}\dash\mathrm{rank}}
-\newcommand{\bhat}[1]{\bm{\hat{#1}}}
-\newcommand{\Val}{\mathrm{Val}}
-\newcommand{\Opt}{\mathrm{OPT}}
-\newcommand{\cols}{\mathrm{cols}}
-\newcommand{\N}{[N]}
-\newcommand{\rng}{\mathrm{range}}
-\newcommand{\corng}{\overline{\mathrm{range}}}
-\newcommand{\nodes}{\mathrm{nodes}}
-\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
-\newcommand{\note}[1]{\textcolor{blue}{NOTE: #1}}
-\newcommand{\dash}{\text{-}}
-\newcommand{\varbound}{\frac{2^n}{2n}}
-\newcommand{\ttbound}{\frac{N}{2\log N}}
-\providecommand{\Tilde}[1]{\tilde{#1}}
-\newcommand{\Jer}{Je\v{r}\'{a}bek }
-\def\cl{\bf}
+\makeatletter
+\providecommand{\B}{}
+\renewcommand{\B}{\{0,1\}}
+\providecommand{\Exp}{}
+\renewcommand{\Exp}{\mathop{\mathbb{E}}}
+\providecommand{\dom}{}
+\renewcommand{\dom}{\mathrm{dom}}
+\providecommand{\supp}{}
+\renewcommand{\supp}{\mathrm{supp}}
+\providecommand{\hmin}{}
+\renewcommand{\hmin}{H_{\infty}}
+\providecommand{\hstar}{}
+\renewcommand{\hstar}{H_{\star}}
+\providecommand{\norm}[1]{}
+\renewcommand{\norm}[1]{\Vert #1 \Vert}
+\providecommand{\rank}{}
+\renewcommand{\rank}{\mathrm{rank}}
+\providecommand{\xor}{}
+\renewcommand{\xor}{\mathrm{XOR}}
+\providecommand{\pth}{}
+\renewcommand{\pth}{\mathrm{path}}
+\providecommand{\ind}{}
+\renewcommand{\ind}{\mathrm{ind}}
+\providecommand{\vals}{}
+\renewcommand{\vals}{\mathrm{vals}}
+\providecommand{\rrank}{}
+\renewcommand{\rrank}{\mathrm{r}\dash\mathrm{rank}}
+\providecommand{\bhat}[1]{}
+\renewcommand{\bhat}[1]{\bm{\hat{#1}}}
+\providecommand{\Val}{}
+\renewcommand{\Val}{\mathrm{Val}}
+\providecommand{\Opt}{}
+\renewcommand{\Opt}{\mathrm{OPT}}
+\providecommand{\cols}{}
+\renewcommand{\cols}{\mathrm{cols}}
+\providecommand{\rng}{}
+\renewcommand{\rng}{\mathrm{range}}
+\providecommand{\corng}{}
+\renewcommand{\corng}{\overline{\mathrm{range}}}
+\providecommand{\nodes}{}
+\renewcommand{\nodes}{\mathrm{nodes}}
+\providecommand{\todo}[1]{}
+\renewcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
+\providecommand{\note}[1]{}
+\renewcommand{\note}[1]{\textcolor{blue}{NOTE: #1}}
+\providecommand{\dash}{}
+\renewcommand{\dash}{\text{-}}
+\providecommand{\varbound}{}
+\renewcommand{\varbound}{\frac{2^n}{2n}}
+\providecommand{\ttbound}{}
+\renewcommand{\ttbound}{\frac{N}{2\log N}}
+\providecommand{\Tilde}[1]{}
+\renewcommand{\Tilde}[1]{\tilde{#1}}
+\providecommand{\Jer}{}
+\renewcommand{\Jer}{Je\v{r}\'{a}bek }
+\providecommand{\Recon}{}
+\renewcommand{\Recon}{\mathsf{Recon}}
+\providecommand{\od}[1]{}
+\renewcommand{\od}[1]{O^{\langle #1 \rangle}}
+\providecommand{\lilod}[1]{}
+\renewcommand{\lilod}[1]{o^{\langle #1 \rangle}}
+\providecommand{\omd}[1]{}
+\renewcommand{\omd}[1]{\Omega^{\langle #1 \rangle}}
+\providecommand{\semi}[2]{}
+\renewcommand{\semi}[2]{\Phi_{#1,#2}}
+\providecommand{\SH}{}
+\renewcommand{\SH}{\mathsf{SH}}
+\providecommand{\WH}{}
+\renewcommand{\WH}{\mathsf{WH}}
+\providecommand{\DLOGTIME}{}
+\renewcommand{\DLOGTIME}{\mathsf{DLOGTIME}}
+\providecommand{\cl}{}
+\renewcommand{\cl}{\bf}
+\providecommand{\p}[1]{}
+\renewcommand{\p}[1]{{(#1)}}
+\providecommand{\poly}{}
+\renewcommand{\poly}{\mathrm{poly}}
+\providecommand{\N}{}
+\renewcommand{\N}{[N]}
+\makeatother

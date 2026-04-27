@@ -38,6 +38,7 @@ Current import status
 - `lop` has now also been imported into the thesis as a body-only chapter.
 - `lossy` has now also been imported into the thesis as a body-only chapter.
 - `cellprobe` has now also been imported into the thesis as a body-only chapter.
+- `randomstrings` has now also been imported into the thesis as a body-only chapter.
 - “Body-only import” means:
   - keep the paper’s main mathematical text
   - omit standalone title/author block
@@ -45,6 +46,8 @@ Current import status
   - omit standalone acknowledgements
   - omit standalone bibliography commands
 - The `lop` import includes its appendix proof content, but not the paper's standalone bibliography commands or standalone `\appendix` switch.
+- The `randomstrings` import includes its appendix proof content, but not the paper's standalone acknowledgements, bibliography commands, or standalone `\appendix` switch.
+- To avoid cross-chapter collisions during the `randomstrings` import, its internal `\label{...}` keys and corresponding references were prefixed with `randomstrings:`.
 - A thesis-level workaround was added in `thesis-body/preamble.tex` so that `\mathsf{...}` uses Computer Modern Sans; this fixes missing capital Greek glyphs in complexity classes such as `\mathsf{\Sigma_2^P}` and `\mathsf{\Pi_2^P}` under the thesis font stack.
 
 Important directories
@@ -65,6 +68,9 @@ LaTeX build configuration
   - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/thesis.bib
   - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/hardest.bib
   - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/lop.bib
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/lossy.bib
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/cellprobe.bib
+  - /Users/oliverkorten/Documents/Codex/thesis/thesis-body/bib/randomstrings.bib
 
 Editor and tools
 - Editor: VS Code
@@ -90,4 +96,5 @@ Current known state
 - `lop` is fully present as a body-only imported chapter with figures, citations, and appendix proof content integrated.
 - `lossy` is fully present as a body-only imported chapter with citations and appendix content integrated.
 - `cellprobe` is fully present as a body-only imported chapter with citations and appendix content integrated.
+- `randomstrings` is fully present as a body-only imported chapter with citations and appendix content integrated.
 - Some non-fatal LaTeX warnings remain from overall thesis integration and placeholder sections, but the current build is usable.

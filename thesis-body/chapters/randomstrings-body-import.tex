@@ -1,0 +1,1231 @@
+% !TeX root = ../main.tex
+%
+% Body-only import derived from papers/randomstrings/main.tex.
+% Standalone title, author block, abstract, acknowledgements, and bibliography
+% commands have been omitted for thesis integration.
+
+\section{Introduction}
+
+\subsection{Motivation}
+
+{\noindent \bf Constructing Random Strings:}  Time-bounded Kolmogorov complexity $\K^T$ \cite{LV19} is a fundamental measure of complexity of a Boolean string. Given a string $x$ and a time bound $T$, $\K^T(x)$ is the size of the smallest program $p$ such that $\mathcal{U}(p)$ outputs $x$ within $T$ steps, where $\mathcal{U}$ is a universal Turing machine fixed in advance. Intuitively, for feasible time bounds $T(n)$, $\K^{T(n)}(x)$ measures the inherent compressibility or ``structure" in $x$ from the point of view of efficient algorithms, in the sense that any $x$ with low $\K^{T(n)}$ complexity has a short description from which it can be recovered efficiently. Thus a string with high $\K^T$ complexity can be considered unstructured or random-like.
+
+Given functions $T,\ell: \mathbb{N} \rightarrow \mathbb{N}$ and a sequence $(x_n)_{n\in \mathbb{N}}$ of strings, where each $x_n$ is of length $n$, let us call the sequence $(\K^T,\ell)$-hard if $\K^{T(n)}(x_n) \geq \ell(n)$ for all $n$. We are interested in the complexity of producing a $(\K^T,\ell)$-hard sequence of strings, for polynomial time bounds $T$ and for $\ell$ as large as possible. Three particularly important settings we focus on here will be $\ell(n) = n^{\Omega(1)}$, $\ell(n) = \tilde{\Omega}(n)$, and $\ell(n) = n - o(n)$. A simple argument shows that $\K^T$-hard strings cannot be produced in time $T' = o(T/\log(T))$ by an algorithm $A$ which outputs $x_n$ when given $n$ in unary. Indeed, the existence of such an algorithm would imply that $K^T(x_n) = O(\log(n))$, as the universal machine $\mathcal{U}$ can output $x_n$ in less than time $T$ when given $n$ in binary and a constant-size program for $\mathcal{A}$ \footnote{Here we use the standard fact that any algorithm $\mathcal{A}$ running in time $T'$ can be simulated by $\mathcal{U}$ in time $O(T' \log(T'))$.}. But is it possible for such a sequence to be produced by an algorithm running in time $\poly(T)$? \\
+\\
+{\bf \noindent Question 1:} Let $T: \mathbb{N} \rightarrow \mathbb{N}$ be any time-constructible function and let $\ell(n) \in \{ n^{\Omega(1)}, \tilde{\Omega}(n), n - o(n)\}$. Is there a deterministic algorithm $\mathcal{A}$, which given input $1^n$, runs in time $\poly(T)$ and outputs a $(\K^T,\ell)$-hard string? \\
+\\
+Question 1 is a fundamental question about Kolmogorov complexity, for which we currently do not have clear positive or negative complexity-theoretic evidence. A positive answer to Question 1 would be very interesting, as it would demonstrate the power of having polynomially more time: a $\poly(T)$ time algorithm would be capable of producing highly $T$-incompressible strings, while a $o(T/\log(T))$ time algorithm can only produce strings that are highly $T$-compressible. Indeed Hypothesis 1.19 in a recent work of \cite{RSW22} asks a very similar question\footnote{The difference is that instead of only asking about producing $\K^T$-hard strings for time-constructible functions $T$, \cite{RSW22} asks for an algorithm that gets $T$ and $n$ as input in unary, and outputs a $\K^T$-hard string of length $n$.} to Question 1, and states that ``The plausibility of Hypothesis 1.19 remains to be investigated". Question 1 also has implications for the theory of meta-complexity, which has seen much recent work \cite{Allender17, Hirahara22, LO22}.
+
+A natural approach to Question 1 is via pseudo-randomness. Under the assumption that $\E$ requires non-deterministic circuits of size $2^{\epsilon n}$ for some constant $\epsilon > 0$, it is known \cite{IW97, KvM99} that for any constant $c > 0$ there is a pseudo-random generator $G_n$ with seed length $O(\log(n))$ and error $o(1)$ against co-non-deterministic circuits of size $n^c$, computable in time $\poly(n)$. Consider $T(n) = n^d$, where $d < c$ is any constant. The property of being a $\K^T$-incompressible string, i.e., a length-$n$ string of $\K^T$-complexity $\geq n-1$, can be checked by a co-non-deterministic circuit of size at most $n^c$, and moreover at least half of all strings of length $n$ satisfy the property. Hence close to half of the outputs of $G_n$ satisfy the property of $\K^T$-incompressibility, which means that the range of $G_n$ is a $\poly(n)$ size set $S_n$ computable in time $\poly(n)$ and containing at least one $\K^T$-incompressible string for large enough $n$. However, it is unclear how to identify efficiently {\it which} of the strings in $S_n$ is incompressible - this seems to require calls to an $\NP$ oracle. We could try and {\it combine} the strings in $S_n$ together into a string that is $\K^t$-hard, for example by concatenating them. This approach has two drawbacks:
+\begin{enumerate}
+    \item  Concatenating the strings yields a new string of length $>> T(n)$ rather than length $n$, since the set $S_n$ has size $>> n^c$. Hence for any reasonable setting of $\ell(n)$, even $\ell(n) = n^{\Omega(1)}$, we do not get any interesting consequences for $K^T$-hardness when we are interested in time bounds as a {\it function} of input length.
+    \item Even if we don't mind destroying the relation between the time bound and input length, concatenating $\poly(n)$ strings which are maximally incompressible can, at best, achieve incompressibility $\ell(n) = n^{\Omega(1)}$. If we are in the more stringent compressibility settings $\ell(n) = \tilde{\Omega}(n)$ or $\ell(n) = n - o(n)$ which occur more frequently in explicit construction applications, concatenating $\poly(n)$ many strings appears to be useless.
+\end{enumerate}
+
+Like most of the interesting problems in derandomization, answering Question 1 {\it unconditionally} would be difficult, as any $(\K^T, n^{\Omega(1)})$-hard string for $T > n^2$ can be transformed easily into the truth table of a hard Boolean function in $\E$, i.e., a function with circuit complexity at least $2^{\epsilon m}$ for some $\epsilon$, and hence would imply $\E \not\subseteq \P/\poly$. 
+% Here $m$ is the input length of the Boolean function. This is because a truth table for a Boolean function can be computed very efficiently from a circuit for the function.
+Instead, we would simply like complexity-theoretic evidence in favor of or against Question 1. Preferably, this evidence should avoid exotic assumptions, and involve standard beliefs about the difficulty of simulating one resource efficiently by another, e.g., the belief that time cannot be simulated by much smaller space or by much smaller non-uniformity. \\
+\\
+{\bf \noindent Explicit Constructions and Range Avoidance:} Recently there has been a lot of interest \cite{Korten21, KKMP21, RSW22, GLW22, ILW23, GGNS23, CGLOSS23, CHLR23, CL24, CHR24, Li24, KP24} in the Range Avoidance problem, where the input is a circuit $C$ from $\ell$ bits to $n$ bits, where $n > \ell$, and the task is to find a non-output of $C$. This task is efficiently doable with randomness - we can just output a random string of length $n$, and this will be a non-output of $C$ with probability at least $1/2$. The question is whether this can be done efficiently deterministically.
+
+The problem was motivated in \cite{Korten21, KKMP21} by its applications to {\it explicit constructions} of combinatorial objects. Let $\Pi$ be a property, such as the property of a graph being Ramsey or of a matrix being rigid, that is satisfied by a random object with probability very close to $1$. For many natural such $\Pi$, including the Ramsey and Rigidity properties, it can be shown that objects {\it not satisfying} $\Pi$ can be efficiently recovered from a compressed representation. This recovery process can be modeled by a small Boolean circuit $C$ for which any non-output is the representation of an object satisfying $\Pi$. In other words, solving Range Avoidance on $C$
+enables an efficient explicit construction for $\Pi$.
+
+Given that explicit constructions for properties such as Ramsey and Rigidity have been long sought after, this motivates the study of the complexity of Range Avoidance, and in particular the search for evidence that Range Avoidance is feasible. Unfortunately it was shown in \cite{ILW23} that under plausible cryptographic and complexity-theoretic assumptions, Range Avoidance is {\it intractable}.
+
+However the intractability of Range Avoidance doesn't give evidence for the intractability of the explicit construction problems mentioned above - it could be that a {\it weaker} assumption than solving Range Avoidance is sufficient for efficient explicit constructions. Indeed such an assumption was identified in \cite{ILW23} - solving Range Avoidance for {\it uniformly generated} circuits. It turns out that all of the explicit construction problems studied in \cite{Korten21} can be captured by Range Avoidance on uniform circuits. This now raises the question of how tractable it is to solve Range Avoidance in this special case. \\
+\\
+{\bf \noindent Question 2:} Is there compelling complexity-theoretic evidence in favour of efficient explicit constructions for properties such as Ramsey and Rigidity, and more generally in favour of the tractability of Range Avoidance on uniform circuits? \\
+\\
+Indeed the tractability of Range Avoidance on uniform circuits is raised explicitly in \cite{ILW23}. It is also stated there that ``some of the authors are skeptical that this special case of Avoid is easy.''
+
+The pseudorandomness approach to Question 1 can be applied to Question 2 as well. Essentially the same argument as we used there gives that, for properties such as Ramsey and Rigid, under standard derandomization assumptions, there is an efficient construction of a list of objects at least one of which satisfies the property. However, as we do not know polynomial-time algorithms for verifying the Ramsey or Rigidity properties, it is unclear how to pick out a single object satisfying the property from such a list. Indeed the pseudo-randomness approach applies to general Range Avoidance as well, but in that case we now have evidence that the problem is not tractable.
+% hence the task of picking out a correct range avoidance solution from a polynomial size list of candidates guaranteed to contain at least one is likely to be intractible in general.
+
+
+\subsection{Our Results}
+
+We give positive answers to Questions 1 and 2, under believable complexity assumptions. Our hardness assumptions are of the following two forms, each involving a parameter $d \in \mathbb{N}$:
+\begin{hypothesis*}[Hardness Assumptions for $d^{th}$-Exponential Time Bounds]\label{randomstrings:hyp:intro}
+~
+\begin{enumerate}
+    \item (Strong Form) There is an absolute constant $\epsilon > 0$ so that the following holds. For any time constructible $T(n), m(n)$, with $T(n) \geq n$ having at most $d^{th}$-order exponential growth rate and $n \leq m(n) \leq \poly(n)$, there is a function $f:\mathbb{N} \mapsto \B^{*}$, $|f(n)| =m(n)$ computable in $\poly(T(n))$ time, which cannot be computed in time $T(n)^\epsilon$ with $m(n)^\epsilon$ bits of advice by any $\NP$-oracle machine for more than finitely many $n$.
+    \item (Weak Form) Let $T(n) = \exp^{[d+1]}(n)$. There is some $\epsilon>0$ and a language computable in time $T(n)$ which is not computable in time $T(n)^\epsilon$ with an $\NP$ oracle and $2^{\epsilon n}$ bits of advice even infinitely often.
+\end{enumerate}
+% For any time constructible $T(n)$ with at most $d^{th}$-order exponential growth rate, there is $\epsilon > 0$ so that $\TIME[T(n)]$ is not contained in $\TIME^{\NP}[T^{\epsilon}]/2^{\epsilon n}$.
+\end{hypothesis*}
+
+We are using $\exp^{[d]}(n)$ for the $d$-fold iteration of the exponential function $\exp(n) = 2^n$. Such assumptions, particularly of the second kind, are fairly standard in complexity theory. Indeed, when $d = 0$, the second assumption is a standard derandomization assumption, asserting that there is a language in $\TIME[2^{n}]$ which does not have $\NP$ oracle circuits of size $2^{o(n)}$. The main novelty in our case is that we use these assumptions for larger values $T$, in particular for time bounds $T$ which have iterated-exponential growth rate. While we state the strong form assumption by quantifying over all time constructible $T(n),m(n)$, in fact we only require the assumption to hold for quite a limited class of bounds: the bounds $T(n)$ needed are representable by constant length arithmetic expressions with $\exp,\log$, and ceiling/floor functions, while the bounds $m(n)$ needed are simply of the form $m(n) = \exp(c\lceil \log n \rceil )$ for constants $c$.
+
+%\todo{arguments for assumption (time vs non-determinism and advice, generalization of standard assumption for E, random oracle), comparison with Chen-Tell}
+
+The first assumption is analogous to assumptions made in the recent literature on hardness vs randomness \cite{CT21a}, and generalizes the second assumption in a natural way. Both the first and second assumptions involve natural beliefs about the relationships between the fundamental resources of time, non-determinism and advice. Both assumptions formalize the intuition that time cannot be sped up by an arbitrary polynomial amount using non-determinism and advice. Indeed, note that there is no known way to speed up time even by a {\it super-constant} amount by using non-determinism and advice. 
+
+We believe that our assumptions hold relative to a {\it random oracle}, and here is an informal argument for the case of the second assumption. Given oracle $A$, define the time $T$ bounded Turing machine $M^A$ to accept $x$ of length $n$ if the $x$'th string of length $T(n)$ is in $A$ (where we consider the lexicographic order on strings). For a random oracle $A$, the truth table of $A$ at length $T(n)$ is Kolmogorov-random even conditioned on truth tables below length $T(n)$. Since $T(n)^{\epsilon}$ time non-deterministic oracle machines can only access strings of $A$ at length $T(n)^{\epsilon}$ or below, it should not be possible to compute the first $2^n$ bits of $A$ at length $T(n)$ from this information together with arbitrary $T(n)^{\epsilon}$ bits of advice.
+
+Our approach to using these assumptions in service of constructing random strings is via pseudo-randomness, and is a variation on the strategy we critiqued a few paragraphs ago: construct a pseudorandom generator, enumerate its range, and concatenate the constituent strings. The problems with this approach discussed in the last section boiled down to one issue: for a standard complexity-theoretic PRG fooling polynomial size nondeterministic circuits, we can at best achieve a seed length of $O(\log n)$, and hence will end up needing to concatenate a very long list of $\poly(n)$ strings. To remedy the situation, it would suffice to use pseudorandom generators with much smaller seed length of $o(\log n)$ or even $\log \log n$. While it is known that $O(\log n)$ seed length is information-theoretically optimal for fooling \emph{nonuniform} circuits of size $\poly(n)$, we aim to exploit the uniformity of the adversary we are fooling to get seed length {\it as small as possible}; for uniform adversaries the lower bound of $\log n$ no longer applies. This yields a result which is interesting in its own right: efficient constructions of small pseudo-random sets for uniform (or even slightly non-uniform) algorithms, under assumptions of the form discussed in the previous paragraph. 
+
+
+
+
+\begin{theorem}[Informal, see Theorems~\ref{randomstrings:thm:elementary-generator} and \ref{randomstrings:thm:weak-generator}]
+\label{randomstrings:thm:mainthm1}
+Under the Hypotheses above with $d=1$, there is a pseudorandom generator with seed length $O(\log \log n)$ which fools $\TIME^{\NP}[\poly(n)]$; if we assume the strong form the generator runs in polynomial time, and if we assume the weak form it runs in quasipolynomial time.
+
+More generally, under the above hardness assumption with large parameters $d$ (i.e. for higher-exponential time bounds), we obtain pseudorandom generators fooling $\TIME^{\NP}[\poly(n)]$ with seed length $O(\log^{[d+1]}(n))$ (for infinitely many $n$). If we assume the strong form hypothesis our generators will run in polynomial time, and if we assume the weak form they will run in iterated quasipolynomial time. When $d > 1$, our construction will require in addition that the input length $n$ is of the form $n = \exp^{[d-1]}(n')$ for some $n'$, or more generally that $\K^{\poly(n)}(n) \leq \log^{[d]}(n)$.
+\end{theorem}
+
+Some terms in the above require clarification. We are using $ \log^{[d]}(\cdot)$ to denote the $d$-fold iteration of the logarithmic function. 
+Our notion of ``iterated quasipolynomial time'' will be defined in the preliminaries - it describes a family of runtime bounds which grows faster than polynomial and quasipolynomial, but is much closer to polynomial than to exponential. Finally, the notation $\K^{\poly(n)}(n)$ denotes the time bounded Kolmogorov complexity of the \emph{number} $n$, when written as a string in standard binary notation.
+
+Our PRG construction can actually handle advice (nonuniformity) up to $\log^{[d]}(n)$ when the seed length is $\log^{[d+1]}(n)$, which we observe is optimal via a standard argument (Lemma~\ref{randomstrings:lem:optimal}). It also holds for fooling larger time bounds $\TIME^\NP[T(n)]$ for $T(n)>> \poly(n)$ (at the cost of the time complexity of the generator being low as a function of $T(n)$ rather than of $n$), and for other oracles $\mathcal{O}$ in place of the $\NP$ oracle (provided we use $\mathcal{O}$ in place of $\NP$ in the hardness assumption).
+
+We then turn our attention briefly to PRGs fooling uniform algorithms \emph{without} $\NP$ oracles: what is the minimal seed length such that we can fool $\TIME[T(n)]$ by a PRG with running time $T(n)^{O(1)}$? For this problem we show in Theorem~\ref{randomstrings:thm:deterministic} that the machinery developed above is unnecessary: if the PRG is capable of simulating the distinguishers it is trying to fool, there is a straighforward method which can reduce seed length $O(\log n)$ to arbitrarily small seed length. Hence under the standard assumptions that achieve logarithmic seed length for $\TIME[T(n)]/n$ (namely that $\E$ requires exponential circuit size) we can obtain an arbitrarily strong reduction in seed length for $\TIME[T(n)]$. Like our $\NP$-oracle result, this result applies to distinguishers with mild nonuniformity, and the achievable seed length scales with the uniformity in a way that is provably optimal according to Lemma~\ref{randomstrings:lem:optimal}.
+
+
+~\\
+{\bf \noindent Random Strings and Explicit Constructions:} We next use our short-seed pseudorandom generators for $\P^{\NP} $ (Theorem~\ref{randomstrings:thm:mainthm1}) to give (conditional) constructions of $\K^{\poly}$-random strings. Our first construction of random strings is the following, which achieves incompressibility $\tilde{\Omega}(n)$:
+\begin{theorem}[Informal, see Theorems~\ref{randomstrings:thm:elementary-random-strings-ae} and \ref{randomstrings:thm:elementary-random-strings-weak}]
+\label{randomstrings:thm:mainthm2}
+Under our main hardness assumption with $d=1$, for any $k \in \mathbb{N}$ there is an algorithm $\mathcal{A}$ such that $\mathcal{A}(1^n)$ outputs an $n$-bit string $x$ satisfying $\K^{n^k}(x) \geq \frac{n}{\polylog(n)}$ for all $n$; the algorithm will run in polynomial time if we use the strong form of the assumption, and quasipolynomial time if we use the weak form.
+
+More generally under our main hardness assumption for larger values of $d$, we obtain constructions of strings with $\K^{n^k}(x) \geq \frac{n}{\poly(\log^{[d]}(n))}$. Using the strong form of the assumption the construction runs in polynomial time, and under the weak form it runs in iterated quasipolynomial time. When $d > 1$ we require the integer $n$ to be of the form $n = \exp^{[d-1]}(n')$ for some integer $n'$, or more generally to satisfy $\K^{\poly(n)}(n) \leq \log^{[d]}n$.
+% Assume that, for every time-constructible bound $T(n)$ with at most doubly-exponential growth rate, there is $\epsilon > 0$ a language in $\TIME^{\NP}[T(n)]$ which is not contained in $\TIME^{\NP}[T(n)^\epsilon]/2^{\epsilon n}$. Then for $k \in \mathbb{N}$ there is a polynomial time $\mathcal{A}$ such that $\mathcal{A}(1^n)$ outputs an $n$-bit string $x$ satisfying $\K^{n^k}(x) \geq \frac{n}{\polylog(n)}$ for all $n$.
+\end{theorem}
+
+If we are satisfied with our construction algorithms succeeding on some unknown infinite set of input lengths, we are able to bootstrap the above constructions so that the $\log^{[d]}(n)$ loss in $\K$-complexity becomes additive rather than multiplicative:
+\begin{theorem}[Informal, see Theorem~\ref{randomstrings:thm:elementary-strings-io}]
+\label{randomstrings:thm:mainthm3}
+Assume the first version of our main hardness assumption for all $d$.
+Then for any $k,d \in \mathbb{N}$ there is a polynomial time algorithm $\mathcal{A}$ such that $\mathcal{A}(1^n)$ outputs an $n$-bit string $x$ satisfying $\K^{n^k}(x) \geq n - \log^{[d]}n$ for infinitely many $n$.
+\end{theorem}
+
+In Section~\ref{randomstrings:subsec:ecs} we then use the previous results to give conditional polynomial time explicit constructions of various important combinatorial objects shown reducible to Range Avoidance in \cite{Korten21}. We will defer most of the specifics to Section~\ref{randomstrings:subsec:ecs}, but highlight the following two results:
+\begin{theorem*}[See Theorems~\ref{randomstrings:thm:conditional-ecs-strong} and \ref{randomstrings:thm:conditional-ecs-weak}]
+~
+\begin{enumerate}
+    \item Under the strong form of our main hardness assumption with $d=2$, there is a $\poly(n)$ time algorithm which produces a matrix $M \in \mathbb{F}_2^{n \times n}$ which is Valiant-Rigid whenever $n$ is a power of 2.
+    \item Assuming that there is a language in $\TIME[2^{2^n}]$ that is not computable in $\TIME^\NP[2^{\epsilon 2^n}]/2^{\epsilon n}$ (even infinitely often)\footnote{This is a particular case of the weak form hardness assumption.}, there is a language in $\EXP$ that requires Boolean circuits of size $\frac{2^n}{\poly(n)}$ for all $n$.
+\end{enumerate}
+\end{theorem*}
+
+Crucially, our results give the first standard-form hardness assumptions under which the above explicit construction problems (and others in Section~\ref{randomstrings:subsec:ecs}) have an efficient algorithm, and they do so via a universal approach: we have a single object, $\K^{\poly}$-random strings, whose efficient explicit construction follows from plausible hardness assumptions, and which automatically satisfies various other pseudorandom properties, e.g. rigidity as a matrix or maximal hardness as a Boolean function. 
+
+~\\
+{\bf \noindent Further Applications:} In Sections~\ref{randomstrings:subsec:condense} and \ref{randomstrings:subsec:uniform-vs-nonuniform} we discuss two further applications of our random string constructions. The first shows a ``hardness condensation'' phenomenon for the main hardness assumptions we use in this paper (with the lower bound relativized to a $\mathsf{PSPACE}$ oracle), whereby we may amplify the degree of nonuniformity in the lower bounds from $2^{n^{\epsilon}}$ to $2^{n - o(n)}$.
+The second addresses the question of the relative difficulty of \emph{uniform} range avoidance and general (nonuniform) range avoidance posed in \cite{RSW22,ILW23}, where we observe using our main results and some previous hardness results (\cite{ILW23,ABK24}) that under plausible hardness assumptions, nonuniform range avoidance is significantly harder than the uniform variant. 
+
+% Next, we show a kind of ``Hardness Condensation'' result for elementary time classes using our main random string construction. {\color{red} Oliver: rahul can you fill this in or remove, I didn't know what to put yet since that parts not complete}. 
+
+
+% {\color{red} more in between}
+~\\
+{\bf \noindent Barriers to Improving Our Main Results:} 
+In the final section we give two sets of results indicating barriers to improving our main PRGs and random string constructions. Our first result casts our iterated-logarithmic seedlength PRG fooling $\P^{\NP}$ (Theorem~\ref{randomstrings:thm:mainthm1}) as a reconstructive \emph{multi-source} extractor, similar to Trevisan's analysis \cite{trevisan} of the classical hardness randomness connection in \cite{NW94,IW97} in terms of reconstructive single-source extractors. We show that any such extractor must have iterated-logarithmic seed length, and thus that any improvement to the seed length of our PRG in Theorem~\ref{randomstrings:thm:mainthm1} must use substantially different techniques.
+
+Second, we give an oracle separation showing that it is not possible via black-box arguments to obtain our main results from more standard assumptions like $\E \not\subseteq \SIZE[2^{\epsilon n}]$. In \cite{Korten21} it is shown that explicit construction of $(\K^{\poly},n-1)$ random strings and $2^{\epsilon n}$ hard truth tables are equivalent with respect to $\NP$ oracle reductions. If such an equivalence held without $\NP$ oracles it would supersede our main results here: we could start with an assumption that $\E$ requires $2^{\epsilon n}$-size circuits, and then use the reduction to produce from the hard truth table a string with high time bounded Kolmogorov complexity. We show that no such reduction exists which is \emph{relativizing}. This justifies in some sense the need for more high-end hardness assumptions to achieve our main results. 
+
+% The main idea behind this lower bound is the following: since hard truth tables have low $\K^{n^2}$ complexity, it suffices to show we cannot have a relativizing polynomial-time reduction from producing $\K^{n^6}$-random strings to producing $\K^{n^2}$ random strings. The argument is as follows. A potential reduction attempts to produce a $\K^{n^6}$-random string by querying some $\K^{m^2}$-random strings for $m \leq \poly(n)$, which we split into two cases: $m \leq 4n$ and $m > 4n$. In the first case, we argue that the set of $\K^{m^2}$-random strings has no ``relativizing connection'' to the set of $\K^{n^6}$ random strings since $m^2 = O(n^2) << n^6$; we may thus argue that these queries are useless. On the other hand, for the queries to $\K^{m^2}$-random strings for $m > 4n$, we know that if we answer these queries uniformly at random we would be correct on each query with probability $\geq 1 - 2^{-m} > 1-2^{-4n}$; if such queries could be used to compute a $\K^{n^6}$-random string, then we would obtain a polynomial time randomized, relativizing algorithm which can produce $\K^{n^6}$-random strings of length $n$ relative to any oracle with probability $1 - 2^{-4n}$. It is then shown that $1 - 2^{- n}$ is essentially the best probability achievable for this task.
+\subsection{Overview of Main Construction}
+% {\bf \noindent PRG for Uniform Algorithms with Small Seed Length:} 
+We describe at a high level our construction of pseudorandom generator with small seed length secure against any $L \subseteq \B^n$ computable in $\TIME^\NP[\poly(n)]$. Using the classical hardness-randomness connection, under the assumption that $\TIME[2^{O(n)}]$ requires exponential size $\NP$-oracle circuits we can obtain a generator $G^0: \B^{s_0(n)} \to \B^n$ with seed length $s_0(n) \leq O(\log n)$. The key observation is that this first attempt at a generator significantly overshoots our primary goal in one respect: the generator $G^0$ obtained from the generic hardness-randomness connection would in fact be secure against $\TIME^\NP[\poly(n)]/n$ machines which have access to $n$ bits of advice. On the other hand we only want a generator which fools \emph{uniform} algorithms. 
+
+To use this to our advantage, we consider a recursive argument. Let $n_1 = s_0(n)$, and consider $n_1$ as our \emph{new input length}. Define the language $L_1 \subseteq \B^{n_1}$ consisting of the seeds $z$ of $G^0$ such that $G^0(z) \in L$. We know that $\Pr_{z \sim \B^{n_1}}[z \in L_1] \approx \Pr_{x \sim \B^n}[x \in L]$ by the security of our first generator $G_0$, and therefore if we could find a second generator $G_1: \B^{s_1(n_1)} \to \B^n$ which fools the language $L_1$, we would find that the composition $G_0 \circ G_1$ fools the original language $L$. If $s_1(n_1) = O(\log  n_1) = O(\log \log n)$ we would have made significant progress. For such a generator $G^1$ to fool $L_1$, we would need it to fool $\NP$-oracle algorithms with running time $\poly(n)$; however the input length of $L_1$ is $n_1 = O(\log n)$, so as a function of the new input length we need $G^1$ to fool algorithms running in \emph{exponential time} with an $\NP$ oracle. We may proportionally increase the allowable runtime of $G^1$ to exponential as well; so overall we have scaled the time complexities of our generator/distinguisher by an exponential. However, crucially, the \emph{advice complexity} of deciding $L_1$ remains $O(1)$: this is where we use crucially the uniformity of our distinguisher. If $L$ required $n$ bits of advice compute, then the best advice upper bound we could place on $L_1$ is $n\approx 2^{n_1}$ which is trivial.
+
+Continuing in this way, we are able to iteratively reduce the seed length of our original generator by a logarithmic composition, for an arbitrary constant number of phases. The cost is that we need to obtain, in each step, psuedorandom generators with logarithmic seed length that fool algorithms running in $\exp(\exp(\cdots \exp(n) \cdots ))$ time with an $\NP$ oracle, and which are computable in a comparable amount of time (without an $\NP$ oracle). To achieve such generators we rely on the standard toolkit of hardness-randomness transformations \cite{NW94,IW97,umans}. In this way, we can argue the security of our construction based on the kind of hardness assumptions described above.
+
+There are a few additional intricacies that we are skimming over here, which contribute to the two caveats in our main theorem statements: the weaker runtime bounds when using the second version of our hardness assumptions, and the requirement that the number $n$ is of the form $n = \exp^{[d-1]}(n')$ for some $n'$ when using the first version of our hardness assumptions. The first of these issues roughly stems from the fact that, when trying to apply our hardness assumption to get an $O(\log n_j)$ seed length generator on input length $n_j \approx \log^{[j]}(n)$ (which we will then compose with the outer generator to reduce the total seed length by another logarithm), we will actually need to apply our hardness assumption on some other input length $m_j = O(n_j)$; this will mean that we can at best hope for our generator to run in time $\poly(\exp^{[j]}(O(n_j))) \approx \exp^{[j]}(O(\log^{[j]}n))$, which will be superpolynomial when $j>1$. This issue can be avoided by considering the more refined first version of our hardness hypothesis.
+
+For the second issue, it turns out that we can only guarantee the security of our generator on inputs lengths $n$ such that the \emph{number $n$} itself has time-bounded Kolmogorov complexity $\log^{[d]}(n)$. For $d = 1$ this changes nothing, since every number $n$ has $\K^{O(n)}(n) \leq \log n$ via its binary representation, so we achieve a generator with seed length $O(\log \log n)$ which is valid on all input lengths, but for large values of $d$ our construction is only valid for infinitely many $n$ (in particular it will work for all $n$ of the form $\exp^{[d-1]}(n')$ for some $n'$). The reason for this issue is as follows: in the above exposition, we considered the language $L_1 \subseteq \B^{n_1}$ of seeds mapping to strings in the base language $L$, and argued it is computable in time exponential in its input length. When we continue this argument for more steps and obtain languages $L_2,L_3,\ldots$, we would like to argue at each step that they are uniformly computable with a small amount of advice (comparable to the input length they are defined on). However, the definition of these languages depends on the original input length $n$ that we started on, and since $\log^{[d]}(\cdot)$ is not injective for any $d > 0$, we cannot determine $n$ solely from the smaller input lengths, but will need to somehow supply the number $n$ as advice. If we assume the number $n$ is sufficiently compressible, we are able to skirt this issue and complete the argument. 
+
+
+\subsection{Related Work}
+
+We have already mentioned connections of our work to meta-complexity and Range Avoidance. In terms of derandomizing uniform algorithms, there has been a lot of work on uniform hardness-randomness tradeoffs, beginning with \cite{IW98}, but much of that work is not relevant to our setting as the emphasis is on uniform assumptions for derandomization, while we are interested instead in decreasing the seed length, and are not concerned with uniformity of the assumption. 
+
+However the recent work of \cite{CT21a} on super-fast derandomization is indeed very relevant from a technical point of view.
+They give a (conditional) derandomization of $\BPTIME[T(n)]$ into $\TIME[T(n)^{1 + \epsilon} n]$. The classical approach to derandomizing $\BPTIME[T(n)]$ would be to model it as a circuit of size $T(n)$ with input length $T(n)$ (the input represents the randomness) and use a PRG fooling this class. To fool this class of circuits requires a PRG with seed length $\log T(n)$ and running time $T(n)$, and if $T(n) = n^3$ we could therefore not hope to achieve derandomization in time $T(n)^{1+\epsilon} n$ no matter how fast the PRGs runtime is. A key observation in \cite{CT21a} is that that this approach to derandomizing $\BPTIME[T(n)]$ actually \emph{overshoots} whats required: if we model the $\BPTIME[T(n)]$ machine more precisely as a $\TIME[T(n)]$ machine on input length $T(n)$ with nonuniformity $n << T(n)$, then we only need a PRG which fools $\TIME[T(n)]/n$; for this task, it is possible (at least information-theoretically) to achieve a seed length of $\log n$ or more generally $(1 + \epsilon)\log n$ rather than $\log T(n)$, which means that the enumeration of seeds will only cost us $n^{1 + \epsilon}$ time.
+
+They then proceed to construct a PRG for $\TIME[T(n)]/n$ with seed length $(1 + \epsilon) \log n$ and computable in time $T(n)^{1 + \epsilon}$. In their case a great deal of work must be dedicated to optimizing the runtime of the PRG which has no relevant parallel in our work; however the question of reducing the seed length down to the true level of uniformity, and the assumptions under which they are able to achieve it, have similarities to ours. In particular, they require assumptions of the form $\TIME[T(n)] \not\subseteq \TIME[T(n)^{1- \delta}]/2^{(1-\delta)n}$ where $T(n) = 2^{k n}$ for a large constant $k$.
+
+The innovation in our work is the use of recursion to achieve dramatically smaller seed length against inefficient uniform adversaries using a small amount of non-uniformity, which enables us to address Questions 1 and 2.
+
+
+\section{Preliminaries}
+We start with some notation for the classes of growth rates appearing in this work:
+% \begin{definition}[Growth Rates]
+
+% % For each $d \in \mathbb{N}$, we define an asymptotic notation $\od{d}(\cdot)$ as follows. We say that say that $f(n) \leq \od{0}(g(n))$ if $f(n) \leq g(n) + O(1)$. For $d > 0$, we say $f(n) \leq \od{d}(f(n))$ if $f(n) \leq \exp(\od{d-1}(\log g(n)))$. We say that a function $f$ is feasible if $f(n) = \od{d}(n)$ for some $d$; $d$ is its feasibility level, and we may also refer to $f$ as $d$-feasible.
+% \end{definition}
+% The $d$-feasible growth rates for $d \in \{1,2,3\}$ correspond to linear, polynomial, and quasi-polynomial growth rates respectively. For larger $d$ they do not seem to have a well-established name. Nonetheless we see that for any fixed $d$, the $d$-feasible functions have a growth rate much closer to linear than to exponential; in particular, any finite composition of feasible functions remains feasible (of the same level) and hence subexponential, so $\od{d}(n)$ is sub-fractional-exponential for all $d$.
+
+\begin{definition}[Growth Rates]
+Both $\log(\cdot), \exp(\cdot)$ are base 2. For any function $f: \mathbb{N} \to \mathbb{N}$, $d \in \mathbb{N}$ we use $f^{[d]}$ to denote the $d$-ary composition of $f$ with itself, with $f^{[0]}$ being the identity $n \mapsto n$. We say that a function $f$ has elementary growth rate, or that it is ``elementary,'' if $f(n) \leq \exp^{[d]}(n)$ for some absolute constant $d$. We say that a funciton $f: \mathbb{N} \to \mathbb{N}$ is time-constructible if there is a Turing machine $M$ such that $M(1^n)$ prints $f(n)$ in binary, and $M$ has running time $O(f(n))$ on all inputs.
+
+For each $d \in \mathbb{N}$ and $\alpha \in \mathbb{R}_{+}$ we define the function $\semi{d}{\alpha}(n) = \exp^{[d]}(\log(\alpha \log^{[d-1]}(n)))$.
+Using this function we define a hierarchy of $O(\cdot)$ notations more relaxed than the standard as follows; for $f,g:\mathbb{N} \to \mathbb{N}$, we say $f(n) = \od{d}(g(n))$ if $f(n) \leq \semi{d}{C}(g(n))$ for some $C \in \mathbb{N}$ and sufficiently large $n$, and $f(n) = \omd{d}(g(n))$ if $f(n) \geq \semi{d}{\epsilon}(g(n))$ for some $\epsilon > 0$ and sufficiently large $n$. $\lilod{d}(g(n))$, $\omega^{\langle d \rangle}(g(n))$ are defined analogously. 
+\end{definition}
+
+In this notation we have $\od{1}(n) = O(n)$, $\od{2}(n) = \poly(n)$, $\od{3}(n) = \mathrm{quasipoly}(n)$. This hierarchy of growth rates enumerates a class of strongly subexponential growth rates having magnitude much closer to $n$ than to $2^n$: indeed for each fixed $d$, $\od{d}(n)$ is closed under composition and grows slower than $\omd{d'}(2^n)$ for any fixed $d'$.
+Similarly, $\omd{1}(n) = \Omega(n)$, $\omd{2}(n) = n^{\Omega(1)}$, $\omd{3}(n) = 2^{\log^{\Omega(1)}n}$, and for each fixed $d$ the class $\omd{d}(n)$ has a growth rate much closer to $n$ than to $\log n$, and in particular far exceeds the growth rate of $\od{d'}(\log n)$ for any fixed $d'$.
+% Finally, we may observe that for every $d$, if $f(n) = 2^{\od{d}(\log g(n))}$ then $f(n) \leq \od{d+1}(g(n))$.
+
+
+
+\begin{definition}[Languages and Complexity Classes]
+
+
+For functions $f,g:\mathbb{N} \to \mathbb{N}$ and language $A \subseteq \B^*$ we define the complexity class $\TIME^A[f(n)]/g(n)$ consisting of those languages decidable in time $O(f(n))$ with an oracle for the language $A$ and using $O(g(n))$ bits of advice on inputs of length $n$. When $g(n)=0$ we omit this argument.
+% We will say more generally that $\Phi[\cdot]$ is a ``standard complexity measure'' if $\Phi \in \{ \DTIME^A[\cdot] ,\NTIME^A[\cdot]\}$ for some $A \subseteq \B^*$ and use $\Phi[f(n)]$, $\Phi[f(n)]/g(n)$ accordingly. 
+
+For a language $L \subseteq \B^*$ we use $L_n: \B^n \to \B$ to denote the restriction of $L$ to $\B^n$, and $\SIZE[f(n)]$ to denote the set of languages $L$ so that $L_n$ is computed by Boolean circuits of size $O(f(n))$ for all $n$.
+\end{definition}
+
+We next define our notation for time-bounded Kolmogorov complexity:
+
+\begin{definition}[Kolmogorov Complexity]
+We fix an efficient universal oracle turing machine $\mathcal{U}$ once and for all. For an oracle language $\mathcal{O} \subseteq \B^*$, time bound $T\in \mathbb{N}$, $x,y \in \B^*$ we use $\K^{T,\mathcal{O}}(x \mid y)$ to denote the length of the shortest program $\pi \in \B^*$ so that $\mathcal{U}^\mathcal{O}(\pi,y)$ halts with output $x$ in at most $T$ time steps. If $\mathcal{O} = \{\}$ or $y$ is the empty string we omit them from the notation as in $\K^{T}(x \mid y)$, $\K^{T,\mathcal{O}}(x)$ respectively.
+
+For a number $n \in \mathbb{N}$, we use $\K^{T,\mathcal{O}}(n)$ to denote $\K^T(\mathrm{bin}(n))$ where $\mathrm{bin}(n) \in \B^{\lceil \log n \rceil}$ is the canonical binary representation of $n$. 
+\end{definition}
+
+Finally we introduce relevant notation for pseudorandom generators:
+
+\begin{definition}[Pseudorandom Generators]
+For a family of ``distinguishers'' $\mathcal{D} \subseteq \B^{\B^n}$ and $\epsilon \in [0,1]$, we say that $G: \B^s \to \B^n$ is a pseudorandom generator (PRG) secure against $\mathcal{D}$ with error $\epsilon$ if, for all $D \in \mathcal{D}$, we have
+\[
+|\Pr_{x \sim \B^n}[D(x)=1] - \Pr_{z \sim \B^s}[D(G(z)) = 1]| \leq \epsilon
+\]
+We say that $G$ is a hitting set generator (HSG) if it satisfies the weaker condition
+\[
+(\Pr_{x \sim \B^n}[D(x)=1] > \epsilon) \Rightarrow  (\Pr_{z \sim \B^s}[D(G(z)) = 1]>0)
+\]
+
+Let $s: \mathbb{N} \to \mathbb{N}$, $\epsilon: \mathbb{N} \to [0,1]$. If $\mathcal{C} \subseteq \B^{\B^*}$ is a complexity class (set of languages) and $G = (G_n: \B^{s(n)} \to \B^{n})_{n \in \mathbb{N}}$ is an ensemble of generators, we say that $G$ is a PRG (resp. HSG) secure against $\mathcal{C}$ if, for all $L \in \mathcal{C}$, there is $n_0 \in \mathbb{N}$ so that for all $n > n_0$, $G_n$ is a PRG (resp. HSG) secure against $\{L_n\}$ with error $\epsilon(n)$.
+\end{definition}
+
+
+\subsection{Range Avoidance and Construction of Random Strings}
+
+We formalize a general notion of explicit construction problems as follows: 
+\begin{definition}[Explicit Construction Problems]
+An explicit construction problem is defined by a language $\Pi \subseteq \B^*$, such that $\Pi_n \neq \emptyset$ for all $n$. The computational task is: given $1^n$ as input, output a string $x \in \Pi_n$.
+
+If $\Pi$ is an explicit construction problems, we say that a function $S: \B^* \to \B^*$ is a ``list solution'' to $\Pi$ if $S(1^n) \cap \Pi_n \neq \emptyset$ for all $n$. The ``list size'' $\ell(\cdot)$ is defined as $\ell(n) = |S(1^n)|$.
+\end{definition}
+As discussed in the introduction, an important class of explicit construction problems are those reducible to the problem \emph{range avoidance}:
+\begin{definition}[Range Avoidance \cite{KKMP21,Korten21,RSW22}]
+Range avoidance, or ``Avoid,'' is the following search problem: given a Boolean circuit $C: \B^m\to \B^n$ with $m < n$, output a string $x\in \B^m \setminus \mathrm{range}(C)$. We say that this Avoid instance has ``stretch'' $m \mapsto n$.
+
+We say that an explicit construction problem $\Pi$ reduces to Avoid in polynomial time with stretch function $\ell(n)$, if there is a polynomial time algorithm which, given $1^n$, outputs an Avoid instance $C_n: \B^{\ell(n)} \to \B^n$ so that whenever $x $ is a solution for $C_n$, we have $x \in \Pi$. 
+\end{definition}
+% It was shown in \cite{Korten21} that a wide variety of important unsolved explicit construction problems can be reduced efficiently to range avoidance. Hence one approach to generically solving such problems is to find an efficient algorithm for the general range avoidance problem. Unfortunately, recent results \cite{ILW23} suggest that this is impossible. However, solving range avoidance in the worst case seems to significantly overshoot the goal of solving explicit construction problems: the key distinction, which we will address further in Section~\ref{randomstrings:subsubsec:uniform-vs-nonuniform}, is that to solve an explicit construction problem reducible to range avoidance, we only need to solve \emph{uniformly defined} instances of range avoidance, which is equivalent to producing strings of large $\K^{\poly(n)}(\cdot) $ complexity:
+The key connection between $\K^{\poly}$ random strings and explicit construction problems reducible to Range Avoidance is the following:
+\begin{observation}[\cite{RSW22}]\label{randomstrings:obs:avoid-to-random-strings}
+Say that for every $k \in \mathbb{N}$, there is a polynomial time algorithm which, for every $n$ (resp. infinitely many $n$) outputs a string $x \in \B^n$ with $\K^{n^k}(x) \geq \ell(n)$. Then every explicit construction problem reducible to Avoid with stretch function $\ell(n)$ is solvable in polynomial time .
+\end{observation}
+\begin{proof}
+The definition of the reduction implies that there is a polynomial time algorithm $C_n: \B^{\ell(n)} \to \B^n$, so that whenever $x \notin \mathrm{range}(C_n)$ we have $x \in \Pi$. If $k$ is such that the algorithm constructing $C_n$ runs in time $n^k$, then we observe that every string $x$ in the range of $C_n$ satisfies $\K^{n^k}(x) \leq \ell(n)$.
+\end{proof}
+
+
+% Hence, if our goal is to construct strings with large $\K^\poly$ complexity in polynomial time, it would be sufficient to find polynomial time algorithms for range avoidance. Unfortunately this approach seems unlikely to be realized, since the general range avoidance problem is now known to be hard under widely-believed cryptographic assumptions {\color{red}cite}. Fortunately we may observe that the reduction in Observation~\ref{randomstrings:obs:avoid-to-random-strings} overshoots the more conservative goal we have laid out {\color{red} previously in intro}, which is to construct strings with large \emph{unconditional} Kolmogorov complexity, i.e. $\K^\poly(x)$ as large as possible. For this purpose we have the following approach available:
+
+Recall that our approach to constructing $\K^{\poly}$ random strings will consist of two steps. First, we will try only to construct a short list of strings, one of which is guaranteed to have $\K^{\poly}$ complexity $\geq n-1$: we then concatenate the list to obtain a single string whose complexity degrades by a factor proportional to the length of the list. The second step (concatenation) is justified by the following standard claim:
+\begin{observation}\label{randomstrings:obs:concat}
+Let $x^1,\ldots,x^m \in \B^n$ and let $\hat{x} = (x^1,\ldots,x^m)$ be their concatenation. Then for any time bound $T$ and $i \leq m$ we have $\K^{T - O(mn)}(\hat{x}) \geq \K^{T}(x^j) - O(\log m)$.
+\end{observation}
+For the first step (obtaining a short list of candidate solutions), we rely on the following observation:
+\begin{observation}\label{randomstrings:obs:prg-avoid}
+Let $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ be a hitting set generator secure against $\TIME^\NP[O(T(n))]$ with error $\frac{1}{2}$. Then there exists a seed $z \in \B^{s(n)}$ so that $\K^{T(n)}(G_n(z)) \geq n-1$; in other words the range of $G_n$ is a list solution for the set of strings with $\K^{T(n)}(\cdot) \geq n-1$.
+\end{observation}
+
+\begin{proof}
+At least half of $n$ bit strings have $\K^{T(n)}(\cdot) \geq n-1$. On the other hand $\K^{T(n)}(\cdot)$ is computable in time $O(T(n))$ with an $\NP$ oracle. 
+\end{proof}
+
+Hence, we have reduced the problem of constructing random strings to constructing hitting generators against $\P^{\NP}$ with short seed length. The next section is dedicated to the construction of such a generator under plausible hardness assumptions. We will in fact produce a pseudorandom generator (despite only needing a hitting set generator).
+
+\section{PRGs for Uniform Classes with Near-Optimal Seed Length}\label{randomstrings:sec:PRG}
+The main goal in this section is to produce a pseudorandom generator computable in a $\poly(n)$ time, or more generally $\od{d}(n)$ time for some fixed constant $d$, which is secure against uniform $\P^{\NP}$ algorithms and has seed length significantly smaller than $\log n$. We will phrase all of our assumptions/generator construction with respect to an arbitrary oracle $\mathcal{O}$ in place of $\NP$ for the sake of generality.
+
+We will consider here two qualitatively distinct classes of hardness assumption used to instantiate our generators, each parameterized by an oracle $\mathcal{O}$ (typically we set $\mathcal{O}=\NP$) and a constant $d\in \mathbb{N}$: 
+\begin{hypothesis}[Strong Assumption for $\mathcal{O},d$, abbreviated $\SH(\mathcal{O},d)$]\label{randomstrings:hyp:strong}
+There is $\epsilon > 0$ so that for all time constructible $T(n) \leq (\exp^{[d]}(n))^{O(1)}$ and all time constructible $m: \mathbb{N} \to \mathbb{N}$, $n \leq m(n) \leq \poly(n)$ the following holds: there is a sequence of strings $(f_n\in \B^{m(n)} )_{n \in \mathbb{N}}$ so that the map $n \mapsto f_n$ is computable uniformly in $T(n)$ time, but no machine running in time $T(n)^{\epsilon}$ with an $\mathcal{O}$ oracle and $m(n)^\epsilon$ bits of advice can compute $f_n$ for more than finitely many $n$. In the case $T(n) \leq \poly(n)$, we only require the assumption to hold in the case $m(n) = n$. 
+\end{hypothesis}
+
+We refer to $m(n)$ as the ``length bound'' in the above.
+
+\begin{hypothesis}[Weak Assumption for parameters $\mathcal{O},d,v$, $d \geq 1$, abbreviated $\WH(\mathcal{O},d,v)$]\label{randomstrings:hyp:weak}
+Let $1 \leq d' \leq d$ and $T(n) = \exp^{[d']}(n)$. There is some constant $\epsilon > 0$ and a language $L$ computable in $\TIME[T(n)]$ which is not computable in $\TIME^\NP[\semi{v}{\epsilon}(T(n))]/\semi{v}{\epsilon}(2^n)$ on more than finitely many input lengths.
+\end{hypothesis}
+Note that $\WH(\mathcal{O},1,2)$ translates to the assumption that $\mathsf{E}$ requires $2^{\Omega(n)}$ circuit complexity with $\mathcal{O}$ oracles, which is the standard regime in which polynomial time generators fooling $\mathsf{P}^{\mathcal{O}}$ with logarithmic seedlength can be constructed by known methods.
+
+\subsection{Fooling $\TIME^{\NP}[T(n)]$ with $O(\log n)$ Seed Length}
+The first step in our construction is to use classical hardness-randomness constructions to give pseudorandom generators which fool $\TIME^{\NP}[T(n)]$ with $O(\log n)$ seed length and runtime $\approx T(n)$ in the case $T(n)$ is very large, under the appropriate hardness assumptions. Depending on which assumption we use we get a generator with different parameters:
+
+\begin{lemma}\label{randomstrings:lem:polytime-prg-from-compression}
+Assume $\SH(\mathcal{O},d)$. Then for every time constructible $T(n) \leq (\exp^{[d]}(n))^{O(1)}$ there is a PRG $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in time $\poly(T(n))$ which fools $\TIME^{\mathcal{O}}[T(n)]/3n$.
+\end{lemma}
+\begin{lemma}\label{randomstrings:lem:weak-prg-from-hardness}
+Assume $\WH(\mathcal{O},d+1,v)$, $d\geq 0$, $v \geq 2$. Then for any $k\in \mathbb{N}$ there is a PRG $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in time $\od{d+v}(n)$ which fools $\TIME^{\mathcal{O}}[n^k]/3n$ and has seed length $s(n) \leq \od{v-1}(\log n)$. 
+\end{lemma}
+We will prove the first case (Lemma~\ref{randomstrings:lem:polytime-prg-from-compression}) here, and reserve Lemma~\ref{randomstrings:lem:weak-prg-from-hardness} for the Appendix as it's proof is similar. We require the following standard tool from complexity-theoretic pseudorandomness:
+\begin{theorem}[Black-Box Hardness-Randomness Connection \cite{IW97}]\label{randomstrings:thm:IW-generalized}
+For each $\epsilon > 0$ exists a constant $c \in \mathbb{N}, c \geq \frac{3}{\epsilon}$ and a uniform algorithm $\mathsf{IW}$ with the following behavior. On input $n$ and given oracle access to a function $f: \B^{\ell(n)} \to \B$ with $\ell(n) = c \cdot \lceil \log n \rceil $, $\mathsf{IW}^f$ computes a function $\mathsf{IW}^f: \B^{s(n)} \to \B^n$ in $\poly(n)$ time for $s(n) \leq O(\ell(n))$ such that for any $D: \B^n \to \B$ with
+\[
+|\Pr_{x \sim \B^n}[ D(x) = 1] - \Pr_{z \sim \B^{s(n)}}[D(\mathsf{IW}^f(z)) = 1]| \geq \frac{1}{n}
+\]
+there exists a circuit $C$ with $D$ oracle gates computing $f$ whose total size is at most $2^{\epsilon \ell(n)}$.
+\end{theorem}
+
+
+\begin{proof}[Proof of Lemma~\ref{randomstrings:lem:polytime-prg-from-compression}]
+We will invoke $\SH(\mathcal{O},d)$ on some yet to be determined time bound $T'(n)$ and length bound $m(n)$, with respect to oracle $\mathcal{O}$ and constant $d$; let $\epsilon > 0$ be the implied constant guaranteed by the hypothesis (which does not depend on the choice of $T'$, $m$).
+
+Next, invoke Theorem~\ref{randomstrings:thm:IW-generalized} with parameter $\delta: = \epsilon/2$, and let $c \in \mathbb{N}$ be the guaranteed constant from this Theorem. So there is a function $\mathsf{IW}^f: \B^{s(n)} \to \B^n$ which, given oracle access to a function $f: \B^{\ell(n)} \to \B$ with $\ell(n) = c \cdot \lceil \log n \rceil $, runs in $\poly(n)$ time with $\poly(n)$ oracle calls to $f$, and such that whenever $D: \B^n \to \B$ distinguishes $\mathsf{IW}^f$ from uniform, there is a $D$-oracle circuit $C$ of size $2^{\delta \ell(n)}$ computing $f$. 
+
+Now we set $m(n) = 2^{\ell(n)} = 2^{c \cdot \lceil \log n \rceil}$ and let $T'(n) = T(n)^{3k}$, which are both time constructible, and use these in our specific invocation of $\SH(\mathcal{O},d)$ as hinted previously. We then obtain an algorithm which, in time $T(n)^{3k}$, computes a string $f_n \in \B^{m(n)}$, which cannot be computed by by any machine running in time $T'(n)^{\epsilon} = T(n)^3$ with $m(n)^{\epsilon} = 2^{\epsilon \cdot \ell(n)}$ bits of advice. We then claim that, setting $G_n = \mathsf{IW}^{f_n}: \B^{\ell(n)} \to \B^n$ gives the required generator. By assumption it is computable in time $T(n) \cdot \poly(n) \leq \poly(T(n))$. On the other hand if it were distinguished in time $T(n)$ with $3n$ bits of advice, we'd obtain a circuit computing every bit of $f_n$ of size $3n + 2^{\frac{\epsilon}{2} \ell(n)}$ with oracle gates that can be evaluated in time $T(n)$, hence overall we would be able to compute $f_n$ in time $T(n) \cdot m(n)^{\frac{\epsilon}{2}} + O(n \cdot T(n)) = T(n) \cdot n^{\frac{1}{2}} + O(T(n) \cdot n) < n^3$ with $3n + m(n)^{\frac{\epsilon}{2}} < m(n)^{\epsilon}$ bits of advice, provided $n  = o(m(n)^{\epsilon})$. Recalling from our application Theorem~\ref{randomstrings:thm:IW-generalized} that $c \delta \geq 3$, we have that $m(n)^{\frac{\epsilon}{2}} \geq \Omega(n^{\frac{c\epsilon}{2}})  = \Omega(n^{\frac{3}{2}})$ and we are done.
+\end{proof}
+
+
+% \begin{lemma}\label{randomstrings:lem:timescaled-hardness-rand}
+% Let $\mathcal{O}$ be any any oracle.
+% Assume that there is a constant $\epsilon > 0$, so that for every time constructible $T(n)$ there is a language computable in $\TIME[T(n)]$ which cannot be computed in $\TIME^{\mathcal{O}}[T(n)^{\epsilon}]/2^{\epsilon n}$ for more than finitely many $n$.
+% Then for any time constructible $T$ there exists a generator $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in $T(O(n))^{O(1)}$ time which fools $\TIME^{\mathcal{O}}[T(n)]/3n$ for all $n$.
+% \end{lemma}
+% \begin{proof}
+% Let $\mathcal{O}$ $\epsilon$ be as above and let $T$ be the time bound which we want to fool. Invoke Theorem~\ref{randomstrings:thm:IW-generalized} for $\epsilon/2$ and let $c \in \mathbb{N}$ be the guaranteed constant. Assume for now that $n$ is a power of 2, $n = 2^r$. We want to construct a generator $G: \B^{s(n)} \to \B^n$ which fools $\TIME^{\mathcal{O}}[T(n)]/3n$ with $s(n) = cr = c\log n$. We will instantiate $\mathsf{Gen}$ from Theorem~\ref{randomstrings:thm:IW-generalized} on a hard function $f: \B^{s(n)} \to \B$. If $\mathsf{Gen}^f$ is distinguished by an algorithm $D$ running in $\TIME^{\mathcal{O}}[T(n)]/3n$, then we can compute $f$ in with advice $2^{\frac{\epsilon}{2} s(n)} + 3n \leq 2^{\frac{\epsilon}{2}  s(n)} +  2^{\frac{s(n)}{c} + O(1)}$ and making $2^{\epsilon s(n)}$ oracle calls to $D$, so the running time of this computation of $f$ will be $2^{\epsilon s(n)} \cdot T(n) = 2^{\epsilon s(n)} \cdot T(2^{\frac{s(n)}{c}})$ with an $\mathcal{O}$ oracle and $2^{(\frac{\epsilon}{2} + c) s(n)} \leq 2^{\epsilon s(n)}$ bits of advice. 
+
+% Let $T'$ be the time constructible bound given by $T'(m) = \Bigl(2^{\epsilon m} \cdot T(2^{\frac{m}{c}})\Bigr)^{\lceil \frac{1}{\epsilon}\rceil}$. By assumption, we may find a language $L \in \TIME[T'(m)]$ which is not computable in time $T'(m)^{\epsilon}$ with an $\mathcal{O}$ oracle and $3m$ bits of advice; choosing $f$ to be the restriction of $L$ to input length $s(n)$, we have that $f$ is computable uniformly in time $T'(s(n)) \leq \Bigl(2^{\epsilon c\log n} \cdot T(n)\Bigl)^{\lceil \frac{1}{\epsilon}\rceil } \leq \poly(n,T(n)) = \poly(T(n))$, and so our generator $\mathsf{Gen}^f$ will have the required properties.
+
+% In the general case when $n$ is not a power of two, we will simply pad to input length $2n$ and use the above argument to construct a generator fooling $\TIME^{\mathcal{O}}[T(2n)]/3(2n)$; the cost is that our new generator is only guaranteed to run in time $\poly(T(2n))$.
+% \end{proof}
+
+% \begin{lemma}\label{randomstrings:lem:compression-hardness-rand}
+% Let $\mathcal{O}$ be any oracle.
+% Assume that there is a constant $\epsilon > 0$, so that for every time constructible $T(n)$ there is a sequence of strings $(f_n \in \B^n )_{n \in \mathbb{N}}$, with $f_n$ computable from $n$ in $\TIME[T(n)]$, which cannot be computed in $\TIME^{\mathcal{O}}[T(n)^{\epsilon}]$ with fewer than $n^{\epsilon}$ bits of advice for more than finitely many $n$.
+% Then for every time constructible $T$, there exists a generator $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in $T(n)^{O(1)}$ time which fools $\TIME^{\mathcal{O}}[T(n)]/3n$ for all $n$.
+% \end{lemma}
+% \begin{proof}
+% Let $\mathcal{O}$ $\epsilon$ be as above and let $T$ be the time bound which we want to fool. Invoke Theorem~\ref{randomstrings:thm:IW-generalized} for $\epsilon/2$ and let $c \in \mathbb{N}$ be the guaranteed constant. 
+
+% \end{proof}
+
+
+% \begin{hypothesis}[Assumption $(T,B,\mathcal{F})$:]\label{randomstrings:hyp:main}
+% There is $\epsilon > 0$ and a language computable in $\TIME[T(n)]$ which is not decidable in $\TIME^B[T(n)^\epsilon]/2^{\epsilon n}$ with frequency $\mathcal{F}$.
+% \end{hypothesis}
+% The following is a consequence of a standard padding argument:
+% \begin{lemma}
+% If $T' \leq T$ are strongly time constructible {\color{red} will define shortly}. Then for any oracle $B$, Hypothesis $(T,B,\mathbb{N})$ implies Hypothesis $(T',B,\mathcal{F})$ where $\mathcal{F} = \{n \in \mathbb{N} \mid n = T^{-1}(n)\}$
+% \end{lemma}
+% \begin{proof}
+% Let $L \in \TIME^B[T(n)]$ be the hard language implied by Hypothesis $(T,B,\mathbb{N})$; assume without loss of generality that every string in $L$ ends with a 0. Consider the language $L'$ given by
+% \[
+% \{x 1^{m} \mid x\in L, T(|x|) \leq T'(|x| + m)\}
+% \]
+% Then  $L'$ is decidable in time $T'(n) + O(n) \leq O(T'(n))$ with a $B$ oracle. On the other hand, if a machine decides $L'$ in time $T'(n)^{\epsilon}$ with $2^{\epsilon n}$ bits of advice, then for any $n$ of the form $n = n_0 + T(n_0)$ we have 
+% \end{proof}
+
+% We then have {\color{red} Oliver: replace prev. corollary with below}
+% \begin{lemma}
+% Assume Hypothesis~\ref{randomstrings:hyp:main} for $T,B$
+% \end{lemma}
+% \begin{theorem}
+% Assume the above. Then for any elementary time bound $T$, there is a constant $c=c(T)$ so that we can construct a pseudorandom generator (uniformly in $n$) $G^T_n: \B^{c \log n} \to \B^n$ so that $G_n^T$ is computable in time $T(n)^{c}$, and for sufficiently large $n$, $G_n^T$ fools every distinguisher $D: \B^n \to \B$ running in  $\mathsf{Ntime}[T(n)]/2n$ with error $\leq \frac{1}{n}$.
+% \end{theorem}
+\subsection{Recursive Generator Construction}
+We give here our main construction of a generator fooling languages decidable in polynomial time with an $\NP$ oracle under a natural computational hardness assumption, specifically the assumptions $\SH(\NP,d)$, $d \in \mathbb{N}$. Our construction will have seed iterated-logarithm type seed length length $\log^{[O(1)]}n$ for infinitely many $n$; in particular it will work for all $n$ such that the number $n$ has time-bounded Kolmogorov complexity comparable to the seed length. Afterwords we show that a similar construction gives a generator fooling the same class with a slower runtime under the weak form hardness assumptions; the proof of this construction will be relegated to the appendix.
+
+
+% \begin{theorem}\label{randomstrings:thm:elementary-generator}
+% Let $\mathcal{O} \subseteq \B^*$ be any oracle, $d, c\in \mathbb{N}$, and assume Hypothesis~\ref{randomstrings:hyp:elementary} for the oracle $\mathcal{O}$ and the constant $d+v+1$. Let $T(n) = \exp^{[d]}(n)$. There exists a generator $(\mathcal{G}^d_n: \B^{s_d(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in $T(O(n)) = \od{d+1}(T(n))$ time \todo{verify}, so that the following hold:
+% \begin{enumerate}
+% 	\item For all $n$, $s_d(n) \leq  O(\log^{[d+1]}(n))$ \todo{verify, maybe $\od{d+1}(\log^{[d+1]}(n))$}
+% 	\item For all $L \in \TIME^\mathcal{O}[T(n)]/\log^{[d]}(n)$, we have
+% 	\[
+% 	|\Pr_{z \sim \B^{s(n)}}[\mathcal{G}_n(z) \in L] - \Pr_{x \sim \B^n}[x \in L]| \leq O(\frac{1}{\log^{[d]}(n)})
+% 	\]
+% 	for all but finitely many $n\in \{n \mid \K^{T(n)}(n) \leq \log^{[d]}(n)\}$.
+% \end{enumerate}
+% \end{theorem}
+% \begin{proof}
+% Using our hardness assumption in combination with Lemma~\ref{randomstrings:lem:timescaled-hardness-rand}, we conclude that for every $a \in \mathbb{N}$ there is $c_a \in \mathbb{N}$ and a generator $(G^{a}_n: \B^{c_a \lceil \log n \rceil } \to \B^n$ computable uniformly in time $\exp^{[a]}(O(n))^{c_a}$ time which fools $\TIME^{\mathcal{O}}[\exp^{[a]}(n)]/3n$ for all sufficiently large $n$. 
+% % Let $c = \max_{a \leq d + v + 1} c_a$ in the following. 
+% We now define a sequence of functions $(T_d,f_d: \mathbb{N} \to \mathbb{N})_{d \in\mathbb{N} \cup \{0\}}$ as follows:
+% \begin{enumerate}
+%     \item $T_0 = T$, $f_0 = (x \mapsto x)$.
+%     \item Set $f_d = c_d \cdot \lceil \log f_{d-1}(\cdot) \rceil $, $T_d = 4 \cdot T_{d-1}(\exp(\lceil \frac{\cdot }{c_d} \rceil ))^{c_d}$
+% \end{enumerate}
+% Observe that $3T_{d-1}(f_{d-1}(n)) + T_{d-1}(f_{d-1}(n))^{c_d} \leq T_d(f_d(n))$.
+
+% Then for each $d$, we have the generator $(G_n^{(T_d)})_{n \in \mathbb{N}}$ defined for every input, which we abbreviate as $G^d$. We use this family of generators to construct the generators $(\mathcal{G}^d_n)_{n \in \mathbb{N}}$ promised in the theorem statement. 
+% In particular, we define for every $d \in \{0,\ldots, \}$ the generator
+% \[
+% (\mathcal{G}^d_n: \B^{f_{d+1}(n)} \to \B^{n})_{n \in \mathbb{N}}, \quad  \mathcal{G}^d_n = G_n^0 \circ G^1_{f_1(n)} \circ \cdots \circ G^d_{f_i(n)}
+% \]
+
+% We prove its security by induction, using the following stronger induction hypothesis for each $d \geq 0$: 
+
+% \begin{enumerate}
+%     \item $\mathcal{G}^{d}_n$ is computable in time $\leq T_{d+1}(f_{d+1}(n))- 3T(n)$ with the number $n$ and $ O(1)$ additional bits as advice
+%     \item $\mathcal{G}^d_n$ fools any $L \subseteq \B^n$, $L \in \TIME^B[T_{d}(f_d(n))]/f_d(n)$ with error $\leq \sum_{j \leq d} f_j(n)^{-1}$ for all sufficiently large $n$ satisfying $ K^{T(n)}(n) \leq f_d(n)$
+% \end{enumerate}
+
+
+% For the base case, we know that $\mathcal{G}^0_n = G^0_n$ which, by assumption, fools $\TIME^B[T(n)]/n$ with error $\frac{1}{n}$. Recall that $T_1(f_1(n))  \geq  3T_0(f_0(n)) + T_0(f_0(n))^{c_1} = 3T(n) + T(n)^{c_1}$, hence $\mathcal{G}^0_n = G^0_n$ is computable in time $T(n)^{c_1}  \leq  T_1(f_1(n)) - 3T(n)$ (with no advice).
+% Now assume the induction hypothesis up to $d-1$. Let $L \subseteq \B^n$ be given, $n$ sufficiently large, so that $L \in \TIME^B[T_d(f_d(n))]/f_d(n)$ and and $\K^{T(n)}(n) \leq f_d(n)$.
+% Define $L_d \subseteq \B^{f_d(n)}$, $L_d = \{ x \mid \mathcal{G}^{d-1}(x) \in L\}$. By induction, $\mathcal{G}^{d-1}$ is computable in time $T_{d}(f_d(n)) - 3T(n)$ given the number $n$ as advice, and $O(1)$ additional advice bits; hence $L_d$ is computable in $\TIME^B[T_{d}(f_d(n))]/3f_d(n)$: if we are given the number $n$ as advice, then we may determine $f_0(n),\ldots,f_{d}(n)$ using the number $d$ as advice which costs $O(1)$, after which we can compute the generator $\mathcal{G}^{d-1}_n$, and the language $L$ using $\leq f_d(n)$ additional bits of advice (together with some $O(1)$ bits to specify the algorithm described in the current sentence). Under the assumption $\K^{T(n)}(n) \leq \log^{[i]}(n) \leq f_i(n)$ we may produce the number $n$ from an additional $f_i(n)$ bits of advice, for a total advice cost $\leq 3 f_i(n)$, and the time of the additional operations (beyond the original computation of $\mathcal{G}^{d-1}$) is bounded by $3T(n)$.
+
+% Now, using the second part of our induction hypothesis, we determine that $\mathcal{G}_n^{i-1}$ fools $L$, in particular we have:
+% \[
+% |\Pr_{z \in \B^{f_i(n)}}[\mathcal{G}^{i-1}_n(z) \in L] - \Pr_{x \in \B^{n}}[x \in L] | \leq \sum_{j < i} f_j(n)^{-1}
+% \]
+% On the other hand, using the security of the generator $G^d_n$ on input length $f_{d+1}(n)$ (which is sufficiently large), we have that $G^d_n$ fools $L_d$, in particular:
+% \[
+% |\Pr_{w \in \B^{f_{d+1}(n)}}[G^d_n(w) \in L_i] - \Pr_{z \in \B^{f_{d}(n)}}[z \in L_d] | \leq f_{d}(n)^{-1}
+% \]
+% Recalling that $\mathcal{G}^{d}_n = \mathcal{G}^{d-1}_n \circ G^d_n$ and combining the previous two inequalities using the triangle inequality we have:
+% \[
+% |\Pr_{z \in \B^{f_{d+1}(n)}}[\mathcal{G}^{d}_n (w) \in L] - \Pr_{x \in \B^{n}}[x\in L] | \leq \sum_{j \leq  d} f_j(n)^{-1}
+% \]
+% which establishes the second condition in our inductive hypothesis. For the first, note that to compute $\mathcal{G}^{d}_n$, we need only recover the number $n$ from its shortest $\K^{T}(\cdot)$ description in time $T(n)$, compute $\mathcal{G}^{i-1}_n$ which takes time $\leq T_{i}(f_i(n)) - 3T(n)$ by induction, and finally compute $G^i_n$ which takes time $T_i(f_i(n))^{c_{i+1}}$; overall this is bounded by $T_{i+1}(f_{i+1}(n)) - 3T(n)$.
+
+% At this point the theorem is proven; it remains to verify a few bounds:
+% \begin{enumerate}
+%     \item $\sum_{j \leq d} f_j(n)^{-1} \leq O(f_d(n)^{-1})$ so that the error bound is as stated in the theorem.
+%     \item $f_d(n) \leq O(\log^{[d]}(n))$
+%     \item $T_d(f_d(n)) \leq \poly(T(O(n)))$
+% \end{enumerate}
+% The first and second hold trivially. For the last, we prove it by induction; more specifically we will show by induction that $T_d(O(f_d(n))) \leq T(O(n))^{O(1)}$. In the base case, $T_0(O(f_0(n))) = T(O(n))$. We then have that
+% \begin{gather}
+% T_d(O(f_d(n))) = 4 \cdot T_{d-1}\Bigl(O(\exp(\lceil \frac{c_d \lceil \log f_{d-1} \rceil }{c_d} \rceil ))\Bigr)^{c_d} \\\leq  \Bigl(T_{d-1}(O(\exp( \log f_{d-1}(n) + O(1)))\Bigr)^{O(1)} \\= T_{d-1}(O(f_{d-1}(n)))^{O(1)} \leq T(O(n))^{O(1)}
+% \end{gather}
+% where the last step uses the induction hypothesis.
+% \end{proof}
+
+
+\begin{theorem}\label{randomstrings:thm:elementary-generator}
+Let $\mathcal{O} \subseteq \B^*$ be any oracle, $d, v\in \mathbb{N}$, and assume Hypothesis $\SH(\mathcal{O},d+v)$. Let $T(n) \leq (\exp^{[v]}(n))^{O(1)}$ be time constructible. There exists a generator $(\mathcal{G}^d_n: \B^{s_d(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in $\poly(T(O(n)))$ time, so that the following hold:
+\begin{enumerate}
+	\item For all $n$, $s_d(n) \leq  O(\log^{[d+1]}(n))$
+	\item For all $L \in \TIME^\mathcal{O}[T(n)]/\log^{[d]}(n)$, we have
+	\[
+	|\Pr_{z \sim \B^{s(n)}}[\mathcal{G}_n(z) \in L] - \Pr_{x \sim \B^n}[x \in L]| \leq O(\frac{1}{\log^{[d]}(n)})
+	\]
+	for all but finitely many $n\in \{n \mid \K^{T(n)}(n) \leq \log^{[d]}(n)\}$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Using our hardness assumption $\SH(\mathcal{O},d+v)$ in combination with Lemma~\ref{randomstrings:lem:polytime-prg-from-compression}, for each time constructible bound $R: \mathbb{N} \to \mathbb{N}$ bounded above by $(\exp^{[d+v]}(n))^{O(1)}$ there is a constant $c(R) \in \mathbb{N}$ and a pseudorandom generator $(G^{(R)}_n: \B^{c(R) \lceil \log n \rceil } \to \B^n)_{n \in \mathbb{N}}$ computable in $\TIME(R(n)^{c(R)})$ which fools $\TIME^B[R(n)]/3n$ with error $\frac{1}{n}$. Using $c(\cdot)$ we may define a sequence of constants $(c_i)_{i \in \mathbb{N}}$ and functions $(T_d,f_d: \mathbb{N} \to \mathbb{N})_{d \in\mathbb{N} \cup \{0\}}$ as follows:
+
+
+\begin{enumerate}
+    \item $T_0 = T$, $f_0 = (x \mapsto x)$.
+    \item Set $c_d = c(T_{d-1})$, $f_d = c_d \cdot \lceil \log f_{d-1}(\cdot) \rceil $, $T_d = 4 \cdot T_{d-1}(\exp(\lceil \frac{\cdot }{c_d} \rceil ))^{c_d}$
+\end{enumerate}
+Observe that $3T_{d-1}(f_{d-1}(n)) + T_{d-1}(f_{d-1}(n))^{c_d} \leq T_d(f_d(n))$.
+
+Then for each $d$, we have the generator $(G_n^{(T_d)})_{n \in \mathbb{N}}$ defined for every input, which we abbreviate as $G^d$. We use this family of generators to construct the generators $(\mathcal{G}^d_n)_{n \in \mathbb{N}}$ promised in the theorem statement. 
+In particular, we define for every $d \in \{0,\ldots, \}$ the generator
+\[
+(\mathcal{G}^d_n: \B^{f_{d+1}(n)} \to \B^{n})_{n \in \mathbb{N}}, \quad  \mathcal{G}^d_n = G_n^0 \circ G^1_{f_1(n)} \circ \cdots \circ G^d_{f_i(n)}
+\]
+
+We prove its security by induction, using the following stronger induction hypothesis for each $d \geq 0$: 
+
+\begin{enumerate}
+    \item $\mathcal{G}^{d}_n$ is computable in time $\leq T_{d+1}(f_{d+1}(n))- 3T(n)$ with the number $n$ and $ O(1)$ additional bits as advice
+    \item $\mathcal{G}^d_n$ fools any $L \subseteq \B^n$, $L \in \TIME^B[T_{d}(f_d(n))]/f_d(n)$ with error $\leq \sum_{j \leq d} f_j(n)^{-1}$ for all sufficiently large $n$ satisfying $ K^{T(n)}(n) \leq f_d(n)$
+\end{enumerate}
+
+
+For the base case, we know that $\mathcal{G}^0_n = G^0_n$ which, by assumption, fools $\TIME^B[T(n)]/n$ with error $\frac{1}{n}$. Recall that $T_1(f_1(n))  \geq  3T_0(f_0(n)) + T_0(f_0(n))^{c_1} = 3T(n) + T(n)^{c_1}$, hence $\mathcal{G}^0_n = G^0_n$ is computable in time $T(n)^{c_1}  \leq  T_1(f_1(n)) - 3T(n)$ (with no advice).
+Now assume the induction hypothesis up to $d-1$. Let $L \subseteq \B^n$ be given, $n$ sufficiently large, so that $L \in \TIME^B[T_d(f_d(n))]/f_d(n)$ and and $\K^{T(n)}(n) \leq f_d(n)$.
+Define $L_d \subseteq \B^{f_d(n)}$, $L_d = \{ x \mid \mathcal{G}^{d-1}(x) \in L\}$. By induction, $\mathcal{G}^{d-1}$ is computable in time $T_{d}(f_d(n)) - 3T(n)$ given the number $n$ as advice, and $O(1)$ additional advice bits; hence $L_d$ is computable in $\TIME^B[T_{d}(f_d(n))]/3f_d(n)$: if we are given the number $n$ as advice, then we may determine $f_0(n),\ldots,f_{d}(n)$ using the number $d$ as advice which costs $O(1)$, after which we can compute the generator $\mathcal{G}^{d-1}_n$, and the language $L$ using $\leq f_d(n)$ additional bits of advice (together with some $O(1)$ bits to specify the algorithm described in the current sentence). Under the assumption $\K^{T(n)}(n) \leq \log^{[i]}(n) \leq f_i(n)$ we may produce the number $n$ from an additional $f_i(n)$ bits of advice, for a total advice cost $\leq 3 f_i(n)$, and the time of the additional operations (beyond the original computation of $\mathcal{G}^{d-1}$) is bounded by $3T(n)$.
+
+Now, using the second part of our induction hypothesis, we determine that $\mathcal{G}_n^{i-1}$ fools $L$, in particular we have:
+\[
+|\Pr_{z \in \B^{f_i(n)}}[\mathcal{G}^{i-1}_n(z) \in L] - \Pr_{x \in \B^{n}}[x \in L] | \leq \sum_{j < i} f_j(n)^{-1}
+\]
+On the other hand, using the security of the generator $G^d_n$ on input length $f_{d+1}(n)$ (which is sufficiently large), we have that $G^d_n$ fools $L_d$, in particular:
+\[
+|\Pr_{w \in \B^{f_{d+1}(n)}}[G^d_n(w) \in L_i] - \Pr_{z \in \B^{f_{d}(n)}}[z \in L_d] | \leq f_{d}(n)^{-1}
+\]
+Recalling that $\mathcal{G}^{d}_n = \mathcal{G}^{d-1}_n \circ G^d_n$ and combining the previous two inequalities using the triangle inequality we have:
+\[
+|\Pr_{z \in \B^{f_{d+1}(n)}}[\mathcal{G}^{d}_n (w) \in L] - \Pr_{x \in \B^{n}}[x\in L] | \leq \sum_{j \leq  d} f_j(n)^{-1}
+\]
+which establishes the second condition in our inductive hypothesis. For the first, note that to compute $\mathcal{G}^{d}_n$, we need only recover the number $n$ from its shortest $\K^{T}(\cdot)$ description in time $T(n)$, compute $\mathcal{G}^{i-1}_n$ which takes time $\leq T_{i}(f_i(n)) - 3T(n)$ by induction, and finally compute $G^i_n$ which takes time $T_i(f_i(n))^{c_{i+1}}$; overall this is bounded by $T_{i+1}(f_{i+1}(n)) - 3T(n)$.
+
+At this point the theorem is proven; it remains to verify a few bounds:
+\begin{enumerate}
+    \item $\sum_{j \leq d} f_j(n)^{-1} \leq O(f_d(n)^{-1})$ so that the error bound is as stated in the theorem.
+    \item $f_d(n) \leq O(\log^{[d]}(n))$
+    \item $T_d(f_d(n)) \leq \poly(T(O(n)))$
+\end{enumerate}
+The first and second hold trivially. For the last, we prove it by induction; more specifically we will show by induction that $T_d(O(f_d(n))) \leq T(O(n))^{O(1)}$. In the base case, $T_0(O(f_0(n))) = T(O(n))$. We then have that
+\begin{gather}
+T_d(O(f_d(n))) = 4 \cdot T_{d-1}\Bigl(O(\exp(\lceil \frac{c_d \lceil \log f_{d-1} \rceil }{c_d} \rceil ))\Bigr)^{c_d} \\\leq  \Bigl(T_{d-1}(O(\exp( \log f_{d-1}(n) + O(1)))\Bigr)^{O(1)} \\= T_{d-1}(O(f_{d-1}(n)))^{O(1)} \leq T(O(n))^{O(1)}
+\end{gather}
+where the last step uses the induction hypothesis.
+\end{proof}
+
+
+
+
+% \subsection{Further Reducing the Seed Length}
+% In the previous section we were able to achieve seed length as low as $\log^{[O(1)]}(n)$ using an assumption Here we consider a considerably strengthening of the 
+% \begin{hypothesis}\label{randomstrings:hyp:computable}
+% There is an absolute constant $\epsilon > 0$ and a two-argument language $L \subseteq \B^* \times \B^*$ with the following properties:
+% \begin{enumerate}
+%     \item $L$ is computable in polynomial time.
+%     \item For all sufficiently large $n$ and all $T \geq n$, the Boolean function $f_{n,T}: \B^n \to \B$ given by $f_{n,T}(x) \mapsto L(x,1^T)$ cannot be computed by any $\NP$-oracle machine running in time $T^\epsilon$ with $2^{\epsilon n}$ bits of advice.
+% \end{enumerate}
+% \end{hypothesis}
+% In this case we have the following:
+% \begin{theorem}\label{randomstrings:thm:inverse-computable-generator}
+% Assume Hypothesis~\ref{randomstrings:hyp:computable}. Let $f(n): \mathbb{N} \to \mathbb{N}$ be a total computable function which grows without bound, and whose functional inverse is computable in polynomial time. There exists a generator $\mathcal{G}_n: \B^{s(n)} \to \B^n$ computable uniformly in $T(n)^{O(1)}$ time, so that the following hold:
+% \begin{enumerate}
+% 	\item For all $n$, $s(n) \leq  O(f(n) + \log \K^{T(n)}(n) + \log a(n))$
+% 	\item For all $L \in \TIME^B[T(n)]/a(n)$, we have
+% 	\[
+% 	|\Pr_{z \sim \B^{s(n)}}[\mathcal{G}_n(z) \in L] - \Pr_{x \sim \B^n}[x \in L]| \leq \frac{1}{2s(n)}
+% 	\]
+% 	for all but finitely many $n$.
+% \end{enumerate}
+% \end{theorem}
+% \begin{proof}
+% The proof is at a high level identical to that of Theorem~\ref{randomstrings:thm:elementary-generator}; we will only indicate those parts which need to change. At the start we will set $\lambda = \log \K^{T(n)}(n) + a(n)$ as before. Fix $c$ to be a sufficiently large constant depending on the runtime exponent and hardness parameter $\epsilon>0$ for the language $L$ in Hypothesis~\ref{randomstrings:hyp:computable}. As in Theorem~\ref{randomstrings:thm:elementary-generator} we define $T^0 = T$, $T^{i} = T(\exp^{[i]}(\cdot))^{c + 1}$, $n_{i+1} = c_i \cdot \lceil \log n_i \rceil $ {\color{red} correct this}
+% % and in this case rather than instantiating $d$ as a fixed constant, we compute the minimum value $d$ so that $\log^{[d]}(n) \leq f(n) \leq $
+% \end{proof}
+We highlight an important special case of the above:
+\begin{theorem}\label{randomstrings:thm:double-exp-generator}
+Assume that for some $\epsilon> 0$ and every time constructible $T(n) \leq 2^{O(n)}$, $m(n) \leq \poly(n)$, there is a function $n \mapsto \B^{m(n)}$ computable uniformly in time $T(n)$ which is not computable in $\TIME^\NP[T(n)^\epsilon]/m(n)^{\epsilon}$ even infinitely often. Then for every $k \in \mathbb{N}$, there is a pseudorandom generator family $(\mathcal{G}_n)_{n \in \mathbb{N}}$ with seed length $O(\log \log n)$ which fools $\TIME^{\NP}[n^k]/\log n$ for all sufficiently large $n$.
+\end{theorem}
+\begin{proof}
+We will set $v=0$, $d = 1$, $T(n) = n^k$ in Theorem~\ref{randomstrings:thm:elementary-generator}. Observe that for all $n$, we have $\K^{O(n)}(n) \leq \log n$ since we may encode the number $n$ in binary.
+\end{proof}
+
+If we rely instead on the weak form hypotheses $\WH(\cdot)$ we get:
+
+\begin{theorem}\label{randomstrings:thm:weak-generator}
+Assume Hypothesis $\WH(\mathcal{O},d+1,v)$ with $d \geq 0$, $v \geq 2$ fixed constants, and $k \in \mathbb{N}$ a fixed constant. Then there is a pseudorandom generator with seed length $\od{v -1 }(\log^{[d+1]}(n))$ and runtime $\od{d+v}(n)$ that fools $\TIME^\mathcal{O}[n^k]/\log^{[d]}(n)$ with error $(2 \log^{[d]}(n))^{-1}$ whenever $\K^{n^k}(n) \leq \log^{[d]}(n)$. 
+% Assume Hypothesis~\ref{randomstrings:hyp:weak} for oracle $\mathcal{O}$ and constant $d+1$, and let $T(n) \leq (\exp^{[d]}(n))^{O(1)}$ be time constructible. There exists a generator $(\mathcal{G}_n^d: \B^{s_d(n)} \to \B^n)_{n\in \mathbb{N}}$ computable uniformly in $\od{2d+2}(T(n))$ time \todo{check runtime}, so that the following hold:
+% \begin{enumerate}
+%     \item For all $n$, $s_d(n) \leq \od{2d+2}(\log^{[d]}(n)) < \log^{[d-1]}(n)$ \todo{check seedlength}
+%     \item $\mathcal{G}_n^d$ fools $\TIME^{\mathcal{O}}[T(n)]/\log^{[d]}(n)$. \todo{check for all $n$, padding argument makes the $\K(n)$ term irrelevant right?}
+% \end{enumerate}
+\end{theorem}
+
+As in the case of Lemma~\ref{randomstrings:lem:weak-prg-from-hardness}, we relegate the proof to the appendix since it uses essentially the same ideas as that of Theorem~\ref{randomstrings:thm:elementary-generator} and is in fact a bit simpler. As before we highlight an important special case, obtained immediately from Theorem~\ref{randomstrings:thm:weak-generator} by setting $\mathcal{O}= \NP$, $d=1$, $v = 2$:
+
+\begin{theorem}\label{randomstrings:thm:weak-loglog-gen}
+Assume that there is some $\epsilon > 0$ and a language $L \in \TIME[2^{2^n}]$ which is not computable in $\TIME^\NP[2^{\epsilon 2^n}]/2^{\epsilon n}$ on more than finitely many input lengths. Then for any $k \in \mathbb{N}$ there is a pseudorandom generator fooling $\TIME^\NP[n^k]$ with seedlength $O(\log \log n)$ and quasipolynomial runtime.
+\end{theorem}
+
+\subsection{Fooling Uniform Deterministic Time }\label{randomstrings:subsec:deterministic}
+
+For our application to construction of random strings, we will use the generator in the previous section with oracle setting $\mathcal{O} = \NP$. It is nonetheless natural to consider the implications of our generator in the case $\mathcal{O} = \emptyset$; in this case we obtain a generator with $o(\log n)$ seed length fooling $\TIME[T(n)]$ under plausible hardness assumptions. However, we demonstrate here that in the regime of a deterministic distinguisher, once $O(\log n)$ seed length is achieved for $\TIME[\poly(n)]$, we can reduce the seed length all the way down to an arbitrarily small super-constant value; more generally, we can fool $\TIME[\poly(n)]/a(n)$ with essentially optimal seed length $O(\log a(n))$ for any time constructible $a(n) \leq \log n$. 
+% there is a much easier way to reduce the seed length all the way to the true advice complexity of the distinguisher. 
+The discrepancy between the simplicity of the result here and the work required in the previous section is due to the key distinction that in this regime, the pseudorandom generator has enough resources to \emph{simulate} the distinguishers it is trying to fool.
+
+\begin{theorem}\label{randomstrings:thm:deterministic}
+Let $a(n) \leq \log n$ be time constructible. Assuming $\mathsf{E}$ requires $2^{\Omega(n)}$-size Boolean circuits for sufficiently large $n$, there is a polynomial time computable generator $\mathcal{G}^a: \B^{O(\log a(n))} \to \B^n$ which fools $\TIME[n]/a(n)$ with error $\leq \frac{1}{3}$.
+\end{theorem}
+\begin{proof}
+Using the hardness assumption we obtain (uniformly in $n$) a pseudorandom generator with seed length $c \log n$ for some constant $c$. Setting $m = n^c$ and enumerating the outputs of our PRG, we obtain a list of $n$ bit strings $x^1,\ldots,x^m \in \B^n$ which is a pseudorandom generator for $\TIME[n]/n$. Let $r = 2^{a(n)}$, let $L_1,\ldots,L_{r}$ enumerate $\TIME[n]/a(n)$ machines. Define the matrix $M \in \B^{m \times r}$ with $M(i,j) = L_j(x^i)$; we may compute $M$ in $\poly(n)$ time.
+
+We now deterministically construct a set $I \subseteq [m]$ of size $a(n)^{O(1)}$ so that for every $j$ we have
+\[
+|\Pr_{i \sim I}[M(i,j) = 1] - \Pr_{i \sim [m]}[M(i,j) = 1]| \leq \frac{1}{3}
+\]
+If we can accomplish this, we output the condensed PRG whose range consists of the strings $\{x^i \mid i \in I\}$ and has seed length $\lceil \log |I| \rceil = O(\log a(n))$ and are finished. The algorithm to find the set $I$ is given in the next lemma.
+\end{proof}
+
+\begin{lemma}
+There is a polynomial time algorithm which, given $M \in \B^{m \times r}$ with $r \leq m^{O(1)}$, outputs a set $I \subseteq [m]$ of rows so that $|I| \leq O(\log r)$, and for every column $j \in [r]$, we have 
+\[
+|\Pr_{i \sim I}[M(i,j) = 1] - \Pr_{i \sim [m]}[M(i,j) = 1]| \leq \frac{1}{3}
+\]
+\end{lemma}
+\begin{proof}
+Using known results on the so-called ``set balancing problem'' \cite{setbalancing}, for any $I \subseteq [m]$ we may efficiently compute $I'\subseteq I$, $|I'| \leq \frac{|I|}{2} + \sqrt{|I| \log r}$ so that 
+\[
+|\Pr_{i \sim I}[M(i,j) = 1] - \Pr_{i \sim I
+'}[M(i,j) = 1]| \leq \sqrt{\frac{\log r}{|I|}}
+\]
+for every $j$. In particular, provided $\sqrt{|I|\log r} \leq \frac{1}{4}|I|$, i.e. $|I| \geq 16\log r$, we have that $|I'| \leq \frac{3}{4}|I|$.
+Initializing $I_0 = [m]$, we may apply the above to obtain $I_0 \supseteq I_1 \supseteq \cdots \supseteq I_q$, $ |I_q| = \Theta(\log r)$, and for every $j$
+\[
+|\Pr_{i \sim I_{\ell}}[M(i,j) = 1] - \Pr_{i \sim I_{\ell+1}}[M(i,j) = 1]| \leq \sqrt{\frac{\log r}{|I_\ell|}}
+\]
+Hence
+\[
+|\Pr_{i \sim [m]}[M(i,j) = 1] - \Pr_{i \sim I_{q}}[M(i,j) = 1]| \leq \sum_{\ell \leq q} \sqrt{\frac{\log r}{|I_\ell|}}
+\]
+For a suitable choice of $q$ we will have $\sqrt{\frac{\log r}{|I_q|}} = \epsilon$ for an arbitrarily small constant $\epsilon$, and $\sqrt{\frac{\log r}{|I_{\ell}|}} \leq \sqrt{\frac{3}{4}} \cdot \sqrt{\frac{\log r}{|I_{\ell+1}|}}$, hence
+\[
+|\Pr_{i \sim [m]}[M(i,j) = 1] - \Pr_{i \sim I_{q}}[M(i,j) = 1]| \leq \sum_{\ell \leq q} \sqrt{\frac{\log r}{|I_\ell|}} \leq \epsilon \sum_{\ell =0}^{\infty} \Bigl(\sqrt{\frac{3}{4}}\Bigr)^\ell < \frac{1}{3}
+\]
+\end{proof}
+
+% To achieve this we use the deterministic discrepency method of Spencer {\color{red} cite}. Spencers algorithm provides a method which, for any $I \subseteq [m]$, outputs $I' \subseteq [m]$, $|I| \leq \frac{|I|}{2} + \sqrt{|I| a(n)}$ and $\mathrm{disc}(I') \leq \mathrm{disc}(I) + \sqrt{|I|a(n)}$. Repeatedly applying this, initializing $I = [m]$ and halting when $|I| \leq a(n)^{2}$, gives the required construction {\color{red} elaborate/fix this}.
+
+% \subsection{Optimality of Hardness Assumption}
+% {\color{red}delete subsection if unfinished}It is well known that the standard hardness-randomness paradigm of \cite{NW94,IW97,KvM99} is \emph{qualitatively optimal}, in the sense that the hardness assumptions used to instantiate the necessary generators are also implied by the existence of said generators. We observe that a similar phenomenon occurs here: assuming the existence of pseudorandom generators (or even hitting set generators) secure against $\TIME^{\NP}[n]$ with seed length $\log^{[d]}(n)$ for arbitrarily large $d$, we obtain hardness assumptions similar to Hypothesis~\ref{randomstrings:hyp:elementary} for arbitrarily large iterated-exponentials.
+% \begin{theorem}
+% Say that there is a 
+% \end{theorem}
+% \begin{proof}
+% Let $(G_n)_{n\in \mathbb{N}}$ with seed length $\log^{[d]}(n)$ which is secure against $\TIME^{\NP}[n]$ and computable in time $\poly(n)$. Consider the language $L$, consisting of those strings $z$ such that $\exp^{[d]}(n) $
+% \end{proof}
+\subsection{Optimality of the Seed Length}
+
+We include a simple (and basically standard) argument which indicates that the seed lengths obtained in the previous are essentially optimal with respect to the amount of advice they can handle:
+\begin{lemma}\label{randomstrings:lem:optimal}
+Let $s(n)\leq \log n$ be time-constructible, and $G = (G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ an arbitrary family of generators which fools $\TIME[n]/a(n)$ almost everywhere with error $\frac{1}{2}$. Then $s(n) \geq \log a(n) $.
+
+In particular, if $G$ fools $\TIME[n]$ then $s(n) \geq \lambda(n)$ for some inverse-total computable $\lambda(n) = \omega(1)$.  
+\end{lemma}
+
+\begin{proof}
+% Let $c(n) = 2^{s(n)}$ so that $|\mathrm{range}(G_n)| \leq c$ for infinitely many $n$; let $N \subseteq \mathbb{N}$ be those $n$ such that this holds.
+
+Let $\ell(n)= s(n) + 1$, and consider the family $\mathcal{L}$ of languages $L$ with $L_n(x)$ depending only on the first $\ell(n)$ bits of $x$, and $|L_n| = 2^{n-1}$. 
+For each $n \in N$, we have that $|\mathrm{range}(G_n)| \leq 2^{\ell(n)-1}$, hence there exists a language $L \in \mathcal{L}$ so that for all $n$ sufficiently large, we have $\mathrm{range}(G_n) \cap L_n = \emptyset$. On the other hand for every $n$ we have $\Pr_{x \sim \B^n}[x \in L] = \frac{1}{2}$, hence $G_n$ fails to fool the language $L_n$ for all $n$ sufficiently large. Every language $L \in \mathcal{L}$ is decidable in deterministic time $n + 2^{\ell(n)}$ with $2^{\ell(n)}$ bits of advice (we only need that $s(n)$, and hence $\ell(n)$ are time constructible) so we get a contradiction if $2^{\ell(n)} \leq O(n)$ or $2^{\ell(n)} \leq a(n)$.
+\end{proof}
+
+In the case of deterministic time (Section~\ref{randomstrings:subsec:deterministic}) this implies that the stated construction is optimal for advice complexity $\leq \log n$. For our main construction fooling $\TIME^{\NP}$, we have no indication that to fool uniform languages (no advice) requires iterated-logarithmic seed length. However Theorem~\ref{randomstrings:thm:elementary-generator} is able to fool languages with advice complexity $\log^{[d]}(n)$ with seed length $O(\log^{[d+1]}(n))$, so in this sense we are able to achieve the maximum advice complexity for the given seed length $O(\log^{[d+1]}(n))$. It is consistent with our current knowledge that fooling completely uniform algorithms, even with an $\NP$ oracle, is achievable with arbitrarily slow-growing time constructible seed lengths, as we can achieve in the case of deterministic adversaries (under standard hardness assumptions).
+% To construct $I$ we use $v$-wise independence for some constant $v$ to be determined shortly. We may safely assume $m' \leq m^{\epsilon}$ for an arbitrarily small constant $\epsilon>0$, otherwise we can set $I = [m]$ and be done. We generate a $v$-wise independent function
+% \[
+% \lambda: [m] \to [m]
+% \]
+% and set $I_\lambda = \{i \mid \lambda(i) \leq 100m' \}$. If we can argue that with nonzero probability over $\lambda$ our choice of $I_\lambda$ has thhe desired property, then we may enumerate the seeds of our $v$-wise independent family in time $n^{O(v)} = n^{O(1)}$ and complete the proof (using any standard construction of $v$-wise independent families). For a fixed $j \leq m'$ 
+% \end{proof}
+\section{Construction of Random Strings and Applications}
+In this section we discuss the applications of our main result to explicit constructions of random strings and circuit lower bounds.
+\subsection{Random String Construction Via PRG Concatenation}
+We start by applying our PRG constructions to give polynomial time explicit constructions of highly random strings. The first is a direct combination of our main PRG constructions with Observations~\ref{randomstrings:obs:concat} and \ref{randomstrings:obs:prg-avoid} from the preliminaries. We start with the situation in which we use the strong form of our hardness assumptions, and hence Theorem~\ref{randomstrings:thm:elementary-generator} as our PRG:
+\begin{theorem}\label{randomstrings:thm:elementary-random-strings-ae}
+Let $d \in \mathbb{N}$, $T(n) \leq (\exp^{[c]}(n))^{O(1)}$, and assume Hypothesis $\SH(\NP,d+c)$. Then for any constant $k\in \mathbb{N}$, there is a polynomial time algorithm $\mathcal{A}$ so that, for all $n$ with $\K^{T(n)}(n) \leq \log^{[d]}(n)$, $\mathcal{A}(1^n) \in \B^{n}$ is an $n$-bit string $x$ with $\K^{T(n)}(x) \geq \Omega(\frac{n}{(\log^{[d]}(n))^{O(1)}})$. 
+
+In the special case $d = 1$, $c = 0$, under a hardness assumption for singly exponential time bounds and $\NP$ oracles we obtain an algorithm $\mathcal{A}$ which produces, for every $n \in \mathbb{N}$, a string $x$ of length $n$ with $\K^{T(n)}(x) \geq \frac{n}{\poly(\log n)}$ for all $n$.
+
+More generally, a hardness assumption for exponential time bounds and $\mathcal{O'}$ oracles yields an efficient algorithm for computing strings with $\tilde{\Omega}(n)$ $\mathcal{O}$-oracle time-bounded Kolmogorov complexity, provided there is a $\poly(T(n))$ time $\mathcal{O'}$ oracle algorithm which can test the $\K^{T(n), \mathcal{O}}$ complexity of an $n$-bit string.
+\end{theorem}
+\begin{proof}
+This is a rather direct corollary of Theorem~\ref{randomstrings:thm:elementary-generator}. Let $n$ be given with $\K^{T(n)}(n) \leq \log^{[d]}(n)$, and let $s_d(\cdot) \leq O(\log^{[d+1]}(\cdot))$ be the seed length bound of the generator $\mathcal{G}^d$ from Theorem~\ref{randomstrings:thm:elementary-generator} using the base time bound $T(n)$. Let $n'$ be the largest integer such that $n'2^{s_d(n')} \leq n$; clearly $\K^{T(n)}(n') \leq \K^{T(n)}(n) + O(1) \leq \log^{[d]}(n)$, hence we may apply Theorem~\ref{randomstrings:thm:elementary-generator} to compute (uniformly) a pseudorandom generator $\mathcal{G}^d_n: \B^{s_d(n')} \to \B^{n'}$ which fools $\TIME^{\NP}[T(n)]/O(1)$ on input length $n'$. By Observation~\ref{randomstrings:obs:prg-avoid} we conclude that some string $z$ in the range of $\mathcal{G}_n$ has $\K^{T(n)}(z) \geq n'-1$, hence the concatenation of all strings in the range of $\mathcal{G}^d_n$ (padded at the end with $0$s to bring the length up to $n$) will have $\K^{T(n)}(\cdot)$ complexity at least $n' - s_d(n') \geq \frac{n}{(\log^{[d]}(n))^{O(1)}}$ (recall Observation~\ref{randomstrings:obs:concat}). 
+
+The second part of the theorem is the special parameter setting given by Theorem~\ref{randomstrings:thm:double-exp-generator}, and for the last sentence in the statement, we use the fact that Theorem~\ref{randomstrings:thm:double-exp-generator} works for any oracle $\mathcal{O'}$.
+\end{proof}
+
+If we instead rely on the weaker form hardness assumptions and the associated PRG from Theorem~\ref{randomstrings:thm:weak-generator} we obtain via the exact same argument:
+\begin{theorem}\label{randomstrings:thm:elementary-random-strings-weak}
+Assume Hypothesis $\WH(\NP,d+1,v)$ with $d \geq 0$, $v \geq 2$. Then for every $k \in \mathbb{N}$, there is a $\od{d+v}(n)$ time algorithm $\mathcal{A}$ such that for all sufficiently large $n$, $\mathcal{A}(1^n) \in \B^n$  is a string $x$ satisfying $\K^{n^k}(x) \geq  \frac{n}{\od{v}(\log^{[d]}(n))}$.
+
+In particular, assuming that there is a language in $\TIME[2^{2^n}]$ which cannot be decided in $\TIME^\NP[2^{\epsilon 2^n}]/2^{\epsilon n}$ infinitely often, there is a quasipolynomial time algorithm which outputs strings $x \in \B^n$ with $\K^{n^k}(x) \geq  \frac{n}{\poly(\log n)}$.
+
+More generally, a hardness assumption for exponential time bounds and $\mathcal{O'}$ oracles yields an efficient algorithm for computing strings with $\tilde{\Omega}(n)$ $\mathcal{O}$-oracle time-bounded Kolmogorov complexity, provided there is a $\poly(T(n))$ time $\mathcal{O'}$ oracle algorithm which can test the $\K^{T(n), \mathcal{O}}$ complexity of an $n$-bit string.
+\end{theorem}
+
+We now move on to a second class of constructions which achieves a far superior degree of randomness, but the cost is that our construction only works for infinitely many $n$, and unlike the previous we have no control over which specific values of $n$ our construction succeeds on.
+
+\begin{theorem}\label{randomstrings:thm:elementary-strings-io}
+    Assume Hypothesis $\SH(\NP,d)$. Then for any constant $k \in \mathbb{N}$, there is a polynomial time algorithm $\mathcal{A}$ so that, for infinitely many $n$, $\mathcal{A}(1^n) \in \B^{n}$ is an $n$-bit string $x$ with $\K^{n^k}(x) \geq  n - \poly(\log^{[d]}n)$. 
+\end{theorem}
+\begin{proof}
+Applying the assumption with Theorem~\ref{randomstrings:thm:elementary-generator} and the argument in the previous proof, we have an algorithm $\mathcal{A}$ which prints, for all sufficiently large $n$ in $N_d:=\{ n \mid n = \exp^{[d+1]}(n') \text{ for some } n'\}$, a list of $\poly(\log^{[d]}(n))$ strings, one of which must have $\K^{n^k}(n) \geq n-1$. We now define a second algorithm $\mathcal{A}'$, which, given $n$, computes the largest value $m \leq  n$ with $m \in N$, and prints the $(n - m)^{th}$ element of the list $\mathcal{A}(1^m)$ (if $(n-m)$ is larger than the length of the list, it does something arbitrary). For every $m \in N$, there is some $n \leq m + \poly(\log^{[d]}(n))$ which prints a string $x$ of length $m$ with $\K^{n^k}(x) \geq m-1 \geq n - \poly(\log^{[d]}(n))$. 
+\end{proof}
+
+As before, a modified variant of this construction can be done in the case of the alternative weak form hardness assumptions, where the cost of using the weaker kind of assumption is that the run time of the construction will degrade correspondingly; we leave the details to the interested reader as we will not use this variant in what follows.
+
+
+\subsection{Explicit Constructions Under Plausible Hardness Assumptions}\label{randomstrings:subsec:ecs}
+By our main result, under reasonable hardness assumptions we are able to obtain explicit constructions of strings with time-bounded Kolmogorov complexity $\frac{n}{\beta(n)}$, where $\beta(n)$ grows like an arbitrarily slow iterated logarithm function. We show here how to use this construction to build various important pseudorandom objects under our main hardness assumptions. We start with a list of fundamental explicit construction problems, focusing on those studied originally in \cite{Korten21}, in addition to so-called ``incompressible functions'' considered in \cite{incompressible}. For background on substantial literature dedicated to these problems see \cite{Korten21,incompressible},
+
+\begin{definition}[List of Explicit Construction Problems]\label{randomstrings:def:list-of-problems}
+~
+\begin{itemize}
+    \item $(s,r)$-Rigidity: A matrix $M \in \B^{n \times n}$ such that $M \neq S + R$ whenever $S,R \in \mathbb{F}_2^{n \times n}$, $S$ has at most $s$ nonzero entries, $R$ has rank at most $r$
+    \item $s$-Hard Boolean Functions: A Boolean function $f: \B^n \to \B$ not computed by any Boolean circuit of size $\leq s$
+    \item $(s,k)$-Incompressible Boolean Functions: A Boolean function $f: \B^n \to \B$ which cannot be expressed in the form $f(x) = g(C(x))$ where $C: \B^n \to \B^k$ is a circuit of size $s$ and $g: \B^k \to \B$ is an arbitrary Boolean function
+    \item $s$-$\PSPACE^{\cc}$-Complexity: A communication matrix $M \in \B^{2^n \times 2^n}$ such that $M$ cannot be solved by space-$s$ communication protocols
+    \item $(s,t)$-Bit-Probe Complexity: A data structure problem $D \in \B^{2^n \times 2^n}$ which requires space $\geq s$ or time $\geq t$ in the bit-probe model.
+    \item Ramsey: A graph $G \in \binom{n}{2}$ with no clique or independent set of size $\geq 2.1 \cdot  \log n$
+\end{itemize}
+\end{definition}
+
+We then have:
+\begin{lemma}\label{randomstrings:lem:reductions}
+Say that a Range Avoid instance has ``stretch $n \mapsto m$'' if it is of the form $C: \B^n \to \B^m$. The following uniform reductions exist from the problems in Definition~\ref{randomstrings:def:list-of-problems} to Range Avoidance:
+\begin{enumerate}
+    \item $(s,r)$-Rigidity reduces uniformly to Avoid with stretch $(2s \log n + 2nr) \mapsto n^2$
+    \item $s$-Hard Boolean Function reduces uniformly to Avoid with stretch $(1+o(1))s\log s \mapsto 2^n$
+    \item $(s,k)$-Incompressible Boolean Functions reduces uniformly to Avoid with stretch $2^k + (1+o(1))s\log s \mapsto 2^n$
+    \item $s$-$\PSPACE^{\cc}$-Complexity reduces uniformly to Avoid with stretch $2^{O(s) + n} \mapsto 2^{2n}$
+    \item $(s,t)$-Bit-Probe Complexity reduces uniformly to Avoid with stretch $s2^n + 2^{t + n} \mapsto 2^{2n}$
+    \item Ramsey reduces uniformly to Avoid with stretch $n - \Omega(\log n) \mapsto n$
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+All of these proofs occur in \cite{Korten21}, with the exception of Incompressible Functions. For this, if $f(x) = g(C(x))$ for a circuit $C: \B^n \to \B^k$ of size $s$ and $g: \B^k \to \B$, we may represent the circuit $C$ (gate by gate) using $(1+o(1))s\log s$ bits via a standard encoding, and the function $g$ via its $2^k$-bit truth table. From these it is clear how we may reproduce the function $f$ efficiently.
+\end{proof}
+
+Combining this with our first generator construction from the previous section and Observation~\ref{randomstrings:obs:avoid-to-random-strings}, we have:
+\begin{theorem}\label{randomstrings:thm:conditional-ecs-strong}
+Assume Hypothesis $\SH(\NP,d)$. Then for all $n$ with $\K^{\poly(n)}(n) \leq \log^{[d]}(n)$, we have the following:
+\begin{enumerate}
+    \item \sloppy Polynomial time construction of matrices in $\mathbb{F}_2^{n \times n}$ which are $(\frac{n^2}{\log n\cdot  \poly(\log^{[d]}(n))}, \frac{n}{\poly(\log^{[d]}(n))})$-rigid. In particular, for any $d > 2$ such matrices achieve Valiant rigidity.
+    \item Boolean functions in $\mathsf{E} = \TIME[2^{O(n)}]$ with circuit complexity at least $ \frac{2^n}{n \cdot \poly(\log^{[d-1]}(n))}$
+    \item \sloppy Boolean functions in $\mathsf{E} = \TIME[2^{O(n)}]$ which are ${(\Omega(\frac{2^n}{n \cdot \poly(\log^{[d-1]}(n))}), n- O(\log^{[d]}n))}$ incompressible
+    \item Polynomial time construction of communication matrices $M \in \B^{2^n \times 2^n}$ which require space $\Omega(n)$ (for any setting of $d$)
+    \item Polynomial time construction of data structure problems $D \in \B^{2^n \times 2^n}$ which require space $\Omega(2^n)$ or time $\Omega(n)$ in the bit probe model (for any setting of $d$)
+\end{enumerate}
+In the important case $d = 1$, each of the constructions works for all $n$ and requires the hardness assumption only for singly-exponential time bounds.
+\end{theorem}
+
+We arrive at similar conclusions if we use the weak form hypothesis in combination with Theorem~\ref{randomstrings:thm:weak-generator} instead, at the cost of a slow-down in our construction algorithms. We highlight below the results obtained by using the special case of Theorem~\ref{randomstrings:thm:weak-generator} given in Theorem~\ref{randomstrings:thm:weak-loglog-gen}:
+\begin{theorem}\label{randomstrings:thm:conditional-ecs-weak}
+Assume that there is some $\epsilon > 0$ and a language $L \in \TIME[2^{2^n}]$ which is not computable in $\TIME^\NP[2^{\epsilon 2^n}]/2^{\epsilon n}$ on more than finitely many input lengths (this is Hypothesis $\WH(\NP,1,2)$). Then we have the following for all $n$:
+\begin{enumerate}
+    \item \sloppy Quasipolynomial time construction of matrices in $\mathbb{F}_2^{n \times n}$ which are $(\frac{n^2}{(\log n)^{O(1)}}, \frac{n}{(\log n)^{O(1)}})$-rigid. 
+    \item Boolean functions in $\mathsf{EXP} = \TIME[2^{n^{O(1)}}]$ with circuit complexity at least $ \frac{2^n}{\poly(n)}$
+    \item \sloppy Boolean functions in $\mathsf{EXP}$ which are ${(\Omega(\frac{2^n}{\poly(n)}), n- O(\log n))}$ incompressible
+    \item Quasipolynomial time construction of communication matrices $M \in \B^{2^n \times 2^n}$ which require space $\Omega(n)$ (for any setting of $d$)
+    \item Quasipolynomial time construction of data structure problems $D \in \B^{2^n \times 2^n}$ which require space $\Omega(2^n)$ or time $\Omega(n)$ in the bit probe model (for any setting of $d$)
+\end{enumerate}
+
+\end{theorem}
+
+
+The above results cover the vast majority of explicit construction problems considered originally in \cite{Korten21}. A notable exception is the construction of near-optimal Ramsey graphs; here the stretch $n - \Omega(\log n) \mapsto n$ given by Lemma~\ref{randomstrings:lem:reductions} is to small to apply Theorem~\ref{randomstrings:thm:elementary-random-strings-ae}, and we must appeal instead to Theorem~\ref{randomstrings:thm:elementary-strings-io}. Using this approach, we will be able to construct near-optimal Ramsey graphs infinitely often, provided we modify appropriately our encoding of graphs by strings to be well-defined on every input length:
+\begin{definition}[Ramsey Graphs of Every Length]
+We associate every every string $x \in \B^*$ to a graph $G_x$ as follows. Let $n = |x|$ and set $n'$ to be the greatest integer so that $\binom{n'}{2}\leq n$. Set $m = \binom{n'}{2}$, truncate $x$ to the first $m$ bits and interpret it as a graph on $\binom{n'}{2}$ vertices canonically. Under this encoding, we say that $x$ encodes a Ramsey graph if $G_x$ contains no clique or independent set of size $\geq2.1 \cdot \log n'$.
+\end{definition}
+
+We then have:
+\begin{lemma}
+Assume Hypothesis $\SH(\NP,2)$. Then there is a polynomial time algorithm which, for infinitely many $n$, outputs a string $x \in \B^n$ so that $G_x$ is Ramsey.
+\end{lemma}
+\begin{proof}
+We claim that we may uniformly construct a Range Avoidance instance $C: \B^{n - \Omega(n)} \to \B^n$ so that for all $n$, $\mathrm{range}(C_x)$ contains every $x$ such that $G_x$ fails to be Ramsey. In particular, given $n$ we may compute efficiently the parameters $n'$, $m$ being the number of vertices and edges for the graphs $\{G_x \mid x \in \B^n\}$; we then apply Lemma~\ref{randomstrings:lem:reductions} to obtain (uniformly) a Range Avoidance instance with stretch $m- \Omega(\log m) \mapsto m$ covering all strings $z \in \B^m$ which fail to encode Ramsey graphs. If $x \in \B^n$ fails to be Ramsey, then $x = z y$ for some $z \in \B^m$ which fails to be Ramsey, hence we may uniformly construct an Avoid instance covering every non-Ramsey string $x \in \B^n$ with stretch $n - \Omega(\log n') \mapsto n$, which is $n - \Omega(\log n) \mapsto n$.
+We thus conclude that $\K^{\poly(n)}(x) \leq n - \Omega(\log n)$ whenever $G_x$ fails to be Ramsey. Applying Theorem~\ref{randomstrings:thm:elementary-strings-io} and our hardness assumption yields the lemma.
+\end{proof}
+
+\subsection{Hardness Condensation}\label{randomstrings:subsec:condense}
+
+We also apply Theorem \ref{randomstrings:thm:elementary-random-strings-ae} to derive a new {\it hardness condensation} result. Hardness condensation is a phenomenon where a mild hardness assumption can be transformed into a much stronger hardness assumption of the same type. It was first studied in \cite{BOS06}, who showed hardness condensation results for complexity classes with advice. It is more interesting to get hardness condensation for uniform classes, and indeed \cite{Korten21} achieves this for $\E^{\NP}$ - he shows that $\E^{\NP}$ requires exponential-size circuits iff it requires almost maximum-size circuits. 
+
+We obtain a new hardness condensation result for deterministic time {\it without} an $\NP$-oracle. Here the condensation is with respect to non-uniform complexity - the stronger hardness assumption can handle almost a maximum non-trivial amount of non-uniformity, while the weaker hardness assumption only involves an exponential amount of non-uniformity.
+
+% \todo{need to modify this given changes}
+
+% \begin{theorem}
+% \label{randomstrings:t:HardCond}
+% The following are equivalent:
+% \begin{enumerate}
+% \item For every elementary time-constructible bound $T = 2^{\Omega(n)}$, there is an $\epsilon > 0$ such that $\TIME(T) \not \subseteq \SPACE[T^{\epsilon}]/2^{\epsilon n}$
+% \item For every elementary time-constructible bound $T = 2^{\Omega(n)}$, there is an $\epsilon > 0$ such that $\TIME[T] \not \subseteq \SPACE[T^{\epsilon}]/2^{n-\omega(\log(n))}$
+% \end{enumerate}
+% \end{theorem}
+
+% \begin{proof}
+% Clearly the second item implies the first. We show that the first item implies the second.
+
+% We will use $\K^{\mathsf{QBF},t}$ to denote $t$-time bounded Kolmogorov complexity relative to a $\mathsf{QBF}$ oracle, i.e., the universal machine in the definition of Kolmogorov complexity is allowed access to a $\mathsf{QBF}$ oracle.
+
+% Let $T = \Omega(2^n)$ be an elementary time-constructible bound. We would like to show that there is an $\epsilon > 0$ such that $\DTIME(T) \not \subseteq \DSPACE(T^{\epsilon})/2^{n-\omega(\log(n))}$ by applying the first item to some related elementary time bound $T'$. 
+
+% Let $t$ be such that $t(2^n) = T(n)^{1/c}$, for a constant $c > 1$ that we will soon specify. Note that since $T$ is at least exponential, $t$ is at least linear. We apply the last part of Theorem \ref{randomstrings:thm:elementary-random-strings-ae} to $t$ with the $\mathsf{QBF}$ oracle, yielding an polynomial-time algorithm $\mathcal{A}$ that on input $1^n$, outputs a string $y_n$ of length $n$ with $\K^{\mathsf{QBF},t}$ complexity at least $n/\polylog(n)$. Let $c$ be a constant upper bound on the exponent of the running time of the polynomial-time algorithm $\mathcal{A}$. Note that the assumption required for this in Theorem \ref{randomstrings:thm:elementary-random-strings-ae} is for a time bound double exponential in $t$, which is elementary and time-construtible, therefore the first item suffices for this. 
+
+% We define a Boolean function $F$ by its truth table: the truth table of $F$ on inputs of length $n$ is $y_{2^n}$.
+% We show that $F \in \DTIME(T)$ but that there exists an $\epsilon > 0$ such that $F \not \in \DSPACE(T^{\epsilon})/2^{n-\omega(\log(n))}$. 
+
+% To see that $F \in \DTIME(T)$, we use $A$ to generate the truth table of $F$, and accept on input $x$ iff the corresponding entry in the truth table is $1$. By our assumptions on $t$, $c$ and $\mathcal{A}$, this procedure halts in time $O(T)$.
+
+% To show that $F \not \in \DSPACE(T^{\epsilon})/2^{n-\omega(\log(n))}$ for some $\epsilon > 0$, we assume the contrary and derive a contradiction. Suppose that for $\epsilon < 1/c$ there is an algorithm $\mathcal{A'}$ with space bound $T^{\epsilon}$ and $2^{n-\omega(\log(n))}$ advice deciding $L$. Let $\{a_n\}$ be a sequence of correct advice strings for $\mathcal{A'}$, with $|a_n| = 2^{n-\omega(\log(n))}$.
+
+% Let $N = 2^n$. We show that the truth table $y_N$ of $F$ on inputs of length $n$ has $\K^{\mathsf{QBF},t}$-complexity at most $N/(\log(N))^{\omega(1)}$, contradicting the definition of $y_N$. In order to describe $y_N$ by a $\mathsf{QBF}$-oracle program of size $N/(\log(N))^{\omega(1)}$ running in time at most $t(N)^{\epsilon} < T(n)$, we use the fact that space $T$ can be simulated in time $T$ with a $\mathsf{QBF}$-oracle. The program consists of the code of $\mathcal{A'}$ together with the correct advice $a_n$, which is of length $N/(\log(N))^{\omega(1)}$, and hence the program is of size $N/(\log(N))^{\omega(1)}$ for all large enough $N$. This contradicts the assumed hardness of $y_N$.
+
+% \end{proof}
+
+% \todo{below in progress}
+
+
+\begin{theorem} The following ar equivalent:
+\begin{enumerate}
+    \item For every $d$ there exists $v$ so that, for all time constructible $T (n) \leq \exp^{[d]}(n)$, we have $\TIME[T(n)]$ is not contained even infinitely often in $\SPACE[o^{\langle v\rangle }(T(n))]/o^{\langle v \rangle}(2^n)$ 
+    \item For every $d$ there exists $v$ so that, for all time constructible $T (n) = \exp^{[d]}(n)$, we have $\TIME[T(n)]$ is not contained even infinitely often in $\SPACE[o^{\langle v\rangle }(T(n))]/2^{n - \omega(\log n)}$ 
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Clearly the second item implies the first. We show that the first item implies the second. Assuming (1), we have that every every $d$ there exists $v$ so that $\WH(\mathsf{QBF}, d, v)$ holds. Applying Theorem~\ref{randomstrings:thm:elementary-random-strings-weak}, for every $d$ there is $v$ so that for any time constructible $T\leq \exp^{[d]}(n)$, there is an algorithm $A$ running in time $\od{v}(T(2^n))$ which, given $1^{2^n}$, outputs a string of length $2^n$ which cannot be produced by any algorithm running in space $T(2^n)$ with $2^{n - \omega(\log n)}$ bits of advice \footnote{We are using here the fact that $\SPACE[T(n)]$ can be simulated in $\TIME^{\mathsf{QBF}}[\poly(T(n))]$}. Interpreting this string as a function $f: \B^n \to \B$, we obtain a language in $\TIME[\od{v}(T(2^n))]$ which is not contained even infinitely often in $\SPACE[T(2^n)]/2^{n - \omega(\log n)}$. Reparameterizing the time bounds yields (2).
+\end{proof}
+\subsection{Range Avoidance vs Uniform Range Avoidance}\label{randomstrings:subsec:uniform-vs-nonuniform}
+
+
+We use our results together with previous work to argue that the Range Avoidance problem becomes much more tractable for uniformly computable maps. While there is compelling complexity-theoretic evidence in various settings that Range Avoidance is intractable in general, our results show that Uniform Range Avoidance is tractable under plausible complexity-theoretic assumptions.
+
+The first setting we consider is where the Range Avoidance instance is an arbitrary polynomial-size circuit $C: \B^n \to \B^m$, and we wish to solve Range Avoidance in polynomial time.
+
+Ilango, Li and Williams \cite{ILW23} showed that in this setting, Range Avoidance is infeasible, under the standard assumption that $\NP \neq \coNP$ and the plausible assumption that subexponentially-secure indistinguishability obfuscation exists \cite{JLS21}.
+
+\begin{theorem}
+\label{randomstrings:t:ILW} \cite{ILW23}
+If $\NP \neq \coNP$ and subexponentially-secure indistinguishability obfuscation exists, then for any $c \geq 0$, there is no polynomial-time algorithm which solves Range Avoidance for polynomial-size circuits mapping $n$ to $n^c$ bits.
+\end{theorem}
+
+\begin{corollary}
+\label{randomstrings:c:UnifvsNonunifP}
+Assume that $\NP \neq \coNP$, subexponentially-secure indistinguishability obfuscation, and Hypothesis $\SH(\NP,1)$. There is a constant $c$ such that for all $d \geq c$, there is a polynomial-time algorithm which solves Range Avoidance on {\it uniform} circuits of size $n^d$ mapping $n$ bits to $n^d$ bits but no polynomial-time algorithm which solves Range Avoidance on all circuits of size $n^d$ mapping $n$ bits to $n^d$ bits.
+\end{corollary}
+
+\begin{proof}
+We show that we can take $c$ to be $1+\delta$, for arbitrarily small $\delta > 0$. Indeed, for such $c$ and $d \geq c$, the intractability of general Range Avoidance follows from Theorem \ref{randomstrings:t:ILW}, under the given assumptions. We show that uniform Range Avoidance can be solved by applying Theorem \ref{randomstrings:thm:elementary-random-strings-ae} and using the third assumption. Indeed, by this assumption, for every constant $k$, there exists a polynomial-time algorithm $A_k$ which for all $n$, on input $1^n$ outputs a length-$n$ string of $\K^{n^k}$ complexity at least $n/\polylog(n)$.
+
+Let $\{C_n\}$ be a sequence of uniform circuits mapping $n$ bits to $n^d$, where $d$ is any constant greater than $1$. Here our notion of uniformity is standard $\DLOGTIME$-uniformity, but the argument can be adapted to work for more relaxed notions of uniformity. Note that any output $y = C_n(x)$ has $\K^{n^k}$ complexity at most $n+O(\log(n))$ for any $k > d$, as we can first generate $C_n$ given $n$ using the uniformity condition and then generate $y$ from $C_n$ and $x$ by simulating $C_n$.  By running $A_k$ on input $1^{n^d}$, we obtain a string of length $n^d$ and $\K^{n^{kd}}$ complexity at least $n^d/\polylog(n)$, which is therefore a non-output of $C_n$ when $n$ is large enough.
+\end{proof}
+
+We also consider the setting where the Range Avoidance instance is an arbitrary polynomial-size $\mathsf{TQBF}$-oracle circuit $C: \B^n \to \B^m$, and we wish to solve Range Avoidance in polynomial time. The negative evidence for this is even stronger - the task is intractable under the standard assumption $\PSPACE \neq \NP$. Somewhat surprisingly, we show that uniform Range Avoidance is tractable under plausible assumptions even though the uniform Range Avoidance instance $C$ is allowed to use a $\mathsf{TQBF}$-oracle. 
+
+\begin{theorem} \cite{ABK24}
+\label{randomstrings:t:PSPACERangeAvoid}
+Suppose $\PSPACE \neq \NP$ (resp. $\PSPACE \not\subseteq \NTIME[2^{\log^{O(1)} n}]$).
+There is a constant $c$ such that for all $d \geq c$, there is no polynomial-time (resp. quasipolynomial time) algorithm which solves Range Avoidance on all $\mathsf{TQBF}$-oracle circuits of size $n^d$. 
+\end{theorem}
+
+In fact, \cite{ABK24} showed that computing an $\mathsf{KS}$-incompressible string $x$ of length $n$ conditional on a given string $y$ is hard for polynomial time if $\mathsf{PSPACE} \neq \NP$, where $\mathsf{KS}$ is Kolmogorov space-bounded complexity. This is easily seen to imply the result above by considering the Range Avoidance instance which takes a $\mathsf{TQBF}$-oracle program as input and evaluates it. The extension to quasipolynomial time bounds is not stated in \cite{ABK24} but follows immediately from the proof.
+
+\begin{corollary}
+\label{randomstrings:c:UnifvsNonunifPSPACE}
+Assume $\SH(\PSPACE,1)$, and that $\PSPACE \not\subseteq \NTIME[2^{\log^{O(1)} n}]$. Then there is a constant $c$ such that for all $d \geq c$, there is a polynomial-time algorithm which solves Range Avoidance on {\it uniform} $\mathsf{TQBF}$-oracle circuits of size $n^d$ but no polynomial-time algorithm which solves Range Avoidance on all $\mathsf{TQBF}$-oracle circuits of size $n^d$.
+\end{corollary}
+
+\begin{proof}
+For the negative result on Range Avoidance, we simply apply Theorem \ref{randomstrings:t:PSPACERangeAvoid}. For the positive result, we apply Theorem \ref{randomstrings:thm:elementary-random-strings-ae} (relativized to a $\mathsf{TQBF}$ oracle) and then use the same argument as in the proof of the previous corollary.
+\end{proof}
+
+\section{Barriers to Improvements}
+In this section we present two barriers to improving our main results. First we show that the seed length $\log^{[O(1)]}n$ achieved in our PRG from Section~\ref{randomstrings:sec:PRG} is in some sense optimal for hardness/randomness approaches which use the same overall structure as our argument: specifically, we show that our PRG construction corresponds to a construction of a special kind of seeded extractor with seed length $\log^{[O(1)]}n$, and prove unconditionally that this is the minimal achievable seed length in any such construction. Second we show that there is no relativizing argument that directly reduces the construction of $\K^{\poly(n)}$-random strings to the construction of hard truth tables.
+\subsection{Multi-Reconstructive Extractors for Block Sources}
+The classical approach to turning hardness into randomness \cite{NW94,IW97} was famously shown by Trevisan \cite{trevisan} to be essentially equivalent to the task of constructing an explicit seeded extractor. Roughly speaking, Trevisan showed that any method for producing a pseudorandom generator using a hard boolean function whose correctness is proven in a sufficiently \emph{black box} fashion must actually produce a seeded extractor, which treats the hard function as a high min-entropy source and the seed of the PRG as the seed in the seeded extractor. 
+% The primary motivation in \cite{trevisan} was that, at the time, the known constructions of seeded extractors were far inferior to those occurring implicitly in the hardness/randomness constructions of \cite{NW94,IW97}, and therefore using this connection Trevisan was able to establish the existence of such explicit extractors for the first time. 
+
+In Section~\ref{randomstrings:sec:PRG} a PRG was constructed against \emph{uniform} algorithms (or more generally, algorithms with extremely small advice), whose seed length was much smaller than $\log n$, using a different kind of hardness assumption applied across many different input lengths. In the section we cast such a hardness/randomness construction in terms of certain seeded \emph{multi-source} extractors, where each source corresponds to a hardness assumption used at a different input length. Through this connection we are able to show that the iterated logarithmic ($\log^{[d]}(n)$, $d= O(1)$) seed length in our PRGs from Section~\ref{randomstrings:sec:PRG} is necessary for any hardness/randomness tradeoff that uses the same general framework as ours, and in particular which uses ``only $O(1)$ many'' hardness assumptions.
+
+We start by recalling the proof of correctness of the PRG from Section~\ref{randomstrings:sec:PRG}, first in the case where $O(\log \log n)$ seed length is achieved using a hardness assumption at two different input lengths. We first used a hard function whose truth table had size $\poly(n)$ in order to get a PRG with seed length $O(\log n)$; call this $f_1$. We then bounded the run time of this PRG by some $T(n) = \poly(n)$, and in the next step required a hard function $f_2$ of truth table size $\approx \log n$, which was hard for algorithms with running time $T(n)$; in particular $f_2$ needed to be hard even in the regime where the computation of $f_1$ is easy. For this reason, we may roughly interpret this as saying, $f_2$ is a function (of much smaller input length) which is hard \emph{conditioned on $f_1$}. 
+% More specifically, if we unroll the underlying reconstructive proof of the hardness randomness connection (\cite{IW98} or \cite{umans}) being used at each of the two steps, we see that there is some reconstruction procedure $R_1$ which, given any distinguisher $D_1$ for the first $O(\log n)$-seed length generator $G_1^{f_1}$, computes the function $f_1$ in time $T(n)$. There is then a reconstruction procedure $R_1$ for the second generator $G_2^{f_2}$ which maps any distinguisher $D_2$ to a computation of $f_2$; in the analysis of the composed generator $G_1^{f_1} \circ G_2^{f_2}$, we first assume $f_1$ is hard, then that $f_2$ is hard for algorithms with enough resources to simulat
+When we iterate the argument to reduce the seed length to $\log^{[d]}(n)$, we require a sequence of functions $f_1,\ldots,f_d$, of smaller and small input lengths, with $f_j$ being hard for algorithms with enough running time to compute all of $f_1,\ldots,f_{j-1}$, i.e. which is hard conditioned on $f_1,\ldots,f_{j-1}$. This is naturally analogous to the following well-studied information-theoretic notion of a sequence of random variables, each with high min-entropy conditioned on all of the previous:
+
+\begin{definition}[Block Sources \cite{CG}]
+A random variable $\bar{\mathcal{X}}=(\mathcal{X}_1,\ldots,\mathcal{X}_d)$ is said to be a block source with $d$ blocks and entropy sequence $(k_1,\ldots,k_d)$, if for every $(x_1,\ldots,x_d) \in \mathrm{supp}(\bar{\mathcal{X}})$ and every $j \leq d$, 
+\[
+H_{\infty}(\mathcal{X}_{j} \mid \mathcal{X}_1 = x_1,\ldots, \mathcal{X}_{j-1}=x_{j-1}) \geq k_j
+\]
+In the case $j=1$, this means $H_{\infty}(\mathcal{X}_1) \geq k_1$.
+\end{definition}
+A (seeded) block source extractor is a function which can produce nearly uniform randomness from a block source and an independent uniform seed:
+\begin{definition}[Seeded Block Source Extractors]
+We say that a function $E: \prod_{j \leq d} \B^{m_j} \times \B^s \to \B^n$ is a block source extractor for entropy sequence $(k_1,\ldots,k_d)$ and error $\epsilon$ if, for every block source $\bar{\mathcal{X}} = (\mathcal{X}_1,\ldots,\mathcal{X}_d)$ supported on $\prod_{j \leq d} \B^{m_j}$ with entropy sequence $(k_1,\ldots,k_d)$, we have that $E(\bar{\mathcal{X}}, \mathcal{U}_s)$ is $\epsilon$-close to $\mathcal{U}_n$ in TV distance, where $\mathcal{U}_s$ is the uniform distribution on $\B^s$ (independent of the block source) and $\mathcal{U}_n$ is uniform on $\B^n$. The parameter $s$ is called the seed length of the extractor. 
+\end{definition}
+We will now show that our PRG construction can be viewed as giving a specific kind of explicit \emph{reconstructive} extractor for block sources (with a seed), in the same sense that the standard hardness randomness constructions can be viewed as reconstructive single-source extractors via Trevisan's connection. We define such reconstructive seeded block source extractors as follows:
+\begin{definition}[Multi-Reconstructive Extractors]
+Let $E: \prod_{j \leq d} \B^{m_j} \times \B^{s} \to \B^n$. We say that $E$ is a multi-reconstructive extractor for entropy sequence $(k_1,\ldots,k_d)$ and error $\epsilon$ if there are $\poly(m_1,\ldots,m_d)$-time algorithms $R_1,\ldots,R_d$, each taking oracle access to some $D: \B^n \to \B$, with the following behavior
+\begin{enumerate}
+	\item Each $R_j$ takes strings $x_1,\ldots,x_{j-1} \in \B^{m_1},\ldots,\B^{m_{j-1}}$ and an advice string $a_j \in  \B^{k_j}$ and outputs a string in $\B^{m_j}$ (in the case $j=1$ the only input to $R_1$ is $a_1\in \B^{k_1}$).
+	\item For every $\bar{x} \in \prod_{j \leq d} \B^{m_j}$, if 
+\[
+|\Pr_{z \sim \B^s}[D( E(\bar{x}, z)) = 1] - \Pr_{y \sim \B^n} [D(y) = 1]| \geq \epsilon
+\]
+then there exists $j \leq d$ and some $a_j \in \B^{k_j}$ such that $R^D_j(x_1,\ldots,x_{j-1},a_j) = x_j$
+\end{enumerate}
+\end{definition}
+Note that in the case $d=1$, we obtain the standard definition of reconstructive single source extractors. As shown in the single-source case by Trevisan \cite{trevisan}, we may observe that any multi-reconstructive extractor is automatically a block source extractor with similar parameters:
+
+\begin{lemma}\label{randomstrings:lem:recon-to-CG}
+If $E: \prod_{j \leq d} \B^{m_j} \times \B^{s} \to \B^n$ is a muti-reconstructive extractor for entropy sequence $(k_1,\ldots,k_d)$ and error $\epsilon$, then it is a block source extractor for entropy sequence $(2k_1,\ldots,2k_d)$ and error $\epsilon' = \epsilon + \sum_{j\leq d} 2^{-k_j}$.
+\end{lemma}
+\begin{proof}
+Let $\bar{\mathcal{X}}$ be a block source with entropy sequence $(2k_1,\ldots,2k_d)$. The deviation of $E(\bar{\mathcal{X}}, \mathcal{U}_s)$ from uniform is bounded by $\epsilon + \delta$, where $\delta$ is the maximum over all distinguishers $D$ of the probability that any of the $d$ reconstruction procedures associated with $E$ succeed on a random sample $(x_1,\ldots,x_d) \sim \bar{\mathcal{X}}$ from the source. We bound the probability for each reconstruction procedure separately and take a union bound over $j \leq d$. For a fixed $D$ and any fixing of $\mathcal{X}_1 = x_1,\ldots,\mathcal{X}_{j-1} = x_{j-1}$, there are at most $2^{k_j}$ values in $\B^{m_j}$ that $R_j^D(x_1,\ldots,x_{j-1},a_j)$ can output as we range over $a_j$; if $H_{\infty}(\mathcal{X}_j \mid \mathcal{X}_1 = x_1,\ldots,\mathcal{X}_{j-1} = x_{j-1}) \geq 2k_j$ then the probability that $\mathcal{X}_j$ lies in this set is at most $2^{-k_j}$.
+\end{proof}
+We can now recast the central step in our main construction in Theorem~\ref{randomstrings:thm:elementary-generator} in the language of reconstructive extractors:
+\begin{theorem}[Essentially in \cite{NZ}]
+Let $E^1,\ldots,E^d$ be single source extractors $E^j: \B^{m_j} \times \B^{s_j} \to \B^{n_j}$, so that $E^j$ is a reconstructive single-source extractor for min entropy $k_j$ and error $\epsilon_j$ and is computable in polynomial time. Say that for each $j < d$, we have $s_j = n_{j+1}$. Define $\tilde{E}^j: \prod_{j' \leq j} \B^{m_{j'}} \times \B^{s_j} \to \B^{n_1}$ by induction on $j$, with $\tilde{E}^1 = E^1$, and $\tilde{E} ^{j+1}(x_1,\ldots,x_{j+1},z) = \tilde{E}^{j-1}(x_1,\ldots,x_{j-1}, E^j(x_j, z))$. Then $\tilde{E}^d$ is a multi-reconstructive extractor for entropy sequence $(k_1,\ldots,k_d)$ and error $\sum_{j \leq d} \epsilon_d$. 
+\end{theorem}
+In \cite{NZ}, the same method of composing single source extractors to form a seeded block source extractor is analyzed in the information theoretic setting (rather than the computational/reconstructive setting). The proof of this lemma in the reconstructive framework is essentially identical to the core argument justifying the correctness of our pseudorandom generator construction in Theorem~\ref{randomstrings:thm:elementary-generator}:
+
+\begin{proof}
+We prove by induction on $j$ that $\tilde{E}^j$ is a multi-reconstructive extractor with error $\delta_j:=\sum_{j' \leq j} \epsilon_j$. By definition it is true for $\tilde{E}^1 = E^1$. 
+Now, say that $\tilde{E}^j$ is a reconstructive extractor for entropy sequence $(k_1,\ldots,k_j)$ and error $\delta_j$. So there are reconstruction procedures $R_1,\ldots,R_j$ taking oracle access to a function $D: \B^{n_1} \to \B$ so that, given any $D \subseteq \B^n$ distinguishing $\tilde{E}^{j}(\bar{x}, z)$ with error $\delta$, there exists $j' \leq j$ so that $R_{j'}^D(x_,\ldots,x_{j'-1}, a)$ produces $x_{j'}$ for some $a \in \B^{k_{j'}}$. We then consider $\tilde{E}^{j+1}(x_1,\ldots,x_{j+1},z')$; our reconstruction procedures for $R_1,\ldots,R_j$ will be as they were for $\tilde{E}^{j+1}$, and for $R_{j+1}$ we use the construction procedure for the single source extractor $E^{j+1}$. 
+Let $D$ be given. For any $x_1,\ldots,x_{j+1}$ such that the first $R_1,\ldots,R_j$ reconstruction procedures all fail to reconstruct a symbol of $x_1,\ldots,x_{j+1}$ from its prefix using $D$, we know that $\tilde{E}^{j}(x_1,\ldots,x_{j+1}, \mathcal{U}_{s_j})$ fools $D$ with error $\delta_j$. Now define the test $D' \subseteq \B^{n_{j+1}}$ (recall $n_{j+1} = s_j$), with $D'(z)= D(\tilde{E}^{j}(x_1,\ldots,x_{j}, z))=1$. Then, for a uniformly random $z \in \B^{s_j}$ with have that $D'(z) = 1$ with probability in the range $\Pr_{y \sim n_{j+1}}[D(y)=1] \pm \delta_j$. Observe that $D'$ is efficiently computable with oracle access to $D$ and the values $x_1,\ldots,x_j$, since each of the $E^{j'}$ extractors are efficiently computable. Thus, using the reconstruction procedure for $E^{j+1}$, either $R_{j+1}$ succeeds in reconstructing $x_{j+1}$ using oracle access to $D$, the previous inputs $x_1,\ldots,x_j$, and $k_{j+1}$ bits of advice, or else we must have that $E^{j+1}(x_{j+1}, \mathcal{U}_{s_{j+1}})$ fools $D'$ with error $\epsilon_{j+1}$, and hence the overall construction fools $D$ with error $\delta_j + \epsilon_{j+1}$, completing the proof.
+\end{proof}
+
+Using the above in combination with explicit families of single-source reconstructive extractors (e.g. Trevisan's extractor \cite{trevisan}) we observe: 
+
+\begin{corollary}
+For any $n$ and fixed constants $d\in \mathbb{N}$, $\gamma >0$, there is an explicit multi-reconstructive extractor $E: \prod_{j \leq d} \B^{m_j} \times \B^s \to \B^n$ for entropy sequence $(k_1,\ldots,k_d)$ and error $\epsilon$, where: 
+% $\sum_{j\leq d} m_j \leq \poly(n)$,  $k_j \leq  m_j^{\gamma}$, $s \leq O(\log^{[d]}n)$, $\epsilon \leq (\log^{[d-1]}n)^{-1}$.
+
+\[
+\sum_{j\leq d} m_j \leq \poly(n), \quad k_j =  m_j^{\gamma}, \quad s \leq O(\log^{[d]}n), \quad \epsilon \leq (\log^{[d-1]}n)^{-1}
+\]
+Moreover, $k_j \geq \log^{[j]}n$ for each $j$, and hence by Lemma~\ref{randomstrings:lem:recon-to-CG} this construction is also a block source extractor with the same parameters stated above.
+\end{corollary}
+
+We now prove that the seed length $\log^{[d]}n$ achieved above is optimal as a function of the output length $n$, regardless of how we choose the source lengths $m_1,\ldots,m_d$:
+\begin{theorem}\label{randomstrings:thm:seed-length-lb}
+Say $E: \prod_{j \leq d} \B^{m_j} \times \B^s \to \B^n$ is a block source extractor for min entropy sequence $(k_1,\ldots,k_d)$, $k_j \leq \frac{1}{2} m_j$, and error $\frac{1}{2}$. Then $s \geq \Omega(\log^{[d]}n)$. 
+\end{theorem}
+
+To prove this we rely on the following lemma:
+\begin{lemma}\label{randomstrings:lem:CG-chain-rule}
+Let $A \subseteq \prod_{j \leq d} \B^{m_j}$ with $\log|A|\geq (\sum_{j\leq d}m_j) - q$. Then there is a block source with entropy sequence $(k_1,\ldots,k_d)$ supported on $A$, with $k_j \geq m_j - q - d$.
+\end{lemma}
+\begin{proof}[Proof of Lemma~\ref{randomstrings:lem:CG-chain-rule}]
+We prove by induction on $d$; the case $d=1$ is trivial. Let $A$ be given; for each $x_1 \in \B^{m_1}$ define $A_{x_1} = \{(x_2,\ldots x_d) \mid (x_1,x_2,\ldots,x_d) \in A\}$, $\mathrm{deg}(x_1) = |A_{x_1}| $. So $\sum_{x_1 \in \B^{m_1}} \deg(x) = |A|.$
+%Choose some parameters $r,\ell$ to be set later. 
+Define the set $V \subseteq \B^{m_1}$ by 
+\[
+V = \{x_1 \mid \mathrm{deg}(x_1) \leq  \exp((\sum_{j>1} m_j) - q- 1) \} \subseteq \B^{m_1}
+\]
+Let $U = \B^{m_1} \setminus V$; if $|U| < \exp( m_1-q-1)$ then we must have
+
+\begin{gather}
+|A| \leq |V| \cdot \max_{x_1 \in V} \mathrm{deg}(x_1) + |U| \cdot \max_{x_1 \in U} \mathrm{deg}(x_1) \\
+<  2^{m_1} \cdot \exp((\sum_{j>1} m_j) - q-1) + \exp(m_1-q-1) \cdot  \exp(\sum_{j > 1} m_j)\\
+= \exp((\sum_{j \leq d}
+ m_j) - q-1) + \exp((\sum_{j \leq d} m_j) - q-1) \leq \exp((\sum_{j \leq d} m_j)- q)
+ \end{gather}
+and we get a contradiction. Hence, we know that $|U| \geq \exp(m_1 - q - 1)$. For every $x_1 \in U$, we also know that $A_{x_1} \subseteq \prod_{j > 1} \B^{m_j}$ has size at least $\exp(\sum_j m_j - q-1)$, so by induction there is a block source $\mathcal{X}_{x_1}$ with min entropies $(k_2,\ldots,k_d)$, $k_j \geq m_j - (q+1) - (d-1) \geq m_j - q - d $ supported on $A_{x_1}$. We then construct our overall distribution $\mathcal{X}$ as follows: sample $x_1 \sim U$ uniformly, then sample $(x_2,\ldots,x_d) \sim \mathcal{X}_{x_1}$ and output $(x_1,\ldots,x_d)$. We know that the first coordinate of this distribution has min entropy $k_1:=\log |U| \geq  m_1 - q - 1 $, and that the remaining entries are a block source with min entropy sequence $(k_2,\ldots,k_d)$ conditioned on any fixing of the first coordinate; so overall $\mathcal{X}$ is a block source with entropy sequence $(k_1,\ldots,k_d)$. 
+\end{proof}
+
+The proof of Theorem~\ref{randomstrings:thm:seed-length-lb} combines the above lemma with the argument of \cite{NZ} used to show an $\Omega(\log n)$ lower bound on the seed length of single source extractors:
+\begin{proof}[Proof of Theorem~\ref{randomstrings:thm:seed-length-lb}]
+When $d = 0$, $E$ is of the form $E: \B^s \to \B^n$, so that $E(\mathcal{U}_s)$ is $\frac{1}{2}$ close to uniform on $\B^n$; in this case we clearly require $s \geq n-1$. For $d> 0$, we will show how to choose some $j \leq d$ and construct from $E$ a second extractor $E':\prod_{j \neq j'} \B^{m_j} \times \B^{s'} \to \B^n$ using only $d-1$ sources, so that $E'$ is a block source extractor for entropy sequence $(k_1,\ldots,k_{j'-1},k_{j'+1},\ldots,k_d)$, the same error ($\frac{1}{2}$), and at most exponentially larger seed length $s' \leq s + 2^{s+2} + 2d$. This will yield the theorem by induction.
+
+We will set $j'$ to be any index such that $m_{j'}\leq 2^{s+2}+ 2d$; if we can find such an index, we construct $E'$ by simply moving input $j'$ of $E$ into the seed, i.e.
+\[
+E'(x_1,\ldots,x_{j'-1}, x_{j'+1}, x_d, (x_{j'},z)) = E(x_1,\ldots,x_{j'-1},x_{j'},x_{j'+1},\ldots,x_d,z)
+\]
+Clearly for any choice of $j'$, $E'$ remains a block source extractor for the contracted entropy sequence $(k_1,\ldots,k_{j'-1},k_{j'+1},\ldots,k_d)$ and the same error as $E$.
+%if $(X_j)_{j \neq i}$ are a CG source, and $(X_j, Z)$ are independent of eachother and of $(X_j)_{j \neq i}$ and are each uniform on $\B^{m_i}, \B^s$ respectively, then in particular $(X_1,\ldots, X_{j-1},X_j,X_{j+1},\ldots,X_d)$ is a CG source with entropy sequence $(k_1,\ldots,k_d)$ and $Z$ is uniform and independent of the CG source, so the output $E'$ will be $\frac{1}{2}$ close to uniform by the extraction properties of $E$. 
+To argue that $m_j \leq 2^{s+2} + 2d$ for some $j$ we rely on Lemma~\ref{randomstrings:lem:CG-chain-rule} above. Let $\mathcal{D} \subseteq \B^{\B^n}$ consist of all functions $D: \B^n \to \B$ which depend only on the first $s+1$ bits. So $|\mathcal{D}| \leq 2^{2^{s+1}}$. For every $\bar{x} \in \prod_{j \leq d} \B^{m_j}$, there is some $D_{\bar{x}} \in \mathcal{D}$ such that 
+\[
+|\Pr_{z \sim \mathcal{U}_s} [D(E(\bar{x},z)) = 1] - \Pr_{y \sim \mathcal{U}_n} [D(y) = 1] | \geq \frac{1}{2}
+\] 
+hence there exists a fixed $D$, so that for the set $\bar{X}_D = \{\bar{x} \mid D_{\bar{x}}=D\}$, 
+we have $\log |\bar{X}_D| \geq (\sum_{j\leq d} m_j) - 2^{s+1}$. We then apply Lemma~\ref{randomstrings:lem:CG-chain-rule} with $q = 2^{s+1}$ to conclude that there is a block source $(\mathcal{X}_1,\ldots,\mathcal{X}_d)$ supported on $\bar{X}_D$ with min entropy sequence $(k'_1,\ldots,k'_d)$, $k'_j := m_j - 2^{s+1} - d$. If $k'_j \geq k_j$ for all $j$ this will contradict the correctness of the extractor $E$, since $E(\bar{\mathcal{X}}, \mathcal{U}_s)$ will be distinguished with error $\frac{1}{2}$ by the test $D$. Hence there exists $j$ such that $k'_j < k_j$, i.e. $m_j - k_j < 2^{s+1} + d$. Recalling that $k_j \leq \frac{1}{2}m_j$, we get $m_j < 2^{s+2} + 2d$ which concludes the proof.
+\end{proof}
+
+Note that the proof yields more than just a lower bound on $s$: 
+\begin{observation}[Follows from Proof of Theorem~\ref{randomstrings:thm:seed-length-lb}]
+In any construction achieving the optimal seed length $s = O(\log^{[d]}n)$, there must be some smallest source length $m_{j_1}$ with $m_{j_1}=\Omega(\log^{[d-1]}n)$, then a second smallest source length of $\Omega(\log^{[d-2]}n)$, and so on with the longest source having length on the order $\Omega(n)$
+\end{observation}
+Hence our construction uses essentially the only possible sequence of source lengths $(m_1,\ldots,m_d)$ which can be made to achieve a an optimal seed length of $\log^{[d]}n$. 
+
+\subsection{No Relativizing Reduction from $K^{\mathrm{poly}}$ Randomness to Hard Truth Tables}
+
+% \section{No Relativizing Reduction from $K^{\mathrm{poly}}$ Randomness to Hard Truth Tables}
+In \cite{Korten21} it is shown that if we are permitted the use of an $\NP$ oracle in our explicit construction algorithms we have the following appealing equivalence:
+
+\begin{theorem}\label{randomstrings:thm:tt-K-equiv}
+The following are equivalent:
+\begin{enumerate}
+    \item There is a polynomial time $\NP$-oracle algorithm constructing strings $x \in \B^n$ with $\K^{\poly(n)}(x) \geq n-1$
+    \item There is a polynomial time $\NP$-oracle algorithm constructing truth tables $f: \B^{n} \to \B$ with hardness $2^{\Omega(n)}$ (i.e. $\poly(2^n) = 2^{O(n)}$).
+\end{enumerate}
+\end{theorem}
+
+If this kind of equivalence could be shown without the aid of an $\NP$ oracle, it would supersede all of the main results in this paper. The proof of Theorem~\ref{randomstrings:thm:tt-K-equiv} is relativizing, and more specifically it gives a black-box reduction from the problem of constructing high Kolmogorov-complexity strings to constructing hard truth tables (the nontrivial direction). We give some indication here that an $\NP$ oracle is necessary for such an argument to work. 
+
+Observe that if $f: \B^n\to \B$ has circuit complexity $o(2^n/n)$, then for $N= 2^n$ and interpreting $f$ as an $N$-bit string, we have $\K^{N^2}(f) \leq N/2$; this is because evaluating a circuit on an input takes at most $2^n = N$ time, and hence reconstructing $f$ from a circuit computing it takes at most quadratic time. Hence if there were an analogue to Theorem~\ref{randomstrings:thm:tt-K-equiv} in the polynomial time regime, it would give, in particular, a reduction from constructing strings of large $\mathsf{K}^{n^c}(\cdot) $ to strings of large $\mathsf{K}^{n^2}(\cdot)$ complexity.
+% Viewing random-string construction as uniform range avoidance in the sense of {\color{red} prev part}, this would yield a polynomial time reduction large-time-complexity range avoidance to smaller-time-complexity range avoidance. 
+
+We show here that there is no such reduction which is ``black box'' in the same sense as Theorem~\ref{randomstrings:thm:tt-K-equiv}. We first need to define the suitable notion of a black box reduction:
+\begin{definition}
+Let $c,d$ be fixed constants and $n$ large. A black box reduction from $\mathsf{K}^{n^c}(\cdot) $-construction to $\mathsf{K}^{n^2}(\cdot)$-construction is an algorithm, given access to some oracle $\mathcal{O}: \B^* \to \B$, which has the following behavior:
+\begin{enumerate}
+    \item 
+    % Before seeing $\mathcal{O}$, the reduction defines, for each $m \leq \poly(n)$, an instance of AVOID $C_m^{\mathcal{O}}: \B^{m-1} \to \B^m$ with each $C^{\mathcal{O}}(x)$ computed by making at most $m^d$ queries of length at most $m^d$ to $\mathcal{O}$. 
+    There is a procedure $A^{\mathcal{O}}_n$ which, given strings $y_1,\ldots,y_{\poly(n)}$ with $y_m \in \B^m$, makes $\poly(m)$ additional queries to $\mathcal{O}$ and outputs a string $x \in \B^n$
+    \item For any oracle $\mathcal{O}$, if $y_1,\ldots,y_{\poly(n)}$ are strings such that $\K^{m^d, \mathcal{O}}(y_m) \geq \frac{m}{2}$ for each $m$, $A^{\mathcal{O}}(y_1,\ldots,y_{\poly(n)})$ outputs a string $x \in \B^n$ with $\K^{n^c, \mathcal{O}}(x) \geq n^{\Omega(1)}$.
+\end{enumerate}
+\end{definition}
+\begin{theorem}
+For $c>d$ fixed constants, $c-d> 1$, there is no black box reduction from $d$-Avoid to $c$-Avoid.
+\end{theorem}
+\begin{proof}
+Consider the Range Avoidance instance $C^{\mathcal{O}}: \B^{n^\epsilon} \to \B^n$, defined by $C^{\mathcal{O}}(z) = (\mathcal{O}((z,1^{n^{c-1}},0)),\ldots, \mathcal{O}((z,1^{n^{c-1}},0)))$ where $(\cdot,\cdot,\cdot)$ is some standard pairing function. Clearly for any oracle $\mathcal{O}$ and any $x$ such that $x \in \mathrm{range}(C^\mathcal{O})$ we have $\K^{n^c, \mathcal{O}}(x) \leq n^\epsilon$. Hence if we can find an oracle $\mathcal{O}$ and supply strings $y_1,\ldots,y_{\poly(n)}$ so that $\K^{m^d, \mathcal{O}}(y_m) \geq \frac{m}{2}$ for each $m$, but $A^{\mathcal{O}}(y_1,\ldots,y_{\poly(n)})$ outputs a string in $\mathrm{range}(C^{\mathcal{O}})$ then we are done. Initially we fix the value of the oracle $\mathcal{O}$ to be zero on all strings of length at most $n^{c-1}$. We then conclude that for any $m \leq 4n$, we may determine a string $y_m$ so that $\K^{m^d, \mathcal{O}}(y_m) \geq \frac{m}{2}$ is already forced by the current information about the oracle; this holds since a machine running in time $m^d \leq O(n^d) < n^{c-1}$ cannot access the any unfixed part of the oracle. We will fix these strings $y_1,\ldots,y_{4n}$ for the remainder of the proof.
+
+Now, consider the algorithm $\mathcal{A}$ with the first $4n$ arguments fixed, as a function of the remaining arguments $y_{4n+1},\ldots,y_{\poly(n)}$. By the correctness of $\mathcal{A}$, for any extension of the partially defined oracle $\mathcal{O}$ and any valid solutions for these remaining arguments to $\mathcal{A}$, $\mathcal{A}$ will find a solution to the Range Avoidance instance $C^{\mathcal{O}}$. On the other hand, observe that if $y_{4n+1},\ldots,y_{\poly(n)}$ are chosen uniformly at random, then for \emph{any oracle $\mathcal{O}$} the probability that any $y_m$ fails to have $\K^{m^d, \mathcal{O}}(y_m) \geq \frac{m}{2}$ is bounded by $\poly(n) 2^{-\frac{m}{2}} \leq 2^{ -2n + o(n)}$ since for each such $m$ we have $m \geq 4n$. Hence we obtain a randomized query procedure, making $\poly(n)$ queries to the oracle $\mathcal{O}$, which outputs a solution to Avoid on $C^{\mathcal{O}}$ with failure probability $\leq 2^{-2n + o(n)}$. Since we have not fixed the behavior of $\mathcal{O}$ above input length $n^{c-1}$, $C^{\mathcal{O}}$ can take on any value $\B^{n^\epsilon} \to \B^n$, and is thus an arbitrary oracle-presented Range Avoidance instance. It then remains only to show that a randomized query algorithm making $\poly(n)$ queries to an Avoid instance with stretch $n^{\epsilon} \mapsto n$ cannot succeed with probability as high as $1- 2^{-2n + o(n)}$.
+
+To obtain this randomized query lower bound, we appeal to Yao's lemma, and consider the best success probability of a deterministic $\poly(n)$-query algorithm $\mathcal{Q}$ on a uniformly random instance $C: \B^{n^\epsilon} \to \B^n$. For each possible sequence of $\poly(n)$ queries we argue the probability the supplied answer is incorrect conditioned on this query sequence ocurring is is at least $2^{-n}$. This holds trivially, since $\poly(n) < 2^{n^\epsilon}$, and hence a random $C$ extending a fixed sequence of $\poly(n)$ mappings $C(x_1) = y_1,\ldots, $ has probability at least $2^{-n}$ of hitting any fixed string in $\B^n$.
+\end{proof}
+
+% We want to give an oracle such that $\mathsf{E} \not\subseteq \mathsf{size}[\epsilon \cdot 2^n/n]$ but there is no polynomial time algorithm which can construct strings $x \in \B^n$ with $\mathsf{K}^{n^6}(x) \geq n^{\epsilon}$ (the exponent $n^6$ is somewhat arbitrary, if this works it will be some fixed constant we'll try to optimize at the end). The approach will be the following: we'll construct an oracle so that constructing strings with $\mathsf{K}^{n^{3.1}}(x) \geq \omega(\log n)$ is impossible, but constructing strings with $\mathsf{K}^{n^2}(x) \geq n/2$ is possible; this will give the required oracle, since the truth table generator is computable in quadratic time. Hence the actual heart of the separation is that we cannot generically increase the time bound $t$ in a $K^t$ construction via some relativizing polytime reduction.
+% \subsubsection{Approach Via a Query Separation}
+% I'll describe in this section a Type-2 search problem separation in the query/decision tree model. I'm conjecturing that it's possible to prove to prove this lower bound via a random restriction argument, and I'll describe my approach to that in the following subsection. Before that I'll try to explain why I think this is sufficient to get the oracle described above.
+
+% \begin{definition}
+% Let $c \in\mathbb{N}$ be a fixed constant. We define a type two search problem $c\dash\mathsf{Avoid}_{m'}^{m}$ as follows: the type-2 input is a function $F: \B^{m'} \times [m^c] \to \B^m$ (i.e. given as an oracle). For such an $F$, define
+% \[
+% \hat{F}: \B^{m'} \to \B^m, \quad \hat{F}(x) = \sum_{i \leq m^c} F(x,i)
+% \]
+% where the sum is evaluated by considering each summand as living in $\mathbb{F}_2^m$. The problem  $c\dash\mathsf{Avoid}_{m'}^{m}$ is: given $F$, solve $\mathsf{Avoid}$ for $\hat{F}$.
+% \end{definition}
+% % The property we want of $C$ is that if we restrict all but $>> m$ bits of the input of $C$ arbitrarily, the range of $C$ after the restriction still covers $\B^m$. One choice that achieves this in a block-wise sense is $C(y^1,\ldots,y^m) = \sum_i y^i $ modulo $2^m$ which may end up being sufficient.
+% We now want to show the following:
+% \begin{theorem}
+% Let $d,c$ be fixed constants with $c > \max\{2,d\}$. For any $s(m) = \omega(\log m)$, there is no polynomial time oracle reduction from $c\dash\mathsf{Avoid}_{s(m)}^{m}$ to $\mathsf{Avoid}_{n/2}^{n}$ which has the property that the induced $\mathsf{Avoid}_{n/2}^{n}$ instance produced by the reduction can be evaluated at each input by querying $n^d$ many bits of the given instance of $c\dash\mathsf{Avoid}_{s(m)}^{m}$ (by querying a bit we mean querying $F(x,i)_j$ for some $x \in \B^{s(m)}$, $i \in [m^c]$, $j \in [m]$).
+% \end{theorem}
+
+% Let me explain why I think this is enough to get the required oracle. Lets say that an instance of $c\dash\mathsf{Avoid}_{s(m)}^{m}$ is given by an oracle $F$. Then we may evaluate the function $\hat{F}$ in time $m^{c+1}$. This means that, relative to the oracle $F$, every string $y$ in the range of $\hat{F}$ is an $m$-bit string with $\mathsf{K}^{m^{c+1}}(y) \leq s(m)$ relative to this oracle. Now, we want to show that relative to this oracle,
+% \begin{enumerate}
+%     \item No polynomial time machine can produce a string outside the range of $\hat{F}$, i.e. produce strings with $\mathsf{K}^{m^{c+1}}(y) \leq s(m)$ relative to the oracle
+%     \item Nonetheless, we \emph{can} solve avoid for uniform instances $C: \B^{n-1} \to \B^n$ for $n = \mathrm{poly}(m)$ provided that $C$ runs in time $n^d$. 
+% \end{enumerate}
+% The fact that $C$ runs in time $n^d$ means it can only query the oracle $F$ at $n^d$ many points in order to be evulated at a given input; so if our type two separation holds we should be able to make avoid for $C$ solvable efficiently without revealing any solution to avoid for $\hat{F}$. Clearly this is very informal at the moment.
+% \subsubsection{Proving the Type 2 Separation}
+% We will break the argument into two cases based on the relative sizes of $n, m$.
+% \subsubsection{Case 1: $n > 4m$}
+% {\color{red} change $m^\epsilon$ to $s(m)$ in below} This case is easy by considering the best success probability of a randomized algorithm. Note that $\mathsf{Avoid}_{n/2}^n$ can be solved in $\mathrm{poly}(n)$ time with success probability $1 - 2^{-n/2}$. On the other hand, it is straightforward to show that $\mathsf{Avoid}_{s(m)}^m$ (and hence $c\dash \mathsf{Avoid}_{m^\epsilon}^m$ which is at least as hard) cannot be solved with probability better than $1 - 2^{-m}$ unless we make $\geq s(m) = m^{\omega(1)}$ queries. With our setting $n > 4m$, we have $n/2 > 2m > m$ and we are done.
+
+% To prove this bound we reason as follows: using Yao's lemma it suffices to consider the best success probability of a deterministic tree of depth $h < s(m)$ over the uniform distribution on functions $f: \B^{s(m)} \to \B^m$. We may argue for each individual leaf labeled by a candidate solution $y \in \B^m$, that the probability that answer is correct conditioned on reaching that leaf is at most $1 - 2^{-m}$, since for any unqueried input $x \in \B^{s(m)}$, it has at least a $2^{-m}$ probability of being mapped to $y$.
+% \subsubsection{Case 2: $n \leq 4m$}
+% Now we need to analyze the reduction in more detail. Let $G^F: \B^{n/2} \to \B^{n}$ be the $\mathsf{Avoid}_{n/2}^n$ instance produced by the reduction given oracle access to an instance $F: \B^{m^\epsilon} \times [m^c] \to \B^m$ of $c\dash\mathsf{Avoid}_{m^\epsilon}^m$. So each evaluation $G^F(w)$ can be answered by querying $n^d$ values of $F$; this is where we critically use the fact that $n \leq 4m$, hence $n^d \leq 4^dm^d = O(m^d) << m^c$ (remember $c>d$ are fixed constants).
+
+% Now, we want to perform some random restriction to $F$: independently for each $x \in \B^{m^\epsilon}$, $i \in [m^c]$, $j \in [m]$ we fix the value of $F(x,i)_j$ to a uniform bit with probability $1-p$, and leave it unfixed with probability $p$, where $p = \frac{4^{2c}\ln m}{m^c} < \frac{4^{c} \ln n}{n^c}$ (since $m \geq n/4$ and $c = O(1)$). We prove the following:
+% \begin{lemma}\label{randomstrings:lem:restriction}
+% Let $\rho$ be the restriction above. Each of the following happen with probability $\geq 1- o(1)$:
+% \begin{enumerate}
+%     \item Each of the decision trees $G^F(w)$ for $w \in \B^{\frac{n}{2}}$ has at most $2^{\frac{n}{3}}$ surviving leaves
+%     \item The number of $x \in \B^{m^\epsilon}$ such that for all $j\in [m]$ there exists $i \in [m^c]$ with $F(x,i)_j$ unfixed is at least $2^{m^\epsilon-1}$
+% \end{enumerate}
+% Hence both happen simultaneously with probability $\geq 1-o(1)$.
+% \end{lemma}
+
+% Assuming this lemma we finish the proof as follows. For some $\rho$ guaranteed by the lemma let 
+% \[
+% Z_{\rho} = \{ z \mid z \in \mathrm{range}(G^F) \text{ for some } F \supseteq \rho\}
+% \]
+% Since each $G^F(w)$ has at most $2^{\frac{n}{3}}$ surviving leaves, we determine that $|Z_{\rho}| \leq 2^{\frac{n}{3}}2^{\frac{n}{2}} < 2^n$, hence there exists $z \in \B^n \setminus Z_\rho$. For this value of $z$, the restriction $\rho$ already forces $z \notin \mathrm{range}(G^F)$ for any $F \supseteq \rho$. Hence we may already fix this as a solution for Avoid on $G^F$; on the other hand by (2), the avoid problem for $\hat{F}$ still requires $\exp(m^\epsilon)$ many queries. This is because, for each $x \in \B^{m^\epsilon}$ for which for all $j \in [m]$ there exists $i \in [m^c]$ with $F(x,i)_j$ unfixed, we may continue the assingment $\rho$ to fix $\hat{F}(x)$ to any value in $\B^m$.
+% % \begin{enumerate}
+% %     \item Say after the restriction there are at least $m^{\omega(1)}$ points $x \in \B^{m^{\epsilon}}$ so that, for every $j \in [n]$ there is some $i \leq m^c$ so that $F(x,i)_j$ is unfixed. Then after the restriction you would still need to query $m^{\omega(1)}$ many values of $F$ to solve Avoid for $\hat{F}$.
+% %     \item On the other hand for each $w \in \B^{n/2}$, the value $G^F(w)$ is a depth $16m^2$ decision tree over $F$. We want to say that, because $m^2 << m^c$, if we fix each variable of $F$ with probability $\approx 1-m^{-c}$ to get some restriction $\rho$, then with high probability the set
+% %     \[
+% %     Z_{\rho} = \{ z \mid z \in \mathrm{range}(G^F) \text{ for some } F \supseteq \rho\} 
+% %     \]
+% %     has size $< 2^n$. In this case there will exist $z \in \B^n \setminus Z_{\rho}$ so that $\rho$ already forces $z$ to be an avoid solution for $G^F$; on the other hand if $\rho$ satisfies the first bullet, $\hat{F}$ will still be a hard avoid instance after the restriction $\rho$
+% % \end{enumerate}
+% % To guarantee the second bullet, it suffices to have that w.h.p. over the restriction $\rho$, if we let $\ell(w)$ be number of surviving leaves in the decision tree $G(w)^F \upharpoonright_\rho$ for $w \in \B^{n/2}$ after the restriction, we want
+% % \[
+% % \sum_{w \in \B^{n/2}} \ell(w) < 2^n
+% % \]
+% % This is because each $G^F(w)$ can take on at most most one value $z$ for each surviving leaf in the decision tree as we range over all extensions $F \supseteq \rho$. We will actually prove a stronger condition, that with overwhelming probability we have $\ell(w) \leq n^{O(c)}$ for every $w \in \B^{n/2}$ which clearly implies the result.
+% To prove part 1 we use the following:
+% \begin{lemma}
+% Let $T$ be a decision tree of depth $h$, and say that its underlying variables are fixed independently with probability $1-p$ to form a restriction $\rho$. Then for any $r \in \{1,\ldots,h\}$ we have 
+% \[
+% \Pr[T\upharpoonright_\rho\text{ has depth greater than } r ] \leq (2hp)^r
+% \]
+% \end{lemma}
+
+% \begin{proof}
+% We may assume $T$ has depth exactly $h$ on every branch. Fix a leaf $\ell \in T$ which queries variables $v_1,\ldots,v_h$, and fix some $a \subseteq [h]$, $|a|=r$. The probability that $\{v_i \mid i \in a\}$ all survive the restriction is bounded by $p^r$. Union bounding over $a$ and $\ell$ we determine that with probability $\geq 1- (2hp)^r$ every original path in $T$ has at most $r$ surviving variables after the restriction which gives the result.
+% % {\color{red} We are assuming the decision tree queries distinct variables across the tree here, need to fix this} We will prove by induction on $i \in \{r,\ldots,h\}$ that, with probability at least $1 - 2\exp(-\frac{p2^r}{4})$, the number of surviving nodes at depth $i$ is at most $\ell_i:= 2^r \cdot (1 + 2p)^{i-r}$ conditioned on the number of nodes at the previous level being at most $\ell_{i-1}$ (and unconditionally in the case $i=r$). Taking a union bound over the $\leq h$ steps of induction we conclude that $T$ has at most $\ell_h$ surviving leaves with probability $\geq 1 - 2h\exp(-\frac{p2^r}{4})$. Since $(1 + \gamma)^q \leq 2$ holds for all $\gamma,q \geq 0$, $\gamma q \leq \frac{1}{2}$, we have $2^r \cdot (1 + 2p)^{i-r} \leq 2^{r+1}$ and the theorem is proven.
+
+% % The base case is clear. Let $i > r$, and condition on the number of surviving nodes at level $i-1$ being at most $\ell_{i-1}$. Let $\mathcal{L}$ be this set of leaves, and for each variable $v \in \{1,\ldots,N\}$ let $\mathcal{L}_v$ be the set of surviving nodes leaves at level $i-1$ which query the variable $v$; let $n_v = |\mathcal{L}_v|$. So $\sum_v n_v \leq \ell_{i-1}$. For each $v \in \{1,\ldots, N\}$, the nodes in $\mathcal{L}_v$ will have two children with probability $\leq p$, and 1 child with probability $\geq 1-p$ and this occurs independently across $v$.
+
+% % Hence the number of surviving nodes at level $i$ is bounded above by the random variable $Z:=\sum_{v \leq N} \xi_v \cdot n_v$ where $\xi_1,\ldots,\xi_N$ are independent variables with each $\xi_j$ equals $1 $ with probability $1-p$ and $2$ with probability $p$. {\color{red}in the middle of modifying this the below won't make sense} The expected value of $\xi_v n_v$ $(1 + p)n_v$ and its variance is $(p-p^2)n_v \leq p n_v^2$.  By Bernstein's inequality, we have
+% % \begin{gather}
+% % \Pr[\ell_i \geq t] \leq \exp(-\Omega(\frac{t^2}{p(\sum_v n_v^2) + t\max_v n_v })) 
+% % % \leq \exp(-\Omega(\frac{t^2}{p(\sum_v n_v^2) })) + \exp(-\Omega(\frac{t}{ \max_v n_v}))
+% % \end{gather}
+% % Setting $t = (1+2p)\ell_{i-1}$, so $t^2 = (1+2p)^2 \ell_{i-1}^2$ we have
+% % \begin{gather}
+% % \Pr[\ell_i \geq (1+2p)\ell_{i-1}] \leq \exp(-\Omega(\frac{(1+2p)^2 \ell_{i-1}^2}{p(\sum_v n_v^2) +  (1+2p) \ell_{i-1}\max_v n_v })) 
+% % % \leq \exp(-\Omega(\frac{t^2}{p(\sum_v n_v^2) })) + \exp(-\Omega(\frac{t}{ \max_v n_v}))
+% % \end{gather}
+
+% % {\color{red} case analysis on max $n_v$}
+
+
+% % By Bernstein's inequality, we have
+% % \[
+% % \Pr[\ell_{i} \geq (1+p)\ell_{i-1} + k \sqrt{p\ell_{i-1} }] \leq 2\exp(-\frac{k^2}{4})
+% % \]
+% % for all $k$; setting $k = \sqrt{p \ell_{i-1}}$ we have
+% % \[
+% % \Pr[\ell_{i} \geq (1+2p)\ell_{i-1}] \leq 2\exp(-\frac{p\ell_{i-1}}{4}) \leq 2\exp(- \frac{p2^r}{4})
+% % \]
+% \end{proof}
+
+% % Ok so in our setting, $d = n^2$, $p = n^{-c}$ for a larger constant $c$, and we want the overall failure probability to be $2^{-n}$. We may set $r= 2c\log n$, in which case $\frac{p2^r}{4} \geq \frac{n^{-c}n^{2c}}{4} \geq \Omega(n^c)$, hence the failure probability is $2^{-\Omega(n^c)} << 2^{-n}$. On the other hand the number of leaves bound is $n^{O(c)}$.
+
+% We now prove the main lemma:
+% \begin{proof}[Proof of Lemma~\ref{randomstrings:lem:restriction}]
+% For part (1) we apply the previous lemma with $h = n^d$, $p = \frac{4^{2c}\ln m}{m^c} \leq \frac{4^c \ln n}{n^c}$ and $r = \frac{n}{3}$. We conclude that for each $w \in \B^{n/2}$, with probability $\geq 1 - (4^{c+1}n^{d-c}\ln n)^\frac{n}{3}$ only $2^{\frac{n}{3}}$ leaves remain after the restriction. Provided $c - d > 1$ this is at least $1-\exp(-\omega(n))$, hence taking a union bound over $w \in \B^{n/2}$, with probability $1- \exp(-\omega(n))$ this holds for all $w$ and (1) is proven.
+
+% We now prove (2). Fix some $x \in \B^{m^\epsilon}$. For a fixed value $j \in [m]$, the probability that all of $F(x,1)_j,\ldots,F(x,m^c)_j$ are fixed by $\rho$ is at most
+% \[
+% (1 - \frac{4^{2c}\ln m}{m^c})^{m^c} \leq e^{-4^c\ln m} < m^{-4^c}
+% \]
+% Taking a union bound over $j \in [m]$, the probability that all of $F(x,1)_j,\ldots,F(x,m^c)_j$ are all fixed from some $j$ is at most $m^{-4^c + 1}$, for $c \geq 2$ this is $o(1)$. This holds independently across each $x$, hence with high probability (using a concentration bound) the fraction of bad $x \in \B^{m^\epsilon}$ is $< \frac{1}{2}$.
+% \end{proof}
+
+% Overall the only constraints we required on $c,d$ are then $c > \max\{2,d\}$.
+% it suffices to have that, w.h.p. over $\rho$, the average depth of a decision tree $G(w)^F$ (averaged over $w \in \B^{n/2}$) is at most $o(n) = o(m^{1.1})$; this seems achievable, since originally these trees have depth $m^2$, and we are hitting them with a restriction that fixes everything with probability $\approx 1- m^{-c}$.
+% \subsubsection{Construction of the Oracle}
+% {\color{red} Oliver: currently very rough sketch}
+% We construct the oracle $\mathcal{O}$ in alternating stages. For each $n$, we think of the oracle as defining a map $F$ as in the above, and will try to use $\hat{F}: \B^{\lambda(n) \log n} \to \B^n$ to cover all the strings $x \in \B^n$ which are printed printed in $n^{\lambda(n)}$ time by a machine with $\lambda(n)$ bits of advice, where $\lambda(\cdot)$ is some slow growing unbounded function. We will set the constant parameters $c > \max\{2,d\}$ and have $\hat{F}$ computable in time $n^{c+1}$ as above. Then in the other stages, look at every uniformly definable Avoid instance $C: \B^{n'/2} \to \B^{n'}$ computable in time $(n')^d$ and try to ``reveal'' a solution by hardcoding it into the oracle. 
+
+% To argue that these two goals do not contradict eachother we use our query separation as follows. Each $C$ instance may query $F$ at some 
+
+
+% We now show..
+% \begin{lemma}
+% Let $s(n)$ be time-constructible, and $G = (G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ an arbitrary family of generators which fools $\TIME[n]$ almost everywhere with error $\frac{1}{2}$. Then $s(n) \geq \Omega(\log \log n) $
+% \end{lemma}
+% \begin{proof}
+% Say $s(n) \leq  \log \log n - C$ for sufficiently large $C$, so that $2^{s(n)} \leq \epsilon \log n$ for a small $\epsilon > 0$. Recalling the proof of the previous lemma, there is a language $L$ decidable on in $\TIME[n]/\epsilon \log n$ so that $G_n$ fails to fool $L_n$ \emph{for all $n$ sufficiently large}. On the other hand, we claim that there is a language $L' \in \TIME[n]$ which agrees with $L$ for infinitely many input lengths which will give the lemma. To see this, let $\pi(n) \in \B^{\epsilon \log n}$ be the advice string, so that for some linear time machine $M$ we have $M(x,\pi(|x|)) = L(x)$ for all $x \in \B^*$. 
+% \end{proof}
+% \section{Superfast}
+% {\color{red}Oliver: Hanlin you can feel free to rewrite/remove any of the stuff i put here, these were just my random thoughts from when we first started discussing this}{\color{cyan}Hanlin: I'm also only writing random stuffs lol}
+% We consider here the superfast KECH:
+% \begin{definition}{sKECH}
+% For any time constructible $T(n)$ there exists a uniform deterministic algorithm running in time $T^{1+o(1)}(n)$ producing a string $x \in \{0,1\}^n$ with $\mathsf{K}^{T}(x) \geq n-1$ 
+% \end{definition}
+% The specific bound $n-1$ is probably unneccessary but I am just stating the strongest possible hypothesis. We want to conclude the following:
+% \begin{conjecture}
+% Under sKECH, $\mathsf{BP\text{-}Time}[T(n)] \subseteq \mathsf{Time}[(nT(n))^{1+o(1)}]$
+% \end{conjecture}
+% This would be nontrivial (in comparison to Chen-Tell) since we don't assume OWF. I claim that the following would be sufficient:
+% \begin{definition}
+% We say that $E: \B^k \times \B^s \to \B^T$ is a superfast reconstructive extractor with advice capacity $a$ if the following hold:
+% \begin{enumerate}
+%     \item Given $x \in \B^k$, we can compute all values $\{E(x,z) \mid z \in \B^s\}$ uniformly in time $(2^sT)^{1+o(1)}$
+%     \item There is a oracle-aided reconstruction procedure $R$ such that if $D \subseteq \B^T$ is such that
+%     \[
+%     |\Pr_{z \sim \B^s}[E(x,z) \in D] - \Pr_{r \sim \B^T}[r \in D]| \geq \frac{1}{3}
+%     \]
+%     Then $R^D(\pi) = x$ for some $\pi \in \B^{k-a}$; moreover $R$ runs in time $T^{1+o(1)}$.
+% \end{enumerate}
+% \end{definition}
+% The point of this definition is:
+% \begin{observation}
+% Let $T(n)$ be time constructable, and say there is a superfast reconstructive extractor $E: \B^{k(n)}\times \B^{s(n)} \to \B^{T(n)}$ with advice capacity $a(n) \geq n+\omega(1)$, and seedlength $s(n) = (1 + o(1)) \log n$. Then sKECH implies superfast derandomization.
+% \end{observation}
+% \begin{proof}
+% This is the standard extractor/prg type connection. We want to simulate a time $T$ algorithm on inputs of length $n$, we view it as a distinguisher $D \subseteq \B^T$ with $n$ bits of advice. We will try to instantiate $E$ with an incompressible string $x$, and hope that $(E(x,z))_{z \sim \B^s}$ fools the distinguisher $D$. If it fails to then $R^D(\pi)$ witnesses the compressibility of $x$ conditioned on the nonuniformity of $D$; since we have advice capacity $a(n) \geq n + \omega(1)$, we can afford to append the nonuniformity of $D$ to $\pi$ to obtain an overall compression of $x$.
+% \end{proof}
+
+% Let me make one more observation: say we strengthened sKECH to socalled ``$\mathcal{C}$-sKECH'' where $\mathcal{C}$ is some complexity measure more general then deterministic time; i.e. nondeterministic time or space. The $\mathcal{C}$-sKECH conjecture says that we can construct strings $x$ with $\mathsf{K}_\mathcal{C}^{T}(x) \geq n-1$ in $\mathsf{Time}[T(n)^{1+o(1)}]$. This corresponds to hardness assumptions like $E \not\subseteq \mathsf{\Sigma_j\text{-}size}[2^{\epsilon n}]$, where the algorithm still runs in deterministic time but we require hardness against algorithms at higher levels of the polynomial hiearchy (but fewer resources). Then the connection between superfast reconstructive extractors and superfast derandomization is preserved: here we would allow the reconstruction $R$ to be in some class $\mathsf{\Sigma_j\text{-}time}[T(n)]$ or $\mathsf{Space}[T(n)]$ or something similar, and we could conclude that under the stronger $\mathcal{C}$-KECH assumption we get super-fast derandomization. Here's a concrete instantiation of this where we can show something unconditional by an easy argument:
+
+% \begin{observation}
+% There is unconditionally a superfast reconstructive PRG $E$, if we allow reconstruction algorithm to run in some fixed level of the counting hierarchy; in particular it holds when the reconstruction is space-bounded.
+% \end{observation}
+% \begin{proof}
+% This is the standard proof that if $G$ is chosen as a truly random function then it will be a good PRG with seed length $\log n + O(1)$ against any family of distinguishers of size $2^n$. Set $m = O(n)$, $s = \log m$, and $k = Tm$, so that $x \in \B^k$ is interperetted as a list $x^1,\ldots,x^m \in \B^t$, and $E(x,j) = x^j$. Let $D \subseteq \B^T$, and say that $D$ distinguishes $E(x)$ from uniform; for simplicity lets say $|D|/2^T \geq \frac{1}{2}$ and $x^j \notin D$ for all $j$ (the more general case is handled similarly). We can then code each $x^j$ using $n-1$ bits by indicating its lexicographical position within $D$; these can be decoded by a $\mathsf{Time}(T(n))$ algorithm in the counting hierarchy when $D$ is presented as a $T(n)$-time algorithm. So overall we compress each $x^j$ by 1 bit, and hence all of $x$ by $m >> n$ bits, so the advice capacity is $n + \omega(1)$.
+% \end{proof}
+
+% {\color{red}Hanlin: If we use an error-correcting code to encode $x$, then this gives the PRG in \cite[Prop 4.1]{CT23}, which runs in near-linear time and has an SVN reconstruction (which is well inside PH). (This PRG also resembles MV05 and Sipser88...)}
+
+% {\color{red}Hanlin: If we don't require black-box reconstructivity, then we can also compose the NW PRG (with $n^\epsilon$ output length) and a crypto PRG, just as in \cite{CT21a}. Except \cite[Theorem 5.5]{CT23}, every superfast derandomization result ($Tn^{1+o(1)}$ time) I'm aware of uses crypto PRG.}
+
+% Hence if we can construction $K_{\mathsf{Space}}^{S(n)}(\cdot)$-random strings in time $S(n)^{1+o(1)}$ we obtain superfast derandomization, however this assumption is rather extreme and possibly absurd. A good starting point would be to improve reconstruction to run in some fixed level of $\mathsf{PH}$ (still in the super-fast regime), before ultimately getting all the way to $\mathsf{P}$ (hopefully).
+
+% \subsection{PRGs available}
+% {\color{red}Hanlin: I'm working on this. I'm really sleepy now but I have some insomnia and cannot fall asleep LOL}
+
+% \def\RRV{\mathsf{RRV}}
+% \begin{theorem}[{\cite[Theorem 3.10]{CHV22}}]
+%     There is a polynomial $p$ such that for large enough integers $n, m, t$ such that $t\ge n\ge m \ge n^{0.1}$, given a string $x \in \{0, 1\}^n$ satisfying $\mathsf{K}^{t\cdot p(n)}(x) \ge m^2$, it follows that $\RRV_{n, m}(x, \cdot)$ is a PRG with seed length $d = O(\log n)$ that $0.1$-fools all $t$-time algorithms on $m$-bit inputs with $m$-bit advice.
+% \end{theorem}
+
+% \def\SU{\mathsf{SU}}
+% \begin{theorem}[{\cite[Theorem 3.11]{CHV22}}]
+%     For every $n, m$ such that $n\ge m\ge \log n$, there is an $n\cdot\poly(m)$-time algorithm $\SU_{n, m}: \{0, 1\}^n \times \{0, 1\}^s \to \{0, 1\}^m$ for $s = s(n) = O(\log n)$, such that for every $x \in \{0, 1\}^n$ and for every $D$ which $0.1$-avoids $\SU_{n, m}(x, -)$, there is a $\poly(m)$-time deterministic oracle algorithm $\Recon$ taking $\poly(m)$ bits of advice, such that there is an advice string $\alpha$ such that for every $i\in [n]$, $\Recon^D(i, \alpha) = x_i$.
+
+%     As a corollary, there is a polynomial $p$ such that, for large enough integers $n, t, m$ such that $t\ge m$, given a string $x \in \{0, 1\}^n$ satisfying $\mathsf{K}^t_{\sf loc}(x) \ge p(m)$, it follows that $\SU_{n, m}(x, \cdot)$ is an HSG with seed length $d = O(\log n)$ that $0.1$-hits all $t/p(m)$-time algorithm on $m$-bit inputs with $m$ bits of advice.
+% \end{theorem}
+
+% {\color{red}Hanlin: $\mathsf{K}^t_{\sf loc}$ is the ``local'' version of time-bounded Kolmogorov complexity where the machine needs to output the $i$-th bit of of $x$ given $i$ as input.}
+
+% \begin{theorem}[{\cite[Theorem 4.1]{CT21a}}]
+%     (Informal) The Nisan--Wigderson generator $\RRV: \{0, 1\}^n \times \{0, 1\}^d \to \{0, 1\}^m$ runs in $n\cdot \poly(m)$ time, so if the output length $m$ is small then it is near-linear time.
+% \end{theorem}
+
+% TODO: \cite[Section 5]{CT21a}
+
+% TODO: \cite[Theorem 5.5]{CT23}. The PRG is in \cite[Prop 4.1]{CT23}, which looks like the MV generator.
+
+% \subsection{Superfast KECH from Plausible Assumptions}
+% {\color{red}Hanlin: (TL, DR) Take the PCP proof of some TIME[T] computation and its $\mathsf{K}^t_{\mathsf{loc}}$-complexity would be at least $s$. Otherwise, this TIME[T] computation could be simulated by an MA algorithm with $s$ guesses and $t$ time.}
+
+\section{Proof of Lemma~\ref{randomstrings:lem:weak-prg-from-hardness}}
+We prove here Lemma~\ref{randomstrings:lem:weak-prg-from-hardness}, which we restate below for convenience:
+
+% \begin{lemma*}[Lemma~\ref{randomstrings:lem:weak-prg-from-hardness}, Restated]
+% Let $d \geq 0$, $\mathcal{O} \subseteq \B^*$. Assume Hypothesis~\ref{randomstrings:hyp:weak} for oracle $\mathcal{O}$ and constant $d+1$. Then for every time constructible $T(n) \leq \poly((\exp^{[d]}(n))$ there is a PRG $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in time $\od{2d+2}(T(n))$ which fools $\TIME^{\mathcal{O}}[T(n)]/3n$ and has seed length $s(n) \leq \od{d+1}(\log n)$. 
+% \end{lemma*}
+
+\begin{lemma*}[Lemma~\ref{randomstrings:lem:weak-prg-from-hardness}, Restated]
+Assume Hypothesis $\WH(\mathcal{O},d+1,v)$, $d\geq 0$, $v \geq 2$. Then for every time constructible $\exp^{[d]}(n)  \leq T(n) \leq \poly((\exp^{[d]}(n))$ there is a PRG $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in time $\od{d+v}(T(n))$ which fools $\TIME^{\mathcal{O}}[T(n)]/3n$ and has seed length $s(n) \leq \od{v-1}(\log n)$. 
+\end{lemma*}
+
+For this we require a strengthening of Theorem~\ref{randomstrings:thm:IW-generalized} due to Umans \cite{umans} (following a similar result of Shaltiel-Umans \cite{shaltiel-umans}) given as follows:
+
+\begin{theorem}[\cite{umans}]\label{randomstrings:thm:umans}
+There is a fixed universal constant $\gamma > 0$ so that the following holds. Let $h: \mathbb{N} \to \mathbb{N}$ be any time-constructible ``hardness'' parameter, $h(n) \leq 2^n$. On input $n$ and given oracle access to a function $f: \B^{n} \to \B$, $\mathsf{UM}^f$ computes a function $\mathsf{UM}^f: \B^{s(n)} \to \B^{m(n)}$ in $2^{O(n)}$ time for some time constructible $m(n) =\Theta( h(n)^{\gamma})$, $s(n) \leq O(n)$, such that for any $D: \B^{m(n)} \to \B$ with
+\[
+|\Pr_{x \sim \B^{m(n)}}[ D(x) = 1] - \Pr_{z \sim \B^{s(n)}}[D(\mathsf{UM}^f(z)) = 1]| \geq \frac{1}{m}
+\]
+there exists a circuit $C$ with $D$ oracle gates computing $f$ whose total size is at most $h(n)$.
+\end{theorem}
+
+
+\begin{proof}[Proof of Lemma~\ref{randomstrings:lem:weak-prg-from-hardness}]  
+
+% Let $T(n) = \exp^{[d]}(n)$. Assuming Hypothesis~\ref{randomstrings:hyp:weak} with parameters $(\mathcal{O},d+1,v)$, we conclude that for some $\epsilon > 0$, there is a language in $\TIME[T(n)]$ which is not in $\TIME^{\mathcal{O}}[\exp^{[d+1]}(\epsilon n)]/\semi{d+2}{\epsilon}(2^n)$ even infinitely often. Let $h(n) = \semi{d+2}{\epsilon^2}(2^n)$, and define $\tilde{G}_n: \B^{s(n)} \to \B^{m(n)}$ by $G_n = \mathsf{UM}^{L_n}$ where $s(n) \leq O(n), m(n) = \Theta( h(n)^\gamma)$ are the time constructible bounds guaranteed in Theorem~\ref{randomstrings:thm:umans}. By Theorem~\ref{randomstrings:thm:umans}, if $\tilde{G}_n$ is distinguished by some $D: \B^{m(n)} \to \B$ then there is an oracle circuit of total size $\leq h(n)$ computing $L_n$; hence if a distinguisher for $\tilde{G}_n$ exists which is computable in time $t(n)$ with an $\mathcal{O}$ oracle and $O(m(n))$ bits of advice for infinitely many $n$, then $L$ is decidable with an $\mathcal{O}$ oracle in time $t(n) \cdot h(n)$ with $O(m(n)) + h(n) = O(h(n))$ bits of advice for infinitely many $n$.
+
+
+% Let $T(n) = \exp^{[d]}(n)$. We then define our final generator $G$ in terms of $\tilde{G}$ by a simple reparameterization of input lengths; for $n \in \mathbb{N}$, we determine the least $\tilde{n}$ such that $m(\tilde{n}) \geq n$ and  $T(n) \cdot h(\tilde{n}) < \exp^{[d+1]}(\epsilon \tilde{n})$
+% and set $G_n = \tilde{G}_{\tilde{n}}$ (truncating the output length of $\tilde{G}_{\tilde{n}}$ as necessary). 
+% We want to show that $G_n$ fools time $T(n) = \exp^{[d]}(n)$ algorithms using an $\mathcal{O}$ oracle and $O(n)$ bits of advice, and runs in time $\od{2d+2}(T(n))$ with seed length $\od{d+1}(\log n)$. For the first point, observe that for any $D: \B^n \to \B$ running in time $T(n)$ with $O(n)$ bits of advice, we obtain a computation of $L_{\tilde{n}}$ running in time $T(n) \cdot h(\tilde{n}) $ time with $O(h(\tilde{n}))$ bits of advice, which contradicts our hardness assumption provided $T(n) \cdot h(\tilde{n}) < \exp^{[d+1]}(\epsilon \tilde{n})$ and $O(h(\tilde{n})) < \semi{d}{\epsilon}(2^{\tilde{n}})$ which both hold by construction.
+
+% On the other hand the runtime and seedlength of $G_n$ are bounded by $2^{O(\tilde{n})} \cdot \exp^{[d+1]}(O(\tilde{n}))$ and $O(\tilde{n})$ respectively, so it remains to bound the growth rate of $\tilde{n}$. Recall that we chose $\tilde{n}$ to be the least integer such that $m(\tilde{n}) \geq n$ and  $T(n) \cdot h(\tilde{n}) < \exp^{[d+1]}(\epsilon \tilde{n})$, where $m(\tilde{n}) = \Theta(h(\tilde{n}))^\gamma$. For the first point, we have $h(x) \leq 2^{x} \leq T(x)$ hence we can bound $\tilde{n}$ by the least integer satisying $T(n)^2 < \exp^{[d+1]}(\epsilon \tilde{n})$, i.e. $(\exp^{[d]}(n))^2 < \exp^{[d+1]}(\epsilon \tilde{n})$, so it suffices here to take $\tilde{n} = O(\log n)$. On the other hand, to have $m(\tilde{n}) \geq n$ it suffices to have $h(\tilde{n}) \geq n$, i.e. $\semi{d+2}{\epsilon^2}(2^{\tilde{n}}) \geq n$, so setting $\tilde{n} \leq \od{d+1}(\log n)$ suffices. Hence in the end we obtain a runtime of $\exp^{[d+1]}(\od{d+1}(\log n)) \leq \od{2d+2}(T(n))$ and seed length $\od{d+1}(\log n)$. 
+
+
+Assuming Hypothesis $\WH(\mathcal{O},d+1,v)$, we conclude that for some $\epsilon > 0$, there is a language in $\TIME[\exp^{[d+1]}(n)]$ which is not in $\TIME^{\mathcal{O}}[\semi{v}{\epsilon}(\exp^{[d+1]}(n))]/\semi{v}{\epsilon}(2^n)$ even infinitely often. Let $h(n) = \semi{v}{\epsilon^2}(2^n)$, and define $\tilde{G}_n: \B^{s(n)} \to \B^{m(n)}$ by $G_n = \mathsf{UM}^{L_n}$ where $s(n) \leq O(n), m(n) = \Theta( h(n)^\gamma)$ are the time constructible bounds guaranteed in Theorem~\ref{randomstrings:thm:umans}. By Theorem~\ref{randomstrings:thm:umans}, if $\tilde{G}_n$ is distinguished by some $D: \B^{m(n)} \to \B$ then there is an oracle circuit of total size $\leq h(n)$ computing $L_n$; hence if a distinguisher for $\tilde{G}_n$ exists which is computable in time $t(n)$ with an $\mathcal{O}$ oracle and $O(m(n))$ bits of advice for infinitely many $n$, then $L$ is decidable with an $\mathcal{O}$ oracle in time $t(n) \cdot h(n)$ with $O(m(n)) + h(n) = O(h(n))$ bits of advice for infinitely many $n$.
+
+Let $T(n) = (\exp^{[d]}(n))^{k}$ for some constant $k$. We then define our final generator $G$ in terms of $\tilde{G}$ by a simple reparameterization of input lengths; for $n \in \mathbb{N}$, we determine the least $\tilde{n}$ such that $m(\tilde{n}) \geq n$ and  $T(n) \cdot h(\tilde{n}) < \semi{v}{\epsilon}(\exp^{[d+1]}(\tilde{n}))$
+and set $G_n = \tilde{G}_{\tilde{n}}$ (truncating the output length of $\tilde{G}_{\tilde{n}}$ as necessary). 
+We want to show that $G_n$ fools time $T(n)$ algorithms using an $\mathcal{O}$ oracle and $O(n)$ bits of advice, and runs in time $\od{d+v}(T(n))$ with seed length $\od{v-1}(\log n)$. For the first point, observe that for any $D: \B^n \to \B$ running in time $T(n)$ with $O(n)$ bits of advice, we obtain a computation of $L_{\tilde{n}}$ running in time $T(n) \cdot h(\tilde{n}) $ time with $O(h(\tilde{n}))$ bits of advice, which contradicts our hardness assumption provided $T(n) \cdot h(\tilde{n}) < \semi{v}{\epsilon}(\exp^{[d+1]}(\tilde{n}))$ and $O(h(\tilde{n})) < \semi{v}{\epsilon}(2^{\tilde{n}})$ which both hold by construction.
+
+On the other hand the runtime and seedlength of $G_n$ are bounded by $2^{O(\tilde{n})} \cdot \exp^{[d+1]}(\tilde{n})$ and $O(\tilde{n})$ respectively, so it remains to bound the growth rate of $\tilde{n}$. Recall that we chose $\tilde{n}$ to be the least integer such that $m(\tilde{n}) \geq n$ and  $T(n) \cdot h(\tilde{n}) < \semi{v}{\epsilon}(\exp^{[d+1]}(\tilde{n}))$, where $m(\tilde{n}) = \Theta(h(\tilde{n}))^\gamma$. For the first point, we have $h(x) \leq 2^{x} \leq T(x)$ hence we can bound $\tilde{n}$ by the least integer satisfying $T(n)^2 < \semi{v}{\epsilon}(\exp^{[d+1]}( \tilde{n}))$, i.e. $(\exp^{[d]}(n))^{2k} < \semi{v}{\epsilon}(\exp^{[d+1]}( \tilde{n}))$, so it suffices here to take $\tilde{n} = \od{v-1}(\log n)$. On the other hand, to have $m(\tilde{n}) \geq n$ it suffices to have $h(\tilde{n}) \geq n$, i.e. $\semi{v}{\epsilon^2}(2^{\tilde{n}}) \geq n$, so setting $\tilde{n} \leq \od{v-1}(\log n)$ suffices. Hence in the end we obtain a runtime of $\exp^{[d+1]}(\od{v-1}(\log n)) \leq \od{d+v}(T(n))$ and seed length $\od{v-1}(\log n)$. 
+
+\end{proof}
+
+We will use a slight generalization of Lemma~\ref{randomstrings:lem:weak-prg-from-hardness} that follows directly by padding (the difference compared to the previous lemma is merely that we allow a slightly more general upper bound on $T(n)$):
+\begin{corollary}\label{randomstrings:cor:scaled-weak}
+Assume Hypothesis $\WH(\mathcal{O},d+1,v)$, $d> 0$, $v \geq 2$ and let $\ell \geq d$ be a fixed constant. Then for every time constructible $\exp^{[d]}(n)  \leq T(n) \leq \od{d + v}(\exp^{[d]}(n))$ there is a PRG $(G_n: \B^{s(n)} \to \B^n)_{n \in \mathbb{N}}$ computable uniformly in time $\od{d+v}(T(n))$ which fools $\TIME^{\mathcal{O}}[T(n)]/3n $ and has seed length $s(n) \leq \od{v-1}(\log n)$. 
+\end{corollary}
+\begin{proof}
+Using Lemma~\ref{randomstrings:lem:weak-prg-from-hardness}, from our hardness assumption we get a generator fooling $\TIME^\mathcal{O}[\exp^{[d]}(n)]/3n$ with runtime $\od{d+v}(T(n))$ and seed length $s(n) \leq \od{v-1}(\log n)$. On input length $n$, we choose some $n' = n'(n)$ such that $\exp^{[d]}(n') \geq T(n)$ and apply our generator on input length $n'$; clearly we may use this generator for input length $n$ as well, by considering a language $L \subseteq \B^n$ as $L' \subseteq \B^{n'}$ depending on only the first $n \leq n'$ bits. It suffices to take $n' =\od{v}(n)$, in which case the seed length as a function of $n$ is $\od{v-1}(\log \od{v}(n)) \leq \od{v-1}(\log n)$ and the runtime is $\od{d+v}(\exp^{[d]}(\od{v}(n))) \leq \od{d + v}(\exp^{[d]}(n)) = \od{d + v}(T(n))$.
+\end{proof}
+
+We are now ready to prove Theorem~\ref{randomstrings:thm:weak-generator}:
+\begin{theorem*}[Theorem~\ref{randomstrings:thm:weak-generator}, Restated]
+Assume Hypothesis $\WH(\mathcal{O},d+1,v)$ with $d \geq 0$, $v \geq 2$, fixed constants, and $k \in \mathbb{N}$ a fixed constant. Then there is a pseudorandom generator with seed length $\od{v -1 }(\log^{[d+1]}(n))$ and runtime $\od{d+v}(n)$ that fools $\TIME^\mathcal{O}[n^k]/\log^{[d]}(n)$ with error $(2 \log^{[d]}(n))^{-1}$ whenever $\K^{n^k}(n) \leq \log^{[d]}(n)$.
+\end{theorem*}
+\begin{proof}
+Let $k\geq 1$, $d \geq 0$, $v \geq 2$ be fixed constants and let $T(n) = n^k$.
+We prove by induction on $d$ that there is a pseudorandom generator $(\mathcal{G}^d_n: \B^{s_d(n)} \to \B^n)_{n \in \mathbb{N}}$ which runs in time $\od{d + v}(n)$ and fools $\TIME^\mathcal{O}[n^k]/\log^{[d]}(n)$ with error $\leq \sum_{j \leq d} (\log^{[j]}(n))^{-1}$ and has seed length $s_d(n) \leq \od{v -1 }(\log^{[d+1]}(n))$, provided the input length $n$ satisfies $\K^{n^k}(n) \leq \log^{[d]}(n)$.
+% When constructing the generator for a value $d>0$, we will assume that $n$ is of the form $n=\exp^{[d-1]}(\ell)$ for some $\ell$; if not we can simply round up to the nearest $n'$ of the form $n' = \exp^{[d-1]}(\ell)$ and construct the appropriate generator fooling $\TIME^\mathcal{O}[(n')^k]/\log^{[d]}(n')$ on input length $n'$ as in the proof of Corollary~\ref{randomstrings:cor:scaled-weak}. Since it suffices to take $n' \leq \od{d-1}(n)$, the runtime will be bounded by $\od{d+v}(n') = \od{d+v}(\od{d-1}(n)) = \od{d+v}(n)$, and the seed length will be bounded by $\od{v-1}(\log^{[d+1]}(\od{d-1}(n))) \leq \od{v-1}(\log^{[d+1]}(n))$. 
+
+In the case $d = 0$ we may apply Lemma~\ref{randomstrings:lem:weak-prg-from-hardness} directly. Now, say that the generator $(\mathcal{G}^{d-1}_n: \B^{s_{d-1}(n)} \to \B^n)_{n \in \mathbb{N}}$ is given, computable in time $T_{d-1}(n) := \od{d-1+v}(n)$ with $s_{d-1}(n) \leq \od{v-1}(\log^{[d]}n)$ and fooling $\TIME^\mathcal{O}[n^k]/\log^{[d-1]}(n)$ with error $\sum_{j \leq d-1} (\log^{[j]}(n))^{-1}$. Let $t_{d}$ be a time constructible function such that $T_{d-1}(n) \leq 3t_{d}(s_{d-1}(n))$; we may set $t_{d} = \od{d-1+v}(\exp^{[d]}(n))$. Now, let $(G_n: \B^{s'(n)} \to \B^n)_{n \in \mathbb{N}}$ be the generator guaranteed by Corollary~\ref{randomstrings:cor:scaled-weak} for time bound $t_d(\cdot)$; so $G_n$ fools $\TIME^\mathcal{O}[t_d(n)]/3n$, runs in time $t'_d(n) = \od{d+v}(t_d(n))$, and has error $n^{-1}$ and seed length $s'(n) = \od{v-1}(\log n)$. We then set $\mathcal{G}^d_n$ to be the generator with seed length $s_d(n) = s'(s_{d-1}(n))$ given by $\mathcal{G}^d_n(z') = \mathcal{G}_n^{d-1}(G_{s_{d-1}(n)}(z'))$. The run time of $\mathcal{G}^{d}_n$ is bounded by some constant times the sum of the run times of the two constituent generators, which overall is bounded by $\od{d-1+v}(n) + O(t'_d(s_{d-1}(n)))$. Let $L \subseteq \B^n$ be decided by a $\TIME^\mathcal{O}[n^k]/\log^{[d]}(n)$ machine; recall that $n = \exp^{[d-1]}(\ell)$ for some $\ell$. Define $L' \subseteq \B^{s_{d-1}(n)}$ given by $L' = \{z \mid \mathcal{G}^{d-1}_n(z) \in L\}$; since $\mathcal{G}^{d-1}_n$ fools $L$ with error $\epsilon := \sum_{j \leq d-1}\log^{[j]}(n)$, we have that $\Pr[y \in L] \in  \Pr[z \in L'] \pm \epsilon$. On the other hand $L'$ is decidable in time $\leq 3t_d(s_d(n))$ with $2 \log^{[d]}(n) + O(1)$ bits of advice provided $n$ is of the form $\K^{n^k}(n) \leq \log^{[d]}(n)$: we use the advice for deciding $L$, together with $\log^{[d]}(n)$ bits of advice describing the number $n$, and $O(1)$ advice to specify the code for $\mathcal{G}^{d-1}$ and the procedure explained herein. Hence $G_{s_{d-1}(n)}$ fools $L'$ to within error $\delta:= (s_{d-1}(n))^{-1} \leq (\log^{[d]}(n))^{-1}$, so overall we must have that $\mathcal{G}^d_n = \mathcal{G}^{d-1}_n \circ G_{s_{d-1}}$ fools $L$ to within error $\epsilon + \delta \leq \sum_{j \leq d} (\log^{[j]}(n))^{-1}$. It remains to bound the seed length and runtime of $\mathcal{G}^d_n$. The seed length is $\od{v-1}(\log s_{d-1}(n))$, and $s_{d-1} = \od{v-1}(\log^{[d]}(n))$, so overall the seed length is bounded by $\od{v-1}(\log^{[d+1]}(n))$. On the other hand the runtime is dominated by $t'_d(s_{d-1}(n)) = \od{d+v}(\exp^{[d]}(s_{d-1}(n))) = \od{d+v}(\exp^{[d]}(\od{v-1}(\log^{[d]}(n)))) \leq \od{d+v}(n)$.
+
+
+\end{proof}
