@@ -8,6 +8,7 @@
 \usepackage{setspace}
 \usepackage[shortlabels]{enumitem}
 \usepackage{times}
+\usepackage{bbm}
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amsthm}
@@ -18,7 +19,7 @@
 \usepackage{appendix}
 \usepackage{bm}
 \usepackage{float}
-\usepackage{graphicx}
+\usepackage{graphicx,caption}
 \usepackage{indentfirst}
 \usepackage{textcomp}
 \usepackage{hyperref}
@@ -38,8 +39,10 @@
 \addbibresource{bib/thesis.bib}
 \addbibresource{bib/hardest.bib}
 \addbibresource{bib/lop.bib}
+\addbibresource{bib/lossy.bib}
+\addbibresource{bib/cellprobe.bib}
 
-\graphicspath{{../papers/hardest/}{../papers/lop/}}
+\graphicspath{{../papers/hardest/}{../papers/lop/}{../papers/lossy/}}
 
 \AtEveryBibitem{\clearfield{issn}}
 \AtEveryBibitem{\clearlist{issn}}

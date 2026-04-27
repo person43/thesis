@@ -36,6 +36,8 @@ Current active chapter order
 Current import status
 - `hardest` has already been imported into the thesis as a body-only chapter.
 - `lop` has now also been imported into the thesis as a body-only chapter.
+- `lossy` has now also been imported into the thesis as a body-only chapter.
+- `cellprobe` has now also been imported into the thesis as a body-only chapter.
 - “Body-only import” means:
   - keep the paper’s main mathematical text
   - omit standalone title/author block
@@ -86,4 +88,6 @@ Current known state
 - The thesis builds successfully.
 - `hardest` is fully present as a body-only imported chapter with figures and citations integrated.
 - `lop` is fully present as a body-only imported chapter with figures, citations, and appendix proof content integrated.
+- `lossy` is fully present as a body-only imported chapter with citations and appendix content integrated.
+- `cellprobe` is fully present as a body-only imported chapter with citations and appendix content integrated.
 - Some non-fatal LaTeX warnings remain from overall thesis integration and placeholder sections, but the current build is usable.
