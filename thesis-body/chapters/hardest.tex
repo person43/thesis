@@ -1,3 +1,289 @@
 % !TeX root = ../main.tex
+%
+% Body-only import derived from papers/hardest/apepp.tex.
+% Standalone title, author block, abstract, acknowledgements, and bibliography
+% commands have been omitted for thesis integration.
 
-% Material derived from papers/hardest will be placed here.
+\section{Introduction}\label{sec:intro}
+Explicit construction --- the task of replacing a nonconstructive argument for the existence of a certain type of object with a deterministic algorithm that outputs one --- is an important genre of computational problems, whose history is intertwined with that of some old and fundamental questions in complexity theory. The primary nonconstructive method for establishing the existence of interesting combinatorial objects is to show that a randomly chosen object has a desired property with high probability. This technique, initiated by Erd{\"o}s \cite{Erdos} and since dubbed the ``probabilistic method,'' has proven immensely useful across disparate subfields of combinatorics and computer science. Indeed, the probabilistic method is currently our sole source of certainty that there exist hard Boolean functions, pseudorandom number generators, rigid matrices, and optimal randomness extractors,
+% Ramsey graphs, optimal codes, and certain hard problems in Communication Complexity and the bit-probe model in data structures,
+among a variety of other combinatorial objects.
+% Even expanders, a rare success story in the explicit construction saga, are riled with gaps between what is possible and what can be realized by explicit methods \cite{Alon}.
+
+Explicit construction problems can be phrased, in complexity terms, as \emph{sparse} search problems\footnote{A sparse search problem has only $n^{O(1)}$ many relevant inputs of a given length; see Section~\ref{sec:defs} for a formal definition.}: given the input $1^n$, output some object of size $n$ satisfying a certain property. In the interesting case, such problems are also \emph{total}: we have a reason to believe that for all $n$, at least one object with this property exists. In contrast to the fundamental importance of explicit constructions, there has been surprisingly little work attempting to systematically study their complexity. This gap was pointed out previously by Santhanam \cite{explicit-constructions}, who studied the complexity of explicit construction problems from the following perspective: we have some property $\Pi$ which is \emph{promised} to hold for almost all strings of length $n$. Based on the complexity of testing the property $\Pi$, what can be said about the complexity of producing an $n$-bit string with property $\Pi$? Though some interesting reductions can be shown in this framework, Santhanam notes that this approach does not seem to yield robust complexity classes with \emph{complete} explicit construction problems.
+
+This issue is familiar in the study of the class {\cl TFNP}: when we have only a \emph{promise} that a search problem is total, it is seemingly impossible to reduce it to a problem of similar complexity which has a \emph{syntactic} guarantee of totality. This led to the study, initiated by Papadimitriou \cite{christos}, of characterizing total search problems based on which combinatorial lemma guarantees the existence of a solution. In recent work of Kleinberg et al. \cite{total}, this method was used to analyse several total search problems in the polynomial hierarchy beyond {\cl NP}. One class they define is {\cl APEPP}, which consists of the ${\cl \Sigma_2^P}$ total search problems whose totality follows from the ``Abundant Empty Pigeonhole Principle,'' which tells us that a function $f: \{0,1\}^n \rightarrow \{0,1\}^{n+1}$ cannot be surjective (the second ``P'' in {\cl APEPP} stands for ``Polynomial'', referring to the polynomial-time machines defining the input $f$). In this paper, we show that {\cl APEPP} is the natural \emph{syntactic} class into which we can place a vast range of explicit construction problems where a solution is guaranteed by the probabilistic method.
+
+Given that {\cl APEPP} is a syntactic class, it is natural to ask whether some explicit construction problem is complete for it. As it turns out, the answer is positive: constructing a truth table of length $2^n$ with circuit complexity $2^{\epsilon n}$ is in fact \emph{complete} for {\cl APEPP} under ${\cl P}^{\cl NP}$ reductions. Perhaps surprisingly, this important fact had been known for many years in the universe of Bounded Arithmetic, essentially proved in Emil Je\v{r}\'{a}bek's PhD thesis in 2004 \cite{Jerabek}. Here Je\v{r}\'{a}bek shows that the theorem asserting the empty pigeonhole principle is \emph{equivalent}, in a particular theory of Bounded Arithmetic, to the theorem asserting the existence of hard Boolean functions. Although his result is phrased in terms of logical expressibility, we show that when translated to language of search problems his techniques give a ${\cl P}^{\cl NP}$ reduction from any problem in {\cl APEPP} to the problem of constructing a hard truth table. In Section~\ref{sec:completeness} we give a self-contained proof of this, and generalize the reduction to hold for arbitrary classes of circuits equipped with oracle gates. Combined with our results placing a wide range of explicit construction problems in {\cl APEPP}, this shows that, in a concrete sense, constructing a hard truth table is a \emph{universal explicit construction problem}. We give further credence to this claim by showing in addition that several well known explicit construction problems in {\cl APEPP,} including the explicit construction of rigid matrices, can be directly reduced to the problem of constructing a hard truth table via polynomial time reductions (as opposed to ${\cl P}^{\cl NP}$ reductions).
+
+\subsection{Our Contributions}
+We investigate the complexity class {\cl APEPP} introduced in \cite{total}, defined by the following complete problem {\sc Empty}: given a circuit $C: \{0,1\}^n \rightarrow \{0,1\}^m$ with $m > n$, find an $m$-bit string outside the range of $C$. In Section~\ref{sec:constructions-in-apepp} we give overwhelming evidence that {\cl APEPP} is the natural class associated with explicit constructions from the probabilistic method, by placing a wide range of well studied problems in this class. In particular, we show that the explicit construction problems associated with the following objects lie in {\cl APEPP}:
+\begin{itemize}
+    \item Truth tables of length $2^n$ with circuit complexity $\varbound$ (Theorem~\ref{thm:truth-tables-in-apepp})
+    \item Pseudorandom generators (Theorem~\ref{thm:prg})
+    \item Strongly explicit two-source randomness extractors with 1 bit output for min-entropy $\log n + O(\log(1/\epsilon))$, and thus strongly explicit $O(\log n)$-Ramsey graphs in both the bipartite and non-bipartite case (Theorem~\ref{thm:ext})
+    % \item Small-bias probability spaces of size meeting the best known non-constructive upper bound (Theorem~\ref{thm:bias})
+    \item Matrices with high rigidity over any finite field (Theorem~\ref{thm:rigid-in-apepp})
+    \item Strings of time-bounded Kolmogorov complexity $n - 1$ relative to any fixed polynomial time bound and any fixed Turing machine (Theorem~\ref{thm:kt-random})
+    \item Communication problems outside of ${\cl PSPACE^{CC}}$ (Theorem~\ref{thm:space-circuit})
+    \item Hard data structure problems in the bit-probe model (Theorem~\ref{thm:probe-circuit})
+\end{itemize}
+
+In \cite{total}, variants of Theorem~\ref{thm:truth-tables-in-apepp} and Theorem~\ref{thm:rigid-in-apepp} where shown; in that work the definition of the problems was modified so that the problems no longer had a \emph{sparse} input, as the primary goal was to find examples of plausibly hard problems in {\cl APEPP}, and sparse-input problems can always be solved efficiently with polynomial advice. For example, instead of the construction of hard truth tables, they studied the complexity of producing truth tables hard \emph{relative to some oracle}, where the oracle is given as input (see Definition~\ref{def:complexity}). In contrast, our focus in this work is on the sparse explicit construction variants of such problems; a major thesis of this work is that such problems, although solvable with polynomial advice, actually constitute the most interesting complexity theoretic phenomenon in the class {\cl APEPP}.
+
+Since the work of Impagliazzo and Wigderson \cite{IW} implies that constructing pseudorandom generators reduces to constructing hard truth tables, {\cl APEPP} constructions of PRGs follow immediately from {\cl APEPP} constructions of hard truth tables. However, we provide a self-contained and simple proof that PRG construction can be reduced to {\sc Empty}, without requiring the more involved techniques of Nisan, Wigderson, and Impagliazzo \cite{NW}\cite{IW}. Together with the result in the following section that constructing hard truth tables is complete for {\cl APEPP} under ${\cl P}^{\cl NP}$ reductions, this gives an alternative and significantly simplified proof that worst-case-hard truth tables can be used to derandomize algorithms (although it proves a weaker result, that this derandomization can be accomplished with an {\cl NP} oracle).
+
+In Section~\ref{sec:completeness} we show that constructing a truth table of length $2^n$ with circuit complexity $2^{\epsilon n}$ is complete for {\cl APEPP} under ${\cl P}^{\cl NP}$ reductions (for any fixed $0 < \epsilon < 1)$. As discussed earlier, the core argument behind this result was proven by Je\v{r}\'{a}bek in \cite{Jerabek}, where he shows that the theorem asserting the existence of hard Boolean functions is equivalent to the theorem asserting the empty pigeonhole principle in a certain fragment of Bounded Arithmetic. We show that, when viewed through the lens of explicit construction problems, this technique yields a reduction from {\sc Empty} to the explicit construction of hard truth tables. We also generalize this reduction to arbitrary oracle circuits, which allows us to prove the following more general statement: constructing a truth table which requires large $\Sigma^{\cl P}_i$-oracle circuits is complete for {\cl APEPP}$_{\Sigma^{\cl P}_i}$ under $\Delta^{\cl P}_{i+2}$ reductions (the complete problem for {\cl APEPP}$_{\Sigma^{\cl P}_i}$ is the variant of {\sc Empty} where the input circuit can have $\Sigma^{\cl P}_i$-oracle gates). By recasting and generalizing Je\v{r}\'{a}bek's theorem in the context of explicit construction problems, we are able to derive several novel results. First and foremost, we conclude that there is a ${\cl P}^{\cl NP}$ construction of hard truth tables \emph{if and only if} there is a ${\cl P}^{\cl NP}$ algorithm for every problem in {\cl APEPP}, and so in particular such a construction of hard truth tables would automatically imply ${\cl P}^{\cl NP}$ constructions for each of the well-studied problems discussed in Section~\ref{sec:constructions-in-apepp}. This tells us that constructing hard truth tables is, in a definite sense, \emph{a universal explicit construction problem}. Since the existence of a ${\cl P}^{\cl NP}$ construction of hard truth tables is equivalent to the existence of a language in ${\cl E}^{\cl NP}$ with circuit complexity $2^{\Omega(n)}$, this completeness result actually gives an \emph{exact algorithmic characterization} of proving $2^{\Omega(n)}$ circuit lower bounds for ${\cl E}^{\cl NP}$:
+
+\begin{theorem*}[Theorem~\ref{thm:LB-algo-equivalence}]
+There is a ${\cl P}^{\cl NP}$ algorithm for {\sc Empty} if and only if ${\cl E}^{\cl NP}$ contains a language of circuit complexity $2^{\Omega(n)}$.
+\end{theorem*}
+As per the preceding discussion, may view this as a kind of \emph{hardness result} for the difficulty of proving (widely-believed) exponential circuit lower bounds for ${\cl E}^{\cl NP}$: any such proof requires solving a universal explicit construction problem. As a corollary of this result we are also able to derive the following:
+\begin{theorem*}[Corollaries \ref{cor:e-hard} and \ref{cor:exp-hard}]
+${\cl E}^{\cl NP}$ (resp. ${\cl EXP}^{\cl NP}$)  contains a language of circuit complexity $2^{\Omega(n)}$ (resp. $2^{n^{\Omega(1)}}$) \emph{if and only if} ${\cl E}^{\cl NP}$ (resp. ${\cl EXP}^{\cl NP}$) contains a language of circuit complexity $\varbound$.
+\end{theorem*}
+
+In both of the above theorems, we use the terminology ``${\cl E^{NP}}$ requires circuits of size $s(n)$'' to indicate an almost-everywhere separation: there is a language $L \in {\cl E^{NP}}$ so that for \emph{all sufficiently large} $n$, the circuit complexity of $L \cap \{0,1\}^n$ is at least $s(n)$.
+
+Unpacking the proof of the above corollaries reveals an efficient algorithm to ``extract hardness'' from truth tables using an oracle for circuit minimization, a prospect previously considered in \cite{hardness-harder}:
+
+\begin{theorem*}[Theorem \ref{thm:hardness-extractor}]
+There is a polynomial time algorithm using a circuit minimization oracle (or more generally an {\cl NP} oracle) which, given a truth table $x$ of length $M$ and circuit complexity $s$, outputs a truth table $y$ of length $N = {\Omega}(\sqrt{\frac{s}{\log M}})$ and circuit complexity $\Omega(\frac{N}{\log N})$.
+\end{theorem*}
+
+We then argue, based on an observation of Williams \cite{sat-lb}, that improving this construction in its current form to extract $(\frac{s}{\log M})^{\frac{1}{2} + \epsilon}$ bits of hardness would require a breakthrough for {\sc 3SUM}.
+
+Finally, in Section~\ref{sec:direct-reductions} we consider {\cl P} (as opposed to ${\cl P}^{\cl NP}$) reductions from particular explicit construction problems to the problem of constructing hard truth tables. We show that in the case of rigidity, bit probe lower bounds, and certain communication complexity lower bounds, such reductions exist. These reductions take the following form: we show that the failure of an $n$-bit string $x$ to satisfy certain pseudorandom properties implies a smaller than worst case circuit computing $x$. This then implies that any $n$-bit string of sufficiently high circuit complexity will necessarily possess a variety of pseudorandom properties, including high rigidity, high space-bounded communication complexity, and high bit-probe complexity. We also make note of an interesting dichotomy (Theorem~\ref{thm:dichotomy}), which tells us that any explicit construction problem in {\cl APEPP} is either {\cl APEPP}-complete under ${\cl P}^{\cl NP}$ reductions, or solvable in subexponential time with an {\cl NP} oracle (for infinitely many input lengths).
+
+Another concrete takeaway from this work is that we demonstrate, for several well-studied problems, the weakest known assumptions necessary to obtain explicit constructions of a certain type (polynomial time constructions in some cases and ${\cl P}^{\cl NP}$ constructions in others). Perhaps the most interesting application of this is rigidity, as the complexity of rigid matrix construction has been studied extensively in both the {\cl P} and ${\cl P}^{\cl NP}$ regimes. We obtain the following conditional constructions of rigid matrices:
+
+\begin{theorem*}[Theorems \ref{thm:rigid-in-apepp} and \ref{thm:LB-algo-equivalence}]
+If ${\cl E}^{\cl NP}$ contains a language of circuit complexity $2^{\Omega(n)}$, then for any prime power $q$ there is a ${\cl P}^{\cl NP}$ construction of an $n \times n$ matrix over $\mathbb{F}_q$ which is $\Omega(n^2)$-far (in hamming distance) from any rank-$\Omega(n)$ matrix.
+\end{theorem*}
+
+\begin{theorem*}[Theorem \ref{thm:rigidity-circuit}]
+If ${\cl E}$ contains a language of circuit complexity $\Omega(\frac{2^n}{n})$, then there is a polynomial time construction of an $n \times n$ matrix over $\mathbb{F}_2$ which is $\Omega(n^2)$-far from any rank-$\Omega(n)$ matrix.
+\end{theorem*}
+
+In both cases, the rigidity parameters in the conclusion would be sufficient to carry out Valiant's lower bound program \cite{Valiant}. The weakest hardness assumptions previously known to yield constructions with even remotely similar parameters (in either the ${\cl P}^{\cl NP}$ or {\cl P} regimes) require a lower bound against \emph{nondeterministic} circuits \cite{AM-SV}.
+
+\subsection{Related Work}
+A large body of work on the hardness/randomness connection, starting with that of Nisan and Wigderson \cite{NW}, has exhibited the usefulness of explicit constructions of hard truth tables. The results of Impagliazzo and Wigderson \cite{IW} give, in particular, a reduction from explicit constructions of hard truth tables to explicit constructions of pseudorandom generators that fool polynomial size circuits. As noted by Santhanam \cite{explicit-constructions}, this immediately implies that for any ``dense'' property $\Pi$ recognizable in {\cl P} (dense meaning the fraction of $n$-bit strings holding this property is at least $1/poly(n)$), an efficient construction of a hard truth table immediately implies an efficient construction of an $n$-bit string with property $\Pi$. But many properties of interest such as Rigidity (or any of the other properties studied in this work) are only known to be recognizable in the larger class {\cl NP}. Under the stronger assumption that we can construct truth tables hard for certain classes of \emph{nondeterministic} circuits, constructions for all dense {\cl NP} properties are known to follow as well \cite{AM-derandomization} \cite{AM-SV}, so in particular ${\cl P}^{\cl NP}$ constructions for every problem in {\cl APEPP} would follow. However, constructing truth tables that are hard for nondeterministic circuits appears strictly harder than constructing truth tables hard for standard circuits, and in particular does not seem to be contained in {\cl APEPP}, so although this yields an explicit construction problem which is \emph{hard} for {\cl APEPP}, it does not appear to be complete. In contrast, we show here that constructing a truth table which is hard for standard circuits is both contained in and hard for {\cl APEPP}, thus showing that a ${\cl P}^{\cl NP}$ construction of a hard truth table is possible \emph{if and only if} such a construction is possible for every problem in {\cl APEPP}.
+
+For several of the problems we study, a long line of work has gone into improving state-of-the-art explicit constructions. We give a brief overview here of some recent work on rigid matrices and extractors. Rigidity was first introduced by Valiant \cite{Valiant}, who showed that any matrix which is $n^{1+\epsilon}$-far from a rank-$\delta n$ matrix for some $\epsilon, \delta > 0$ cannot be computed by linear size, logarithmic depth arithmetic circuits. Since then it has been a notorious open problem to provide examples of an explicit matrix family with rigidity parameters anywhere close to this. A recent breakthrough was achieved in \cite{alman-chen}, and improved by \cite{pcp-rigidity}, which gives ${\cl P}^{\cl NP}$ constructions of matrices that are $\Omega(n^2)$-far from any rank-$2^{\log n/\Omega(\log \log n)}$ matrix, for infinitely many values of $n$. However, such a construction is still not sufficient to carry out Valiant's arithmetic circuit lower bound program. A conditional result of \cite{data-structure-rigidity} implies that ${\cl P}^{\cl NP}$ constructions of certain rigid matrices are possible assuming explicit constructions exist for certain  hard data structure problems in the group model. In terms of polynomial time constructions, the best known construction yields a matrix which is $\frac{N^2}{\rho}\log{\frac{N}{\rho}}$-far from any $\rho$-rigid matrix, for any parameter $\rho$ \cite{SSS}\cite{Friedman}.
+
+The case of Ramsey graphs and extractors is slightly more complicated. There are two common definitions of the explicit construction problems corresponding to these objects. The first is often referred to as the ``weakly-explicit'' version, where we must output the adjacency matrix (in the case of Ramsey graphs) or truth table (in the case of extractors) in time polynomial in the size of the truth table/matrix. The second version, referred to as the ``strongly-explicit'' version, is to output a succinct circuit which computes the adjacency relation or extractor function. Clearly the strongly-explicit case is harder, but in both cases, there is a significant gap between what is achievable by explicit methods and what can be proven possible by the probabilistic method. We will focus on the strongly-explicit case in this work, and in the case of extractors we will focus on \emph{two-source} extractors with one bit of output, which remains the most challenging current frontier \cite{extractors-survey}. The state of the art constructions for both two-source extractors and Ramsey graphs are due to Li \cite{new-li-extractor}. He demonstrates a two-source extractor for constant error and min-entropy $O(\log n)$, and hence an $n$-vertex graph which is $\log^{O(1)}n$-Ramsey. Our results show that strongly explicit extractors for min-entropy $\log n + O(\log(1/\epsilon))$, and thus $n$-vertex $O(\log n)$-Ramsey graphs, can be constructed in {\cl APEPP}. In both cases these parameters are known to be the best possible. For a comprehensive, somewhat up-to-date survey on extractors see \cite{extractors-survey} (this survey predates the above-stated construction in \cite{new-li-extractor} but covers much of the work which lead up to it).
+
+Another line of work in the area of explicit constructions investigates the possibility of \emph{pseudodeterministic} constructions of certain objects. Here, the construction algorithm is allowed to use randomness, but must output the \emph{same object} on most computation paths. Originally introduced in \cite{GG}, this paradigm was recently applied in a pair of works \cite{pseudo-primes, poly-time-primes} to the construction of large prime numbers, where a polynomial time pseudodeterministic construction which works for infinitely many input lengths is given. This algorithm works more generally for the problem of constructing elements of a language $L$ which is (1) recognizable in polynomial time, and (2) satisfies $|L \cap \{0,1\}^n| \geq 2^n/n^{O(1)}$ for all $n$.
+
+\subsection{Proof Sketch of Main Theorem}
+We give here an informal overview of the proof that {\sc Empty} can be solved in polynomial time given access to a hard truth table and an {\cl NP} oracle. At the core of this proof is a familiar construction in the theory of computing which dates back to the 1980's, namely the pseudorandom function generator of Goldreich, Goldwasser, and Micali \cite{GGM}. Note that in the following, we will refer to the ``circuit complexity of an $n$-bit string $x$'' to mean the size of the smallest circuit computing $x_i$ given $i$ in binary; this is well-defined even when $n$ is not a power of 2, as we shall formalize in Section~\ref{sec:constructions-in-apepp}\footnote{See Definition~\ref{def:circ-size}}.
+
+Consider the special case of {\sc Empty} where our input is a circuit $C: \{0,1\}^n \rightarrow \{0,1\}^{2n}$ which exactly doubles its input size. For a moment let us forget our primary goal of finding a $2n$-bit string outside $C$'s range, and instead consider $C$ as a cryptographic pseudorandom generator which we are attempting to break. Since $C$ is a function which extends its input size by a positive number of bits, it is indeed of the same syntactic form as a cryptographic PRG, so this viewpoint is well-defined.
+
+In \cite{GGM}, Goldreich, Goldwasser and Micali give a procedure\footnote{\cite{GGM} and \cite{natural-proofs} apply the construction described here in a different parameter regime, so our statement of the result differs slightly from its original presentation. The version described here has been noted subsequently in the literature on {\sc MCSP}, see for example \cite{MCSP-OWF}.} which, for any fixed $0 < \epsilon < 1$, takes $C$ and produces in polynomial time a new circuit $C^*: \{0,1\}^n \rightarrow \{0,1\}^{m}$ for some $m = poly(n)$, which satisfies the following two properties:
+\begin{enumerate}[(1)]
+    \item Every string in the range of $C^*$ has circuit complexity at most $m^{\epsilon}$.
+    \item Given a statistical test breaking $C^*$, we can construct a statistical test of similar complexity breaking $C$.
+\end{enumerate}
+The construction of $C^*$ is in fact quite simple: for an appropriate choice of $k$, we recursively apply $C$ to an $n$-bit input for $k$ iterations as follows: first apply $C$ to an $n$-bit string to get two $n$-bit strings, then apply it again to each of those to get $4$, and continue $k$ times until we obtain $2^k$ many $n$-bit strings.
+
+A key observation made by Razborov and Rudich \cite{natural-proofs} is that condition (1) automatically implies a \emph{particular statistical test which breaks $C^*$}, namely the test which accepts precisely those $m$-bit strings with circuit complexity exceeding $m^{\epsilon}$. But by property (2), $C^*$ inherits the security of $C$, which is an arbitrary candidate PRG. This means that determining if an $m$-bit string has circuits of size $m^{\epsilon}$ is in fact a \emph{universal test for randomness}, capable of simultaneously breaking all pseudorandom generators.
+
+Recall now our original goal for $C$, which was to find a $2n$-bit string outside its range. Property (1) of $C^*$ implies that an explicit construction of a length-$m$ truth table of circuit complexity $m^{\epsilon}$ would immediately yield an explicit $m$-bit string outside the range of $C^*$. In Section~\ref{sec:completeness}, we show that $C^*$ obeys the following third property:
+\begin{enumerate}[(1)]
+    \setcounter{enumi}{2}
+    \item Given a string outside the range of $C^*$, we can find a string outside the range of $C$ using a polynomial number of calls to an {\cl NP} oracle.
+\end{enumerate}
+The analogue of statement (3) in the context of Bounded Arithmetic was first shown by Je\v{r}\'{a}bek \cite{Jerabek}, and a quite similar argument appears even earlier in the work of Paris, Wilkie, and Woods \cite{Paris-Wilkie-Woods}. Combining properties (1) and (3), we get the desired result: any $m$-bit string of complexity $m^{\epsilon}$ must lie outside the range of $C^*$, so using such a string together with an {\cl NP} oracle we can solve our original instance of {\sc Empty}.
+
+To summarize, the construction $C^*$ of Goldreich, Goldwasser and Micali shows that the property of requiring large circuits is a \emph{universal pseudorandom property of strings} in two concrete senses:
+\begin{enumerate}[(a)]
+    \item (Original analysis of \cite{GGM} and \cite{natural-proofs}) A test determining whether a string requires large circuits can be efficiently boostrapped into a test distinguishing any pseudorandom distribution from the uniform distribution.
+    \item (This work together with \cite{Jerabek}) An explicit example of a string requiring large circuits can be used (together with an $\cl{NP}$-oracle) to generate an explicit example of a string outside the range of any efficiently computable map $C: \{0,1\}^n \rightarrow \{0,1\}^{2n}$ (in fact any $C: \{0,1\}^n \rightarrow \{0,1\}^{n+1}$ as shown in Section~\ref{sec:completeness}), and in particular can be used to construct explicit examples of strings possessing each of the fundamental pseudorandom properties examined in Section~\ref{sec:constructions-in-apepp}.
+\end{enumerate}
+
+\section{Definitions}\label{sec:defs}
+ Following \cite{total}, we define the set of total functions in ${\cl \Sigma_2^P}$, denoted ${\cl TF\Sigma_2^P}$, as follows:
+\begin{definition}
+A relation $R(x,y)$ is in ${\cl TF\Sigma_2^P}$ if there exists a polynomial $p(n)$ such that the following conditions hold:
+\begin{enumerate}
+    \item For every $x$, there exists a $y$ such that $|y| \leq p(|x|)$ and $R(x,y)$ holds
+    \item There is a polynomial time Turing machine $M$ such that for all $x,y$, \\
+    $R(x,y) \Longleftrightarrow \forall z \in \{0,1\}^{p(|x|)} M(x,y,z) \text{ accepts}$
+\end{enumerate}
+\end{definition}
+The search problem associated with such a relation is: ``given $x$, find some $y$ such that $R(x,y)$ holds.'' For the majority of this paper, we will be concerned primarily with \emph{sparse} ${\cl TF\Sigma_2^P}$ search problems, where the only relevant part of the input is its length. We can thus define the following ``sparse'' subclass of ${\cl TF\Sigma_2^P}$:
+\begin{definition}
+A relation $R(x,y)$ is in ${\cl STF\Sigma_2^P}$ if $R \in {\cl TF\Sigma_2^P}$ and for any $x_1,x_2$ such that $|x_1|=|x_2|$, we have that for all $y$, $R(x_1,y) \Leftrightarrow R(x_2,y)$.
+\end{definition}
+
+Since the length of $x$ fully determines the set of solutions, the relevant search problem here is: ``given $1^n$, find some $y$ such that $R(1^n,y)$ holds.'' All explicit construction problems considered in Section~\ref{sec:constructions-in-apepp} will be in ${\cl STF\Sigma_2^P}$ (with the exception of {\sc Complexity} which we briefly mention as it was studied previously in \cite{total}).
+
+We now define the search problem {\sc Empty}, which will be the primary subject of this work:
+\begin{definition}
+{\sc Empty} is the following search problem: given a Boolean circuit $C$ with $n$ input wires and $m$ output wires where $m>n$, find an $m$-bit string outside the range of $C$.
+\end{definition}
+
+Following the original publication of this work, \cite{RSW} renamed the the problem ``{\sc Empty}'' as ``{\sc Range Avoidance}'' or simply ``{\sc Avoid},'' which has become standard in all succeeding work on the topic.
+
+This problem is total due to the basic lemma, referred to in \cite{total} as the ``Empty Pigeonhole Principle'' and in the field of Bounded Arithmetic as the ``Dual Pigeonhole Principle \cite{Jerabek},'' which tells us that a map from a smaller set onto a larger one cannot be surjective. Since verifying a solution $y$ consists of determining that for all $x$, $C(x) \neq y$, we have:
+\begin{observation}
+{\sc Empty} $\in$ ${\cl TF\Sigma^{\cl P}_2}$
+\end{observation}
+
+Since for any instance of {\sc Empty} the number of output bits $m$ is at least $n+1$, a random $m$-bit string will be a solution with probability at least $\frac{1}{2}$. Since verifying a solution can be accomplished with one call to an {\cl NP} oracle, this implies the following inclusion:
+
+\begin{observation}
+{\sc Empty} $\in$ ${\cl FZPP}^{\cl NP}$
+\end{observation}
+
+As mentioned in the introduction, this fact tells us that sufficiently strong pseudorandom generators capable of fooling \emph{nondeterministic} circuits such as those in \cite{AM-derandomization} would suffice to derandomize the above inclusion and yield a ${\cl P}^{\cl NP}$ algorithm for {\sc Empty}. In Section~\ref{sec:completeness}, we will show that this derandomization can be accomplished under a significantly weaker assumption, using a reduction of a very different form than in the hardness-based pseudorandom generators of \cite{NW}, \cite{IW}, and \cite{AM-derandomization}.
+
+We can now define the class {\cl APEPP}, which is simply the class of search problems polynomial-time reducible to {\sc Empty}. This class was originally defined in \cite{total}, and is an abbreviation for ``Abundant Polynomial Empty Pigeonhole Principle.'' The term ``Abundant'' was used to distinguish this from the larger class {\cl PEPP} also studied in \cite{total}. The complete problem for {\cl PEPP} is to find a string outside the range of a map $C:\{0,1\}^n \setminus \{0^n\} \rightarrow \{0,1\}^n$, which appears significantly more difficult (it is at least as hard as {\cl NP} \cite{total}). The distinction between {\cl APEPP} and {\cl PEPP} also appears in the Bounded Arithmetic literature, where the principle corresponding to {\cl APEPP} is referred to as the ``Dual \emph{weak} Pigeonhole Principle,'' while the principle corresponding to {\cl PEPP} is referred to simply as the ``Dual Pigeonhole Principle.'' We will be concerned only with the abundant/weak principle in this work. It should be noted that we employ a slight change of notation from \cite{total} for the sake of simplicity: we use {\sc Empty} to refer to the search problem associated with the \emph{weak} pigeonhole principle, while in \cite{total} {\sc Empty} refers to the search problem associated with the full pigeonhole principle.
+
+\paragraph{Infinitely-often vs. almost-everywhere circuit lower bounds:} As a final point of clarification, whenever we make the statement ``$L$ requires circuits of size $s(n)$'' for some language $L$ and size bound $s$, we mean that circuits of size $s(n)$ are required to compute $L$ on length $n$ inputs for \emph{all but finitely many $n$}. This is in contrast to the statement ``$L \notin {\cl SIZE}(s(n))$,'' which means the circuit size lower bound holds for infinitely many input lengths. All circuit lower bounds referred to in this work will be of the first kind.
+
+\section{Explicit Constructions in {\cl APEPP}}\label{sec:constructions-in-apepp}
+
+In this section, we show that a variety of well-studied explicit construction problems can be reduced in polynomial time to {\sc Empty}. Each proof follows roughly the following format: there is some property of interest $\Pi$, and our goal is to construct an $n$-bit string which has this property. Whenever an $n$-bit string $x$ fails to have property $\Pi$, it indicates that $x$ is somehow more ``structured'' than a random $n$-bit string, and this structure allows us to specify $x$ using fewer then $n$ bits. We then actualize this argument in the form of an efficiently computable map $C: \{0,1\}^k \rightarrow \{0,1\}^n$ with $k < n$, such that any string not having property $\Pi$ is in the range of $C$. This immediately implies that any $n$-bit string outside the range of $C$ must hold property $\Pi$, and thus any solution to the instance of {\sc Empty} defined by $C$ will be a solution to our explicit construction problem. For many of the proofs, we will only show that the reduction is valid for $n$ sufficiently large; clearly this is sufficient, since explicit constructions can be done by brute force for fixed input lengths.
+
+\paragraph{A useful coding lemma:} In the proofs to come, it will be helpful to utilize succinct and efficiently computable encodings of low-weight strings (the ``weight'' of binary string is the number of 1 bits it contains). We start with the following folklore result, reproduced in \cite{Coin-Problem}, which gives an optimal encoding of weight-$k$ $n$-bit strings:
+
+\begin{lemma}\label{lem:sparse-enc}\cite{Coin-Problem}
+For any $k \leq n$, there exists a map $\Phi: \{0,1\}^{\lceil \log\binom{n}{k}\rceil } \rightarrow \{0,1\}^n$ computable in $poly(n)$ time such that every $n$-bit string of weight $k$ is in the range of $\Phi$.
+\end{lemma}
+
+We typically use this in combination with the following standard bounds which hold for all $n \in \mathbb{N}$ and $\epsilon \in (0,1)$:
+\begin{enumerate}
+    \item $\log\binom{n}{(\frac{1}{2}-\epsilon)n} \leq n - \epsilon^2n$
+    \item $\log \binom{n}{\epsilon n} \leq H(\epsilon)n$
+\end{enumerate}
+Here $H(\cdot)$ denotes the binary entropy function. If we want to encode a string of weight \emph{at most} $(\frac{1}{2}-\epsilon)n$ (resp. $\epsilon n$) it will be sufficient for our purposes to take a union bound over the possible values $k \leq (\frac{1}{2}-\epsilon)n$ of the weight. Since $\log\binom{n}{k}$ is increasing in $k$ up to $k = \lfloor \frac{n}{2} \rfloor$ this will incur at most an additive $\lceil \log n \rceil$ bit increase in the encoding length over the above bounds, e.g. it will allow us to encode a string of weight at most $(\frac{1}{2}-\epsilon)n$ using $\leq \lceil n - \epsilon^2n \rceil + \lceil \log n \rceil$ bits.
+
+% As a useful corollary we get the following:
+% \begin{lemma}\label{lem:sparse-enc}
+% For any $0 < \epsilon < \frac{1}{2}$, there exists a map  $\Phi: \{0,1\}^{n - \epsilon^2n + \log n} \rightarrow \{0,1\}^n$ computable in $poly(n)$ time such that any $n$-bit string of weight at most $\frac{n}{2} - \epsilon n$ is in the range of $\Phi$.
+% \end{lemma}
+% \begin{proof}
+% By the previous lemma, we are able to efficiently encode $n$-bit strings of weight exactly $k$ for any $k \leq \frac{n}{2} - \epsilon n$ using at most $\log\binom{n}{\frac{n}{2} - \epsilon n}$ bits. We can upper bound $\log\binom{n}{\frac{n}{2} - \epsilon n}$ as follows. Letting $X$ denote the sum of $n$ independent unbiased variables over $\{0,1\}$, we have:
+% \[
+% \binom{n}{\frac{n}{2} - \epsilon n} \leq 2^n Pr[X \leq \frac{n}{2} - \epsilon n]
+% \]
+% Using a standard Chernoff bound we have that for any $\delta \in (0,1)$:
+% \[
+% Pr[X \leq (1-\delta)\frac{n}{2}] \leq \exp(-n\delta^2/4) \leq 2^{-n\delta^2/4}
+% \]
+% So setting $\delta = 2\epsilon$ we get $\log\binom{n}{\frac{n}{2} - \epsilon n} \leq n - \epsilon^2n$.
+
+% For a string of weight \emph{at most} $\frac{n}{2} - \epsilon n$, we can append an additional $\log n$ bits specifying the weight $k$ of our string, together with the $n - \epsilon^2n$ bits needed to specify a string of weight exactly $k$, to get the desired result.
+% \end{proof}
+
+% We will also utilize efficient permutation codes, which allow us to store bits implicitly within the ordering of a set of numbers:
+% \begin{lemma}\label{lem:permutation-codes}\cite{graph-coding}
+% Let $y$ be a $t\log t$-bit string, and let $x_1, \ldots, x_t$ be a sequence of distinct integers. There exists a pair of efficiently computable maps $\mathsf{Enc}, \mathsf{Dec}$, such that $\mathsf{Enc}(y)$ outputs a permutation of $x_1, \ldots, x_t$, and $\mathsf{Dec}(\mathsf{Enc}(y))=y$.
+% \end{lemma}
+
+\subsection{Hard Truth Tables}
+\begin{definition}\label{def:circ-size}
+Given a string $x$ of length $N$, we say that $x$ is computed by a circuit of size $s$ if there is a Boolean circuit $C$ of fan-in 2 over the basis $\langle \land, \lor, \lnot \rangle$ with $\lceil \log N \rceil$ inputs and $s$ gates, such that $C(i)=x_i$ for all $1 \leq i \leq |x|$. If $N$ is not a power of 2, we put no restriction on the value of $C(i)$ for $i > |x|$.
+\end{definition}
+
+\begin{definition}
+{\sc Hard Truth Table} is the following search problem: given $1^N$, output a Boolean string $x$ of length $N$ such that $x$ is not computed by any circuit of size at most $\ttbound$.
+\end{definition}
+In the typical case where $N = 2^n$ for some $n$, this is equivalent to finding a truth table for an $n$-input Boolean function requiring circuits of size $\varbound$, which is within a $2 + o(1)$ factor of the maximum possible circuit complexity for any $n$-input Boolean function.
+
+\begin{theorem}\label{thm:truth-tables-in-apepp}
+{\sc Hard Truth Table} reduces in polynomial time to {\sc Empty}.
+\end{theorem}
+\begin{proof}
+This proof follows Shannon's classical argument for the existence of functions of high circuit complexity \cite{Shannon}. We construct an instance of {\sc Empty} in the form of a circuit $\Phi$ which maps an encoding of a circuit to its corresponding truth table. $\Phi$ interprets its input as a circuit on $\lceil \log N \rceil$ bits (using an encoding of circuits to be described below), evaluates it on every possible input to generate a $2^{\lceil \log N \rceil}$ bit truth table, and then truncates this truth table to be of length exactly $N$.
+
+We now describe the encoding of circuits used by $\Phi$, which will guarantee that any $N$-bit string $x$ with a circuit of size $\frac{N}{2\log N}$ is in the range of $\Phi$. Given a circuit of size $s \geq \lceil \log N \rceil $ on $\lceil \log N \rceil$ inputs computing $x$, for each of its $s$ gates we can use 2 bits to encode whether it is an $\land, \lor$, or $\lnot$ gate, and an additional $2\log (s+\lceil \log N \rceil) \leq 2\log s + O(1)$ bits to specify its inputs. We can then use an additional $\log s$ bits to specify which gate is the terminal output gate. Overall this requires $2s\log s + O(s)$ bits. It is clear that from such an encoding, $\Phi$ can efficiently decode the represented circuit and evaluate it on all possible input values. For $s \leq \frac{N}{2\log N}$, we have:
+\[
+2s\log s + O(s) \leq \frac{N}{\log N}\log\left(\frac{N}{2\log N}\right) + O\left(\frac{N}{\log N}\right) = N - \Omega\left(\frac{N\log\log N}{\log N}\right) + O\left(\frac{N}{\log N}\right)
+\]
+
+which is strictly less then $N$ for $N$ sufficiently large. So $\Phi$ is indeed a valid instance of {\sc Empty}, and any string outside the range of $\Phi$ is a solution to {\sc Hard Truth Table}. It is also clear from the above description that $\Phi$ can be constructed in $poly(N)$ time.
+
+%%%%%%%%%%%%%
+%other proof
+%%%%%%%%%%%%%
+
+% This proof follows Shannon's classical proof of the existence of functions of high circuit complexity \cite{Shannon}; we must employ some additional tricks to turn his counting arguments into efficient encoding arguments. We construct an instance of {\sc Empty} in the form of a circuit $\Phi$ which maps an encoding of a circuit to its corresponding truth table. $\Phi$ interprets its input as a circuit on $\lceil \log N \rceil$ bits (using an efficient encoding of circuits to be specified below), tests its value on every possible input to generate a $2^{\lceil \log N \rceil}$ bit truth table, and then truncates this truth table to be of length exactly $N$ and outputs the result.
+
+% We will describe a general procedure to efficiently encode $N$-bit strings with circuits of size $s$ on $\lceil \log N \rceil$ inputs, when $s \geq \lceil \log N \rceil$, using at most $s\log s + O(s)$ bits. This procedure is based off of the encoding scheme for unordered graphs given by Naor \cite{graph-coding}. Following Naor, we will assume in our analysis that $s$ is a power of 2; this procedure can be easily generalized to arbitrary $s$. We start by computing the truth tables of each gate in our circuit, and eliminating any gates which have the same truth table; by rerouting inputs of other gates accordingly we can do this while maintaining the functionality our circuit and without increasing its size. We then choose a partition of the gates of our circuit into sets $G_0, \ldots, G_{\log s-1}$, satisfying the following:
+% \begin{enumerate}[(1)]
+%     \item $|G_i| = 2^i$
+%     \item For any gate $g \in G_i$, both of its inputs must either be variables or gates which lie in $G_j$ for some $j \geq i$.
+% \end{enumerate}
+
+% Next, we generate an explicit encoding $E_i$ for each $G_i$. $E_i$ simply contains a list of the inputs of every gate in $G_i$, together with the logical type of every gate. This requires $2(\log s + 1) + 2$ bits per gate in $G_i$, so $2^{i+1} \log s + 2^{i+2}$ bits overall. We then sequentially ``compress'' this representation by iterating over the $E_i$ in increasing order of $i$ and storing some of the bits of $E_{i-1}$ implicitly within $E_i$. At the $i^{th}$ phase, we will take $2^ii$ bits of $E_{i-1}$ and store them within the ordering of the gates of $G_i$ as represented in $E_i$ by using the permutation codes presented in Lemma~\ref{lem:permutation-codes}. In particular, say we are in the $i^{th}$ phase of compression and have already generated the encoding $E_{i-1}$. Given our explicit representation $E_i$ of the subcircuit $G_i$, we can compute the truth tables of every gate in $G_i$ (by condition (2) of our encoding we won't need any information from $E_j, j< i$ in order to do this), and then sort the gates canonically by comparing their truth tables as integers. Because of our earlier gate elimination step, every gate will have a unique position in this ordering. Relative to this canonical ordering of the gates, we can choose an arbitrary relabeling of our representation of $G_i$ in $E_i$ using any permutation $\tau \in S_{2^i}$, and in turn $\tau$ can be determined from this relabeled $E_i$ by computing the canonical gate ordering and comparing it to the given gate labeling. So applying Lemma~\ref{lem:permutation-codes}, we can store $2^i\log 2^i = 2^ii$ bits ``for free'' within $E_i$ using a permutation code. We then use these extra bits to store part of the encoding $E_{i-1}$ which was computed previously.
+
+% From this compressed encoding, we can recover a circuit which is functionally equivalent to the original encoded circuit as follows: starting with $i=\log s -1$ and working backwards, we decode $E_i$, which gives us both a description of $G_i$ and a permutation $\tau$ storing additional bits. We then use the additional bits in $\tau$ together with the remaining bits we stored for $E_{i-1}$ to decode $G_{i-1}$ and the next permutation, and so on.
+
+% Let $L(s)$ be the total number of bits used in this encoding. Since for each $G_i$ we use $2^{i+1}\log s + 2^{i+2}$ bits to store $E_i$, but ``get back'' $2^i i$ bits which can be used for the encoding of $G_{i-1}$, we have:
+% \[
+% L(s) \leq \sum\limits_{i=0}^{\log s - 1} 2^{i+1}\log s + 2^{i+2} - \sum\limits_{i=1}^{\log s - 1} 2^i i \leq 2s\log s - s\log s + O(s) = s\log s + O(s)
+% \]
+
+% So setting $s=\lceil \frac{N}{\log N} \rceil$ in the encoding used in our circuit $\Phi$, we get that the number of input bits of $\Phi$ is at most $\lceil \frac{N}{\log N} \rceil \log (\lceil \frac{N}{\log N} \rceil) + O(\lceil \frac{N}{\log N} \rceil)$, which is strictly less than the number of output bits $N$ (provided $N$ is sufficiently large). Thus, $\Phi$ is a valid instance of {\sc Empty}, and any $N$-bit string outside its range cannot be computed by a circuit of size at most $\frac{N}{\log N}$. It is also clear from our description of the decoding procedure that $\Phi$ can be generated in $poly(N)$ time.
+
+\end{proof}
+
+Following the original publication of this work, it was shown in \cite{CHR} that the above argument could be sharpened using a more involved circuit encoding procedure, so that truth tables of essentially optimal hardness $\frac{N}{\log N}$ could be constructed via reduction to {\sc Empty}.
+
+A related problem was studied in \cite{total}, referred to there as ``{\sc Complexity}.'' Rather then an explicit construction problem with sparse input, in this problem you are given as input one truth table $x$ of length $N$, and asked to produce another truth table $y$ such that $y$ requires large circuits, even with access to $x$-oracle gates. More formally:
+
+\begin{definition}\label{def:complexity}
+The problem {\sc Complexity} is defined as follows: given an $N$-bit string $x$, find another $N$-bit string $y$ such that $y$ requires $x$-oracle circuits of size $\frac{N}{\log^2 N}$.
+\end{definition}
+Note that the ``$x$ oracle'' is not the typical definition of an oracle gate that can solve arbitrarily sized instances of a fixed language, but rather an oracle for a fixed Boolean function on $\log N$ variables.
+In \cite{total} the following is shown:
+\begin{theorem}
+{\sc Complexity} reduces in polynomial time to {\sc Empty}.
+\end{theorem}
+It should be noted that {\sc Complexity} bears resemblance to a problem studied by Ilango \cite{Ilango}, termed the ``Minimum Oracle Circuit Size Problem,'' or ``MOCSP.'' In this problem, the input consists of two truth tables $x$ and $y$ and a size parameter $s$, and the goal is to determine if $y$ has $x$-oracle circuits of size at most $s$. Ilango demonstrates that MOCSP is {\cl NP}-complete under randomized reductions.
+
+\subsection{Pseudorandom Generators}
+\begin{definition}
+We will say that a sequence $R = (x_1, \ldots, x_m)$ of $n$-bit strings is a pseudorandom generator if, for all $n$-input circuits of size $n$:
+\[
+|Pr_{x \sim R}[C(x)=1] - Pr_{y \sim \{0,1\}^n}[C(y)=1]| \leq 1/n
+\]
+\end{definition}
+
+Standard applications of the probabilistic method show that such pseudorandom generators exist of size polynomial in $n$. Thus we can define the following total search problem:
+\begin{definition}
+{\sc Prg} is the following search problem: given $1^n$, output a pseudorandom generator $R = (x_1, \ldots, x_m)$, $x_i \in \{0,1\}^n$.
+\end{definition}
+
+A polynomial time algorithm for {\sc Prg} would suffice to derandomize {\cl BPP} \cite{NW}. We now show how to formalize the argument for the totality of {\sc Prg} using the empty pigeonhole principle. In particular, we show that a PRG of size $n^6$ can be constructed in {\cl APEPP}.
+
+As noted in the introduction, the results of Impagliazzo and Wigderson \cite{IW} imply that {\sc Prg} reduces directly to {\sc Hard Truth Table}, so a reduction of {\sc Prg} to {\sc Empty} follows from Theorem~\ref{thm:truth-tables-in-apepp}. However, we provide here a much simpler direct proof that {\sc Prg} reduces to {\sc Empty}, relying only on Yao's next bit predictor lemma, and neither the nearly disjoint subsets construction of Nisan and Wigderson \cite{NW} nor the rather involved worst-case to average-case reductions of Impagliazzo and Wigderson \cite{IW}. Together with our completeness result in Section~\ref{sec:completeness}, this gives an alternative, self-contained proof that worst-case-hard truth tables can be used to construct pseudorandom generators (although it yields a weaker result, as our derandomization will require an {\cl NP} oracle).
+
+The basic idea of the proof is as follows: if $R$ fails to be a pseudorandom generator for circuits of size $n$, then applying Yao's lemma there exists a next bit predictor circuit of size $O(n)$ which can predict the $i^{th}$ bit of most strings in $R$ from the previous $i-1$ bits. This will allow us to compress $R$ by omitting the $i^{th}$ bits of all the strings in $R$ and replacing them with the predictor $D$ and some advice bits which will correct the errors made by $D$.
+
+\begin{theorem}\label{thm:prg}
+{\sc Prg} reduces in polynomial time to {\sc Empty}
+\end{theorem}
+
+\begin{proof}
+We start by constructing the following circuit $\Phi$. $\Phi$ interprets its input as representing a list $R^- = (x_1, \ldots, x_{n^6})$ of $n^6$ strings of length $n-1$, a circuit $D$ of size $cn$ (for a fixed universal constant $c$ to be defined later) with $n-1$ input bits and one output bit, a $\log n$-bit index $i \in [n]$, and a string $S$ encoding an $n^6$-bit string with weight at most $\frac{n^6}{2} - n^4$. Given these, $\Phi$ feeds each $n-1$-bit string $x_j \in R^-$ through $D$, then inserts the output as an extra bit at the $i^{th}$ position of $x_j$ to obtain an $n$-bit string $x_j^*$. In the final step, $\Phi$ decodes the $n^6$-bit string represented by $S$, and flips the $i^{th}$ bit of $x_j^*$ if and only if the $j^{th}$ position of $S$ has a 1, to obtain $x_j'$. $\Phi$ then outputs $R = (x_1', \ldots, x_{n^6}')$.
+
+It is clear that $\Phi$ can be implemented as a circuit of size polynomial in $n$, and further that $\Phi$ can be constructed in polynomial time given $1^n$. We now show there are fewer inputs than outputs. Note that the input size is equal to the number of bits needed to specify $R^-, D, i, S$, which is $n^7 - n^6 + \Tilde{O}(n) + \log n + bits(S)$, where $bits(S)$ is the number of bits needed to specify $S$. Since $S$ an $n^6$-bit string with weight at most $\frac{n^6}{2} - n^4 = n^6(\frac{1}{2} - \frac{1}{n^2})$, we can apply Lemma~\ref{lem:sparse-enc} with $\epsilon=\frac{1}{n^2}$ to give an encoding for $S$ using $n^6(1-\frac{1}{n^4}) + \log (n^6) = n^6 - n^2 + 6\log n$ bits. Thus the overall number of bits of input is at most $n^7 - n^6 + \Tilde{O}(n) + \log n + n^6 - n^2 + 6\log n = n^7 + \Tilde{O}(n) + 7\log n - n^2$ which is strictly less then the $n^7$ bits of output (for sufficiently large $n$). So this is indeed a polynomial time reduction to a valid instance of {\sc Empty}. It remains to show that any string outside the range of $\Phi$ is a pseudorandom generator.
+
+Let $R$ be a sequence of $n$-bit strings of size $n^6$ which fails to be a pseudorandom generator; we aim to show that $R$ lies in the range of $\Phi$. By definition, there exists a circuit $C$ of size $n$ such that:
+\[
+|Pr_{x \sim R}[C(x)=1] - Pr_{y \sim \{0,1\}^n}[C(y)=1]| > 1/n
+\]
+
+For $x \in \{0,1\}^n$ and $i \in [n]$, let $x^{-i}$ be the $n-1$-bit string obtained by deleting the $i^{th}$ bit of $x$, and let $x^i$ denote the $i^{th}$ bit of $x$. By Yao's next bit predictor lemma \cite{Yao} \cite{Vadhan}, the previous inequality implies the existence of an index $i \in [n]$ and a circuit $D: \{0,1\}^{n-1} \rightarrow \{0,1\}$ of size $cn$ for some fixed universal constant $c$, such that
+\[
+Pr_{x \sim R}[D(x^{-i}) = x^i] > \frac{1}{2} + \frac{1}{n^2}
+\]
+Since $R$ has size $n^6$, this implies that $D$ correctly guesses the $i^{th}$ bit of $x \in R$ from the other $n-1$ bits for at least $n^6(\frac{1}{2} + \frac{1}{n^2}) = \frac{n^6}{2} + n^4$ of the elements of $R$. So if we let $S$ be the $n^6$-bit string with a 1 at the indices where $D$ guesses the wrong value of $x^i$, we see that the weight of $S$ is at most $\frac{n^6}{2} - n^4$ as required. Taking $R^- = (x_1^{-i}, \ldots, x_{n^6}^{-i})$, we have that from $R^-,D,i,S$ we can efficiently deduce $R$.
+
+So overall, we have established that for any $R$ which is not a pseudorandom generator, there exists some $R^-,D,i,S$ such that our circuit $\Phi$ outputs $R$ on input $R^-,D,i,S$. Thus, any string outside the range of $\Phi$ is a pseudorandom generator.
+\end{proof}

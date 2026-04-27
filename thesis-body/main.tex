@@ -1,14 +1,47 @@
-\documentclass[11pt]{report}
+\documentclass[12pt]{report}
 
 \input{preamble}
 \input{macros}
 
 \begin{document}
+\doublespacing
+
+% Title page and other unnumbered front matter.
 \input{frontmatter/title}
+\input{frontmatter/copyright}
 
+\pagenumbering{gobble}
+\input{frontmatter/abstract}
+
+% Table of contents and optional lists.
+\clearpage
+\pagenumbering{roman}
+\setcounter{page}{1}
+\begin{singlespace}
 \tableofcontents
+\listoffigures
+\listoftables
+\end{singlespace}
 
-\chapter{Introduction}
+% Optional front matter.
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Acknowledgments}
+\input{frontmatter/acknowledgements}
+
+\phantomsection
+\addcontentsline{toc}{chapter}{Dedication}
+\input{frontmatter/dedication}
+
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\phantomsection
+\addcontentsline{toc}{chapter}{Introduction or Preface}
+\input{frontmatter/preface}
+
+\chapter{Introduction and Background}
 \input{chapters/introduction}
 
 \chapter{Stronger Cell Probe Lower Bounds via Local PRGs}
@@ -29,10 +62,19 @@
 \chapter{Total Functions}
 \input{chapters/totalfuncs}
 
-\chapter{Conclusion}
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{Conclusion or Epilogue}
+\chapter*{Conclusion}
 \input{chapters/conclusion}
 
-\bibliographystyle{alpha}
-\bibliography{bib/thesis}
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{References}
+\begin{singlespace}
+\printbibliography[title={References}]
+\end{singlespace}
+
+\input{frontmatter/appendix}
 
 \end{document}
