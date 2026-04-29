@@ -36,7 +36,7 @@ We finally turn to our third main subject of study, $\mathsf{NC}^0$ range avoida
 {\bf \noindent The Main Correspondence:}
 The starting point of our work is the observation that the 3 problems discussed above are tightly related to one another. The relation between $\mathsf{NC}^0$ PRGs and $\mathsf{NC}^0$ range avoidance is rather obvious (although still insufficiently explored prior to this work), and so the key point is the relation we observe between these two topics pertaining to $\mathsf{NC}^0$ circuits on the one hand, and the project of proving cell probe lower bounds on the other. This relationship follows directly from the definitions of the objects in question, and is more appropriately understood as a \emph{perspective shift} rather than a new result. 
 
-To state the connection in its simplest form, we focus our attention for now on a special setting of the cell probe model: the word length is 1 (i.e. $\Sigma = \{0,1\}$, often called the \emph{bit probe} model), and the data structures in question are \emph{nonadpative}. Here, nonadpative means that the data structure will decide which cells to probe as a function only of the query, in contrast to a general \emph{adaptive} data structure which may decide on the next cell to probe based on the outcomes of previous probes. In this setting we have:
+To state the connection in its simplest form, we focus our attention for now on a special setting of the cell probe model: the word length is 1 (i.e. $\Sigma = \B$, often called the \emph{bit probe} model), and the data structures in question are \emph{nonadpative}. Here, nonadpative means that the data structure will decide which cells to probe as a function only of the query, in contrast to a general \emph{adaptive} data structure which may decide on the next cell to probe based on the outcomes of previous probes. In this setting we have:
 \begin{observation*}
 Let $F: [N] \times [M] \to \B$ be a data structure problem, which we interpret as a matrix $F \in \B^{N \times M}$ with $N$ rows and $M$ columns below. The following are equivalent:
 \begin{enumerate}
@@ -113,7 +113,7 @@ In Section~\ref{cellprobe:sec:avoid-and-linear-attack} we give the best known un
 \begin{theorem}
 \label{cellprobe:thm:pnp-avoid-odd}
 %[Theorem~\ref{cellprobe:thm:pnp-avoid-odd}]
-Let $t = O(1)$ be a fixed odd number. There is a polynomial time algorithm which outputs a list of strings in $\{0,1\}^m$, such that for any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
+Let $t = O(1)$ be a fixed odd number. There is a polynomial time algorithm which outputs a list of strings in $\B^m$, such that for any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
 \[
 m \geq  \tilde{O}( n^{\frac{t}{2} - \frac{t-2}{2(t+2)}})
 \]
@@ -342,7 +342,7 @@ We elaborate on our notion of explicit: for the purposes of our range avoidance 
 We now define the two main objects of study in our work: the cell probe model of static data structures on the one hand, and locally-computable generators on the other. We then state the tight connection between them, giving some more detail than was supplied in the introduction. Broader implications of this connection will be explored in more depth in Section~\ref{cellprobe:sec:connections}.
 
 \begin{definition}[Cell Probe Model]
-Let $F: \N \times [M] \to \{0,1\}$, which we refer to as a ``data structure problem.'' Elements $x \in \N$ are referred to as ``queries,'' $y \in [M]$ as ``datapoints.'' We say that $F$ has cell probe data structures with space complexity $S$, time complexity $t$, and word length $w$ if there exist procedures of the following form:
+Let $F: \N \times [M] \to \B$, which we refer to as a ``data structure problem.'' Elements $x \in \N$ are referred to as ``queries,'' $y \in [M]$ as ``datapoints.'' We say that $F$ has cell probe data structures with space complexity $S$, time complexity $t$, and word length $w$ if there exist procedures of the following form:
 \begin{enumerate}
     \item (Encoding:) A computationally-unbounded encoding procedure which, given $y \in [M]$, preprocesses it into a data structure $\mathcal{E}(y) \in \Sigma^S$, $|\Sigma| \leq 2^w$ 
     \item (Query Procedure:) A computationally-unbounded $t$-query algorithm $\mathcal{Q}$ which, given $x \in \N$ and some encoding $E \in \Sigma^S$, queries $t$ indices (``cells'') of $E$ and outputs a bit $\mathcal{Q}(x,E) \in \B$
@@ -421,7 +421,7 @@ Returning to the $\{\pm 1\}$ viewpoint, observe that we may extend the definitio
 \begin{observation}\label{cellprobe:obs:multilin}
 For any $\mathcal{C},f$,
 \[
-\max_{R\in \{-1,1\}^V} \mathrm{Val} (\mathcal{C},f,R) = \max_{R\in [-1,1]^V} \mathrm{Val} (\mathcal{C},f,R) \geq \max_{R\in \{0,1\}^V} \mathrm{Val} (\mathcal{C},f,R) 
+\max_{R\in \{-1,1\}^V} \mathrm{Val} (\mathcal{C},f,R) = \max_{R\in [-1,1]^V} \mathrm{Val} (\mathcal{C},f,R) \geq \max_{R\in \B^V} \mathrm{Val} (\mathcal{C},f,R) 
 \]
 \end{observation}
 
@@ -432,7 +432,7 @@ The second inequality is trivial ($\B \subseteq [-1,1]$). The first is a standar
 \]
 for some polynomials $P,Q$ depending only on $(R(j))_{j \neq i}$. This is the absolute value of a linear function in $R(i)$ whose maximum is achieved at the boundary of $[-1,1]$.
 \end{proof}
-The right-hand side in Observation~\ref{cellprobe:obs:multilin} may be seen as a kind of hypergraph discrepancy parameter. Viewing $(c_x)_{x \in X}$ as a $t$-uniform (multi-)hypergraph over vertex set $V$ with hyperedges indexed by $X$, we may think of $f \in \{ \pm 1\}^X$ as assigning a sign to each hyperedge. Then $ \max_{R\in \{0,1\}^V} \mathrm{Val} (\mathcal{C},f,R) $ is the maximum, over all subsets of vertices $U \subseteq V$, of the sum of the values $f_x$ with $x$ ranging over hyperedges in the sub-hypergraph induced by $U$. The smallness of $ \max_{R\in \{0,1\}^V} \mathrm{Val} (\mathcal{C},f,R) $ indicates that every large induced subhypergraph has its edges colored by $f$ in an approximately balanced way.
+The right-hand side in Observation~\ref{cellprobe:obs:multilin} may be seen as a kind of hypergraph discrepancy parameter. Viewing $(c_x)_{x \in X}$ as a $t$-uniform (multi-)hypergraph over vertex set $V$ with hyperedges indexed by $X$, we may think of $f \in \{ \pm 1\}^X$ as assigning a sign to each hyperedge. Then $ \max_{R\in \B^V} \mathrm{Val} (\mathcal{C},f,R) $ is the maximum, over all subsets of vertices $U \subseteq V$, of the sum of the values $f_x$ with $x$ ranging over hyperedges in the sub-hypergraph induced by $U$. The smallness of $ \max_{R\in \B^V} \mathrm{Val} (\mathcal{C},f,R) $ indicates that every large induced subhypergraph has its edges colored by $f$ in an approximately balanced way.
 
 We now show that, for any locally-computable generator over output space $\{\pm 1\}^N$, we can associate a small collection of XOR schemes indexed by $[N]$ (or by large subsets $X\subseteq [N]$), so that for any $f \in \rng(G)$, we have that $\Opt(\mathcal{C},f)$ is large for one of the schemes $\mathcal{C}$ in our collection. 
 
@@ -961,7 +961,7 @@ Hence, our new explicit cell probe lower bounds immediately imply new polynomial
 For one of our lower bounds (Theorem~\ref{cellprobe:thm:k-wise-lb}), we will be able to analyze the argument in a non black box way and remove the $\mathsf{NP}$ oracle. For Theorem~\ref{cellprobe:thm:biased-lb} we are unable to make such an improvement. We start with this latter result, where using known constructions of small bias probability spaces (\cite{naornaor}) we get:
 
 \begin{theorem*}[Theorem \ref{cellprobe:thm:pnp-avoid-odd}, restated]
-Let $t = O(1)$ be a fixed odd number. There is a polynomial time algorithm which outputs a list of strings in $\{0,1\}^m$, such that for any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
+Let $t = O(1)$ be a fixed odd number. There is a polynomial time algorithm which outputs a list of strings in $\B^m$, such that for any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
 \[
 m \geq  \tilde{O}( n^{\frac{t}{2} - \frac{t-2}{2(t+2)}})
 \]
@@ -1009,7 +1009,7 @@ We take $\pi^{f,g}$ in place of ``$\pi^f$'' from the previous proof and $\tilde{
 \end{proof}
 Using this in conjunction with the main ideas in Section~\ref{cellprobe:subsec:k-wise-lbs} we can now prove Theorem~\ref{cellprobe:thm:polytime-avoid}.
 \begin{proof}[Proof of Theorem~\ref{cellprobe:thm:polytime-avoid}]
-Given the generator $G$, we may apply Theorem~\ref{cellprobe:thm:cell-csp-correlation} to compute a list of $2^{tw+1}$ XOR schemes, so that whenever a string in $\{0,1\}^m \leftrightarrow\{\pm 1\}^m$ makes the value of all XOR schemes $< \epsilon2^{-tw-1}$, it must be $(\frac{1}{2}-\epsilon)$-far in relative hamming distance from $\rng(G)$. We will use \cite{naornaor} to construct a polynomial size list of candidate strings, such that one of them must make all such values small simultaneously which will guarantee that it is far form $\rng(G)$. To make our algorithm run in polynomial time, we need to certify that one of these strings from the list accomplishes this goal.
+Given the generator $G$, we may apply Theorem~\ref{cellprobe:thm:cell-csp-correlation} to compute a list of $2^{tw+1}$ XOR schemes, so that whenever a string in $\B^m \leftrightarrow\{\pm 1\}^m$ makes the value of all XOR schemes $< \epsilon2^{-tw-1}$, it must be $(\frac{1}{2}-\epsilon)$-far in relative hamming distance from $\rng(G)$. We will use \cite{naornaor} to construct a polynomial size list of candidate strings, such that one of them must make all such values small simultaneously which will guarantee that it is far form $\rng(G)$. To make our algorithm run in polynomial time, we need to certify that one of these strings from the list accomplishes this goal.
 To perform this certification, we transform the XOR schemes into matrix ensembles using Theorem~\ref{cellprobe:thm:kikuchi} followed by Lemma~\ref{cellprobe:lem:infty-to-spectral}, and then compute the associated spectral norms. We can observe easily that each of the transformations prescribed in Theorems~\ref{cellprobe:thm:cell-csp} and \ref{cellprobe:thm:kikuchi} and in Lemma~\ref{cellprobe:lem:infty-to-spectral} can be performed efficiently.
 Using \cite{naornaor} as indicated above, we can construct in time $2^{O(ktw)}$ a list of $\leq m^{O(tw)}$ strings which support a $2^{-O(ktw)}$-almost $k$-wise distribution for $k= t\log N$. By Theorem~\ref{cellprobe:thm:k-wise-csp}, one of the strings in this list will pass all of the $2^{tw+1}$ spectral tests define above; our algorithm outputs the first such string.
 \end{proof}
@@ -1141,7 +1141,7 @@ Let $F$ be any data structure problem, $t \in \mathbb{N}$. There exist constants
 We will therefore focus specifically on homogeneous data structures with time $t = O(1)$.
 Homogeneous data structures have a rather appealing formulation in terms of communication complexity:
 \begin{definition}[Parallel Channel Model]
-Let $F: X \times Y \to \{0,1\}$ be a two-party communication problem. We say that $F$ has a $(t,k)$-parallel protocol if it can be computed in the following way:
+Let $F: X \times Y \to \B$ be a two-party communication problem. We say that $F$ has a $(t,k)$-parallel protocol if it can be computed in the following way:
 \begin{enumerate}
 	\item Alice receives $x \in X$; a council of $t$ Bobs $B_1,\ldots, B_t$ receive (the same input) $y \in Y$; a referee Charlie receives no input.
 	\item (Round 1:) Alice sends a different $k$-bit message privately to each Bob
