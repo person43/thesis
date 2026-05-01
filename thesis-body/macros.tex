@@ -73,7 +73,7 @@
 \providecommand{\DLOGTIME}{}
 \renewcommand{\DLOGTIME}{\mathsf{DLOGTIME}}
 \providecommand{\cl}{}
-\renewcommand{\cl}{\bf}
+\renewcommand{\cl}[1]{\ifmmode\mathsf{#1}\else\textsf{#1}\fi}
 \providecommand{\p}[1]{}
 \renewcommand{\p}[1]{{(#1)}}
 \providecommand{\poly}{}

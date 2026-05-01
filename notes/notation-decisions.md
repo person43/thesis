@@ -76,4 +76,7 @@ The goal is to make notation decisions once and then apply them consistently acr
 
 ### Finalized
 
-- None yet.
+- Complexity classes should use `\mathsf{...}` thesis-wide.
+  Legacy `{\cl ...}` usages in imported chapters should be interpreted via
+  a compatibility macro that renders as `\mathsf` in math mode and
+  `\textsf` in text mode, rather than boldface.

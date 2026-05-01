@@ -1,0 +1,32 @@
+Main notational inconsistencies still remaining in the thesis
+
+1. Complexity-class typography is inconsistent.
+Some chapters use `{\cl ...}` heavily (especially `hardest` and `lossy`), while others use `\mathsf{...}` directly (especially `lop` and `cellprobe`). `randomstrings` also mixes in macro-style names like `\E`, `\NP`, `\P/\poly`, and `\TIME[...]`.
+
+2. Probability and expectation notation is inconsistent.
+`hardest` often uses raw `Pr_{x \sim X}` notation, `randomstrings` usually uses `\Pr`, `lossy` also has raw forms like `Pr_r`, and `cellprobe` explicitly distinguishes `\Exp` from subscripted expectation notation such as `\E_{x \sim X}`.
+
+3. Range-avoidance terminology is inconsistent.
+The same general object is referred to as `Empty`, `Avoid`, `Range Avoidance`, and sometimes just “range avoidance.” The associated operator notation also varies between `\rng(...)` and `\mathrm{range}(...)`.
+
+4. Complexity/operator macros are only partially standardized.
+The shared macros file defines symbols such as `\dom`, `\supp`, `\rng`, `\rank`, and `\rrank`, but chapters do not use them uniformly. Some chapters use the macros, while others write `\mathrm{dom}`, `\mathrm{supp}`, `\mathrm{range}`, or plain text forms directly.
+
+5. Random-variable typography is inconsistent.
+`cellprobe` explicitly uses boldface for random variables and distinguishes this from deterministic quantities, while the other chapters usually use ordinary symbols for both.
+
+6. Boolean-value conventions differ across chapters.
+`cellprobe` frequently switches to `\{\pm 1\}` notation for boolean objects, while the other chapters mostly stay in ordinary bit-valued notation. This may be mathematically natural locally, but it is still a noticeable thesis-wide inconsistency.
+
+7. Asymptotic notation is not unified.
+Most chapters use standard asymptotic forms such as `O`, `\Omega`, `\tilde{O}`, and `\poly`, while `randomstrings` introduces its own hierarchy `\od{d}`, `\omd{d}`, `\lilod{d}`, and `\semi{d}{\alpha}`.
+
+8. Names for hardness/complexity measures are not fully harmonized.
+Different chapters emphasize different terms such as “circuit complexity,” “hardness,” “entropy,” and `K^T` / time-bounded Kolmogorov complexity, without a single thesis-wide style for how recurring measures should be introduced or referred to.
+
+Suggested priority order for future cleanup:
+1. Complexity-class font/style
+2. Probability/expectation notation
+3. Range-avoidance terminology and range operator notation
+4. Random-variable typography
+5. Whether to preserve chapter-local `\{\pm 1\}` notation in `cellprobe`
