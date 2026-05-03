@@ -1,0 +1,1034 @@
+% !TeX root = ../main.tex
+
+\section{Merged intro content}
+
+\section{The Hardest Explicit Construction}
+
+\section{Strong vs. Weak Range Avoidance and the Linear Ordering Principle}
+\todo{I commented out stuff about top-down method and Kannan; we should make sure this goes in the intro, then bring back something quick to remind the reader of the context here}
+% One of the central problems in complexity theory is to prove strong lower bounds on the size of boolean circuits computing some explicit function $f: \B^n \to \B$; by a classical result of Shannon, most such functions $f$ require circuits of size $~ 2^n/n$. In the original formulation of this problem, ``explicit'' meant $f \in \mathsf{NP}$, since in this case case proving a lower bound $n^{\omega(1)}$ would separate the classes $\mathsf{P}$ and $\mathsf{NP}$. It was soon realized that this problem remains difficult even for much weaker definitions of ``explicit,'' i.e. if we broaden our search for high circuit complexity functions to a much larger uniform complexity class than $\mathsf{NP}$. 
+
+% Obviously there are decidable problems with maximal circuit complexity, since a Turing machine with sufficient resources may search for the hardest function $f_n: \B^n \to \B$ by brute force given $n$, and then compute that function $f_n$ on a given input of length $n$. Kannan \cite{Kannan} was the first to investigate the precise complexity upper bound of this brute-force construction of a hard language: he observed that the class $\mathsf{E}^{\Sigma_2^P}$, which denotes $2^{O(n)}$-time machines with access to an oracle for a $\mathsf{\Sigma_2^P}$ complete language, contains a function of maximum circuit complexity, precisely because this class possesses sufficient resources to diagonalize over all low-complexity functions of a given input length. The question of finding the smallest uniform complexity class containing an exponentially hard boolean function came to more prominence following the seminal works of Nisan, Wigderson and Impagliazzo\cite{NW,IW}, who showed that if one could improve Kannan's upper bound from $\mathsf{E}^{\Sigma_2^P} $ to $\mathsf{E}$, it would imply $\mathsf{BPP}=\mathsf{P}$, i.e. universal derandomization of all polynomial time algorithms.
+
+% A recent line of work on the \emph{Range Avoidance} problem (``Avoid'') has reformulated this topic in the language of search problems \cite{Korten,CHR}. Consider the so-called ``truth table generator'' $\mathrm{TT}_n: \B^{\ell} \to \B^{2^n}$ which takes as input the description of a circuit $C: \B^n \to \B$ of size $s$, and outputs the truth table of the function it computes. If $s << 2^n$, then a standard argument shows that we may encode $C$ in a direct way using $< 2^n$ bits, so that $\ell < 2^n$ and the function $\mathrm{TT}_n$ is computable in $2^{O(n)}$ time. Therefore, to produce a function of high circuit complexity, it suffices to find a string $y \in \B^{2^n}$ outside the range of $C$. This general problem, where we are given a circuit with more output bits then input bits and wish to find a string outside its range, is called Range Avoidance. By the pigeonhole principle, it is a \emph{total search problem}, meaning it always has solutions.
+% Viewing $\mathrm{TT}_n$ as an instance of the Range Avoidance problem we can observe that if Avoid has a polynomial time algorithm then $\mathsf{E}$ requires exponential-size circuits. For larger complexity classes, it was shown in \cite{Korten} (based on an earlier result in \cite{Jerabek}) that solving Avoid and proving circuit lower bounds are actually \emph{equivalent problems}: for exponential-time classes at least as large as $\mathsf{E^{NP}}$, proving an exponential circuit lower bound is equivalent to solving Avoid in the polynomial-time analogue of that class. Beyond constructing hard boolean functions, algorithms for Range Avoidance have a host of further applications in \emph{explicit constructions} of pseudorandom objects \cite{Korten,low-depth-avoid}.
+
+In recent breakthrough works of Chen, Hirahara, Ren and Li \cite{CHR,Li}, the first unconditional improvement to Kannan's classical result\footnote{This is the first improvement on finding the smallest complexity class with an \emph{exponential} circuit lower bound. If the goal is to prove merely superpolynomial lower bounds, lower bounds for smaller classes can be established using Karp-Lipton theorems \cite{karp-lipton}, an approach pioneered in Kannan's original paper \cite{Kannan}. This method can at best show ``sub-half-exponential'' lower bounds, and only for infinitely many input lengths.}. These works showed that the classes $\mathsf{S_2^P}\subseteq \mathsf{ZPE^{NP}} \subseteq\mathsf{\Sigma_2^E} $ all contain a function of circuit complexity $2^n/n$, which is within a $(1 \pm o(1))$ factor of the maximum possible circuit complexity of a boolean function. The results are established by giving a new algorithm for Avoid which runs in the class $\mathsf{FS_2^P}$, the functional variant of the decision class $\mathsf{S_2^P}$. 
+%\todo{Toni: should we add a sentence saying this is equivalent to giving small size depth-3 ac0 ckts for Avoid? Also maybe this last sentence would be better placed in next paragraph.}
+
+The authors of \cite{CHR,Li} made progress on a classical lower bound problem by discovering a new kind of algorithm for the total search problem Range Avoidance, a search problem in the class $\cl{TF\Sigma_2^P}$.
+% This search problem lies in an unusual complexity class which was only first investigated a few years ago by \cite{KKMP}: it is a member of $\mathsf{TF\Sigma_2^P}$, the class of total search problems in the \emph{second level} of the polynomial hierarchy. 
+Since the introduction of $\mathsf{TF\Sigma_2^P}$ in \cite{KKMP}, there has been no follow up work developing a structural classification of the problems therein, despite the considerable attention that has been devoted to Range Avoidance and explicit construction problems more generally. The work of \cite{CHR,Li} indicates that some problems in $ \mathsf{TF\Sigma_2^P}$ admit highly nontrivial algorithms, algorithms which have consequences in seemingly unrelated areas of complexity. Do such algorithms exist for all search problems in $\mathsf{TF\Sigma_2^P}$? What more can we say about the relation of Avoid to other problems in this class? The purpose of this chapter is to address these two questions in particular, and more broadly to further the systematic study of $\mathsf{TF\Sigma_2^P}$ beyond its introduction in \cite{KKMP}, with an emphasis both on \emph{inclusions} and \emph{black box separations}. Prior to this work, no non-trivial separations between problems in $\mathsf{TF\Sigma_2^P}$ were known.
+
+In contrast to $\mathsf{TF\Sigma_2^P}$, $\mathsf{TFNP}$ has received a thorough investigation over the past three decades and its structure is rather well understood in comparison. 
+A major distinction we reveal between $\mathsf{TF\Sigma_2^P}$ and $\mathsf{TFNP}$ is that the former has a plethora of \emph{resource-constained} subclasses, many of which can be separated from one another by explicit and natural search problems. 
+By ``resource-constrained subclass'' we mean a class of search problems characterized by the existence of some resource-constrained algorithm which can find a solution. One example we will see is the class $\mathsf{psFZPP^{NP}}$, the class of problems where for every input $x$, there is a canonical solution $y_x$ which is output with high probability by some polynomial time $\mathsf{NP}$-oracle algorithm. 
+Another class is $\mathsf{FP^{\Sigma_2^{NP} \cap \Pi_2^P}}$, consisting of those problems which can be solved in polynomial time with oracle access to a language in $\mathsf{\Sigma_2^P \cap \Pi_2^P}$. We will introduce and study several other such subclasses, and exhibit four natural search problems which exhibit separations (in the decision tree model) between them. 
+This situation is in stark contrast to the known structure of $\mathsf{TFNP}$: while $\mathsf{FNP}$ does contain some intermediate resource-constrained classes, such as $\mathsf{psFZPP}$ and $\mathsf{FP^{NP \cap coNP}}$ (these are roughly analogous to $\mathsf{psFZPP^{NP}}$ and $\mathsf{FP^{\Sigma_2^{NP} \cap \Pi_2^P}}$ mentioned above), it is known that in the decision tree model all of these classes collapse to $\mathsf{FP}$. 
+As a result, in the decision tree model the only resource-based distinctions amongst the standard $\mathsf{TFNP}$ problems is the distinction between $\mathsf{FP}$ and the rest of $\mathsf{TFNP}$.
+%\todo{i reworded, since it sounded like FP and its complement are different.}
+%i guess you mean distinction between FP and the other nontrivial TFNP classes. ?}
+
+% We now describe the four $\mathsf{TF\Sigma_2^P}$ search problems which we focus on. \todo{explain that we will call ``avoid'' ``weak avoid'' from now on to differentiate it}
+\subsection{Overview of Main Results} 
+A defining feature of search problems which distinguishes them from decision problems is that a given instance may have many different solutions. 
+Indeed, if a search problem has a unique solution on every instance, then it may be equivalently phrased as a decision problem: given $(x,i)$, output the $i^{th}$ bit of the unique solution for $x$.
+For many search problems of interest it is not clear how to reduce them to a decision problem of the same complexity. For example given total search problem $R$ we may define the decision problem $\mathrm{LexFirst}_R$, where given an instance $(x,i)$ we must output the $i^{th}$ bit of the lexicographically first solution to $x$. While $\mathrm{LexFirst}_R$ is clearly at least as hard as $R$, in many cases it will be much harder and a reduction does not seem to exist in the opposite direction. 
+
+
+Say that $\mathcal{A}$ is a deterministic algorithm solving some search problem $R$. Then $\mathcal{A}$ naturally associates to each instance $x$ a \emph{canonical solution} $y_x:= \mathcal{A}(x)$ which it outputs. In particular we can think of $\mathcal{A}$ as \emph{defining a second search problem} $R'$ with $(x,y) \in R'$ iff $\mathcal{A}(x)=y$; if $\mathcal{A}$ solves the original search problem $R$, then $R$ is reducible to $R'$ since $(x,y)\in R' \rightarrow (x,y)\in R$. Now, if the algorithm $\mathcal{A}$ lies in some restricted complexity class, then this places the same complexity upper bound derived search problem $R'$. The point of this is that when we have some nontrivial deterministic algorithm solving a search problem $R$, we may think of it as giving a reduction from $R$ to a search problem with \emph{unique solutions}.
+
+For most of the classical problems in the class $\mathsf{TFNP}$ it is believed that there is \emph{no decision problem} which captures their complexity precisely, a conjecture supported by black box separations \cite{TFNP-separations}. More generally it is believed that for most of the standard problems $R \in \mathsf{TFNP}$, any unique-solution problem $R'$ which we can reduce $R$ to must lie \emph{outside of} $\mathsf{TFNP}$\footnote{This is equivalent to saying that we believe these standard problems, e.g. $\mathsf{PPAD}$ or $\mathsf{PPP}$, not to lie in $\mathsf{FP^{NP \cap coNP}}$.}. The new results in \cite{Li,CHR} reveal that the situation for Range Avoid is different: because their Range Avoidance algorithms are deterministic and are upper bounded inside $\mathsf{TF\Sigma_2^P}$, they imply that Range Avoidance is reducible to a problem in $\mathsf{TF\Sigma_2^P}$ with unique solutions. To make this discussion more formal we need to define the class $\mathsf{TF\Sigma_2^P}$ and its \emph{unique solution} subclass $\mathsf{TFU\Sigma_2^P}$:
+
+% \todo{for typical search problems, it is not clear how to reduce them to a decision problem without making the problem harder; indeed for $\mathsf{TFNP}$ it is believed that many of the standard problems are not equivalent to 
+% \emph{any} decision problems, and this is supported by known black box separations [cite first TFNP separation paper]. An important feature of the new Avoid results is that they show Avoid is reducible to a total search problem with \emph{unique solutions}, which means that... we define this formally as follows}. To define these things formally we first present \todo{definition of TFSigma and sv}
+\begin{definition}[$\mathsf{TF\Sigma_2^P}$ and $\mathsf{TFU\Sigma_2^P}$]
+
+A polynomially-bounded\footnote{The ``polynomially bounded'' condition just means we are restricting attention to search problems whose solutions have polynomially bounded length.} search problem $R$ lies in $\mathsf{TF\Sigma_2^P}$ if it is a total search problem, and there exists a $\mathsf{coNP}$ verifier $\mathrm{V}$ so that $(x,y) \in R$ if and only if $\mathrm{V}(x,y)=1$. We say $R \in \mathsf{TFU\Sigma_2^P}$ if moreover every instance has a unique solution.
+\end{definition}
+In this terminology Li's result implies the following: Range Avoidance is polynomial-time reducible to a problem in $\mathsf{TFU\Sigma_2^P}$. His result is in fact a significant strengthening of this, but for now we focus on this particular consequence, which seems quite unintuitive on the surface: given an instance $f: \B^n \to \B^{n+1}$ of Range Avoidance, there are at least $2^{n}$ distinct solutions, and it is not clear how to narrow down to any particular solution which is ``more special'' then the others. Our first contribution is to clarify this result in the following way: we introduce a \emph{natural} $\mathsf{TF\Sigma_2^P}$ search problem, whose containment in $\mathsf{TFU\Sigma_2^P}$ is obvious from the definition, and then show that Range Avoidance reduces to this problem: 
+\begin{definition}[Linear Ordering Principle (LOP)]
+Given $\prec: \B^n \times \B^n \to \B$ specified by a boolean circuit, find a witness that $\prec$ does not define a total ordering on $\B^n$, or else find the minimal element in the ordering it defines. A witness that $\prec$ does not define a total order consist of $x,y,z \in \B^n$ such that one of the following holds: (a) $x \prec x$; (b) $x\neq y$, $x \not\prec y $, and $ y \not\prec x$; (c) $x \prec y \prec z$ and $x \not\prec z$.
+\end{definition}
+
+This problem was originally defined in the context of Bounded Arithmetic in \cite{Chiari1998-CHIWFI}. While this problem does not literally have unique solutions as stated, it has a property which we show is morally equivalent. Observe that one type of solution in this problem is easier to verify then the other: a witness that $\prec$ fails to define a linear order can be verified in polynomial time, whereas a candidate minimum element can only be verified in $\mathsf{coNP}$. Moreover, if an instance has no easily verifiable solutions, then it has a unique solution. This follows from the fact that every linear order has a unique minimal element. We summarize this by saying that LOP has \emph{essentially unique solutions}; a very easy argument (Section~\ref{sec:prelims}, Lemma~\ref{lem:unique-sol}) shows that any problem with essentially unique solutions is reducible to a problem in $\mathsf{TFU\Sigma_2^P}$. We then prove:
+
+\begin{theorem}
+
+Range Avoidance is polynomial time reducible to LOP.
+\end{theorem}
+
+We believe this result goes a long way in explaining the new upper bounds for Range Avoidance. In particular our reduction isolates the two key steps in Li's algorithm which allow us to single out a special \emph{low complexity canonical solution} for Range Avoidance: the first step prepares a special subset of solutions using a certain tree-like iteration construction, and the second step singles out a fixed canonical solution among these by defining a certain \emph{total ordering} on these special solutions.  Recall our comment under Definition \ref{def:TFUSigma2} that Li's result is in fact stronger than a reduction from Range Avoidance to a problem in $\mathsf{TFU\Sigma_2^P}$: more generally he shows that Range Avoidance lies in the complexity class $\mathsf{FS_2^P}$ (we will review the definition of this class in Section ~\ref{sec:prelims}). Our result subsumes this upper bound as well, since another very direct argument shows that LOP lies in $\mathsf{FS_2^P}$. Thus our result gives the current best upper bound on the Range Avoidance problem, and hence on the Kannan's classical problem of constructing the truth table of a hard boolean function. \todo{remove this Kannan comment? And talk about the followup work by Volkavic}
+
+At this point we have seen that there are search problems in $\mathsf{TF\Sigma_2^P}$ which seem on the surface to have no distinguished solutions, but which nonetheless can be reduced to problems in $\mathsf{TFU\Sigma_2^P}$ by some highly non-obvious means. This naturally points to the following question: are all problems in $\mathsf{TF\Sigma_2^P}$ reducible to $\mathsf{TFU\Sigma_2^P}$? We give a negative answer in the decision tree model. Our separation is exhibited by the following relative of Range Avoidance which was introduced originally in \cite{KKMP} under the name \emph{Empty}:
+\begin{definition}[Strong Avoid]
+Given $f: \B^n \setminus \{0^n\} \to \B^n$, find $y \in \B^n \setminus \rng(f)$.
+\end{definition}
+From now on we will refer to Range Avoidance as ``Weak Avoid'' to distinguish it from Strong Avoid. Our black box separation will be significantly stronger than just showing that Strong Avoid is not reducible to a problem in $\mathsf{TFU\Sigma_2^P}$; we will show more generally that Strong Avoid cannot be solved by making non-adaptive queries to any language in $\mathsf{\Sigma_2^P}$, which is equivalent to proving size lower bounds for depth-3 $\mathsf{AC}_0$ circuits solving Strong Avoid: 
+
+\begin{theorem}
+
+%Strong Avoid requires exponential-size depth-3 $\mathsf{AC}^0$ circuits. Thus
+In the decision tree model, Strong Avoid is not in $\mathsf{FP_{||}^{\Sigma_2^P}}$. More specifically, let ${C:\B^{(N-1) \log N } \to \B^{N^{\epsilon}}}$ be a depth-3 circuit of size $2^{N^{\epsilon}}$  and let $D: \B^{N^{\epsilon}} \to \B^{ \log N}$ be an arbitrary postprocessing function, where $N=2^n = |\B^n|$. Then provided $\epsilon$ is sufficiently small, $D \circ C$ cannot solve Strong Avoid: there must be some input $f: [N-1] \to [N]$ so that $D(C(f))$ fails to find a $y \notin \rng(f)$.
+\end{theorem}
+
+This immediately implies non-reducibility to $\mathsf{TFU\Sigma_2^P}$, since any problem $R \in \mathsf{TFU\Sigma_2^P}$ with unique solutions can be solved with non-adaptive queries to the language $\{(x,i) \mid (x,y) \in R \rightarrow y_i=1\}$ which lies in $\mathsf{\Sigma_2^P}$. The connection of these kinds of separations to depth 3 $\mathsf{AC}^0$ lower bounds was spelled out in a recent paper of Vyas and Williams \cite{vyas-williams} for the case of \emph{Weak} Avoid: their work established that nontrivial upper bounds for Weak Avoid are equivalent to certain depth 3 circuits solving the so-called ``Missing String'' problem: given an explicit list of $2^{n-1}$ $n$-bit strings, output a string not in the list. The input size here is $\approx N=2^n$, and the question is whether a depth 3 circuit exists of size polynomial or quasipolynomial in $N$. Note that the Missing String problem is simply the black-box variant of Weak Avoid. Li's result showed that quasipolynomial size depth-3 circuits for this problem actually \emph{do exist}, solving the original question of Vyas and Williams in the positive. We show that if the problem is modified so that the list of strings has length $N-1$ rather then $\frac{N}{2}$, then depth-3 circuits require exponential size to solve this problem. We note that our lower bound holds against a stronger class of circuits than what was originally considered by Williams and Vyas: in their model the depth 3 circuit is of the form $ C:\B^{(N-1) \log N } \to \B^{ \log N}$ and must output the exact solution to Avoid. Here we allow $C$ to output an arbitrary string in $\B^{N^{\epsilon}}$, which can then be postprocessed arbitrarily to construct a solution to Avoid.
+
+By a simple reduction, we also obtain quasipolynomial depth-3 circuit size lower bounds even for \emph{moderately weak} Avoid instances with domain $[N]$ and codomain $[N + N/\log^{O(1)} N]$. This result gives a complete characterization of the degree of ``Weakness'' necessary to obtain quasipolynomial size depth 3 circuits: if the codomain has size $N + N/\log^{O(1)} N$ then circuits of quasipolynomial size suffice, and if its size is $N + N/\log^{\omega(1)}N$ then they do not; see Lemma~\ref{lem:php-lb-larger-stretch} for details.
+%which we explain in \todo{ref section}.
+
+Our last main result exhibits a more fine-grained separation amongst the subclasses of $\mathsf{TF\Sigma_2^P}$. Above we have highlighted one important distinction, between the problems which are reducible to $\mathsf{TFU\Sigma_2^P}$ and those which aren't. However both of the problems we've seen so far which reduce to $\mathsf{TFU\Sigma_2^P}$ also have an additional property: they are solvable by a polynomial time randomized algorithm using a $\mathsf{NP}$ oracle. For Weak Avoid this follows from its definition, while for LOP it follows from its containment in the class $\mathsf{FS_2^P}$. We show that this is not possible for all problems reducible to $\mathsf{TFU\Sigma_2^P}$. Our separation is exhibited by the following natural search problem: 
+\begin{definition}[Strong 1-1 Avoid]
+Given $f: \B^n \setminus \{0^n\} \to \B^n$, find a pair $x\neq y $ in $\B^n \setminus \{0^n\}$ such that $f(x)=f(y)$, or else $y \in \B^n \setminus \rng(f)$, 
+\end{definition}
+Observe that Strong 1-1 Avoid enjoys the same property as LOP of having \emph{essentially unique solutions}: it is easy to verify the collision solutions $f(x)=f(y) \land x\neq y$, and any instance with no collision solutions has a unique solution. This follows from the fact that any injective function $f: [N] \to [N+1]$ misses exactly one point in its codomain. Hence, like Weak Avoid and LOP, the problem Strong 1-1 Avoid is reducible to $\mathsf{TFU\Sigma_2^P}$. However we prove the following lower bound:
+%placing Strong 1-1 Avoid outside of $\mathsf{FBPP^{NP}}$:
+
+\begin{theorem}
+
+In the decision tree model, Strong 1-1 Avoid is not solvable in $\mathsf{FBPP^{NP}}$.
+%\begin{theorem}
+%More generally, there is an absolute constant $\epsilon > 0$ so the following holds: if $T: \B^{(N-1} \lceil \log N \rceil \rightarrow  $ is a $\mathsf{P^{NP}}$ decision tree of depth $N^{\epsilon}$ over the input variables to Strong 1-1 Avoid ($\mathrm{BITS}_{N,N+1}$ and leaves labeled by elements of $[N+1]$, then:
+%\[
+%\Pr_{f \sim \mathcal{F}_N} [T(f) \notin %\rng(f)] \leq N^{-\Omega(1)}
+%\]
+\end{theorem}
+
+Aside from revealing further the structure of $\mathsf{TF\Sigma_2^P}$, this result yeilds a new separation for \emph{decision classes} which was not previously known:
+\begin{theorem}
+
+In the decision tree model, $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{BPP^{NP}}$. In particular $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{S_2^P}$.
+\end{theorem}
+% The class $\mathsf{UTF\Sigma_2^P}$ occurs under the name $\mathsf{svTF\Sigma_2^P}$ in \todo{ref, maybe explain why this is the same?}.
+In the next two subsections we will describe these main results in some more technical detail. A diagram of the structure of $\mathsf{TF\Sigma_2^P}$ and our main results is given in Figure~\ref{fig:classes}; some classes in this diagram will not be defined until Section~ \ref{sec:totalsearch}.
+\begin{figure}
+    \centering
+    \includegraphics[width= \textwidth]{Classes.pdf}
+    % \captionsetup{width=1\textwidth}
+    \caption{Inclusion diagram of relevant classes and search problems. Solid arrows represent the inclusion of the class at the base of the arrow into the class at its tip. Dotted arrows indicate non-inclusion of the base class into the tip class in the decision tree model. The main linear axis of classes along the top are all included from left to right, indicated by the long solid arrow above them. Our major results are the separations marked with $\spadesuit, \clubsuit$ and the inclusion marked with $\blacklozenge$. $\mathsf{TFU\Sigma_2^P}$ essentially corresponds to $\mathsf{FP^{\Sigma_2^P \cap \Pi_2^P}}$, see Lemma~\ref{lem:unique-intersect}.}
+    
+\end{figure}
+\subsection{$\mathsf{AC^0}$ Lower Bounds and Class Separations}
+Our two main separations show that Strong Avoid has no non-trivial upper bound inside of $\mathsf{TF\Sigma_2^P}$ (Theorem~\ref{thm:strongavoid-lb}), and that Strong 1-1 Avoid has no randomized $\mathsf{NP}$-oracle algorithm (Theorem ~\ref{thm:1.5-lb}). The first lower bound is the more involved of the two, and requires proving a novel depth 3 $AC^0$ circuit lower bound for a total search problem, which appears to be the first circuit lower bound of this kind. 
+
+%We now give the formal statement of Theorem ~\ref{thm:strongavoid-lb}:
+%is is equivalent to the following circuit lower bound:
+
+%\bigskip
+
+%\begin{theorem} 
+%\noindent {\bf Theorem ~\ref{thm:strongavoid-lb}.}
+%
+%{\it Consider the natural association of $\B^{(N-1)\lceil \log N \rceil}$ with functions $f: [N-1] \to [N]$ specified by their truth table, where $\alpha \in \B^{(N-1)\lceil \log N \rceil}$ is interpreted as an ordered list of the values of $f$ on each point in $[N-1]$. Say that $C:\B^{(N-1)\lceil \log N \rceil} \to \B^{\lceil \log N \rceil}$ is a depth 3 unbounded fanin boolean circuit which solves the Strong Avoid problem in the sense that $C(f) \notin \rng(f)$ for all assignments $f$. Then $|C| \geq 2^{N^{\Omega(1)}}$. 
+
+%More generally, if $C:\B^{(N-1)\lceil \log N \rceil} \to \B^{N^{\epsilon}}$ is a depth 3 circuit of size $2^{N^{\epsilon}}$  and $D: \B^{N^{\epsilon}} \to \B^{\lceil \log N \rceil}$ is an arbitrary postprocessing function, then $D \circ C$ cannot solve Strong Avoid provided $\epsilon$ is sufficiently small.}
+
+%\todo{(Toni)This last sentence is a bit hard to understand. Maybe something like: Moreover, the lower bound holds even if $C$ can output $n^{\epsilon}$ output bits which can be postprocessed arbitrarily to solve Strong Avoid.  }\todo{(Oliver) is this better? Also is it ok for me to still hint at the "non-adaptive decision tree" formulation as below or do you think its still too confusing?}
+%\end{theorem} 
+
+Theorem~\ref{thm:strongavoid-lb} yields a very fine-grained separation for the Strong Avoid problem. It is easy to construct a depth 4 circuit $C:\B^{(N-1)\lceil \log N \rceil} \to \B^{\lceil \log N \rceil}$ solving Strong Avoid, where moreover the bottom fan-in is only $O(\log N)$ \cite{vyas-williams}. More strongly, it is possible to construct a depth $O(\log N)$ decision tree, which at each step queries a depth 3, $\poly(N)$ size circuit on the input $f$, and at each leaf outputs a correct solution $y \notin \rng(f)$. Our lower bound can be interpretted as saying that if such a decision tree is forced to be non-adaptive, then either the circuits it queries at each step must grow to exponential size, or else the number of queries must grow to $N^{\Omega(1)}$. This also contrasts the situation with Weak Avoid, where as mentioned above,  Li's construction gives depth-3 $\mathsf{AC}_0$ circuits of size $N^{O(\log N)}$ for solving Weak Avoid.
+
+%\begin{theorem}\todo{cite}
+%There is a depth 3 circuit $C:\B^{N\lceil \log 2N \rceil} \to \B^{\lceil \log 2N \rceil}$ of size $N^{O(\log N)}$ which solves the Weak Avoid problem: for every $f: [N] \to [2N]$, $C(f) \notin \rng(f)$. Moreover the bottom layer of gates in $C$ have fan-in $O(\log^2 N)$.
+%\end{theorem}
+
+%\todo{TONI: consolidate} 
+We believe our lower bound is of independent interest in %bounded depth 
+circuit complexity. In particular, we give a very precise depth-3 lower bound for a \emph{total search problem}. It is of course possible to construct contrived examples of total search problems which are hard for $\mathsf{AC}^0$ circuits, for example ``given $x \in \B^n$ output $b \in \B$ such that $\mathrm{Parity}(x)=b$;'' in such examples we can derive hardness of the search problem \emph{by reduction from a decision problem}. In contrast, the lower bound we show here \emph{cannot be established by reduction from any decision problem}. This follows from the fact that any decision problem which is reducible to a $\mathsf{TF\Sigma_2^P}$ search problem lies in $\mathsf{\Sigma_2^P \cap \Pi_2^P}$. In the decision tree model, this means that any language which can be solved by a small depth decision tree querying instances of Strong Avoid has both $\Sigma_2^P$ and $\Pi_2^P$ circuits. However, the lower bound we are trying to show for Strong Avoid rules out the existence of any $\mathsf{FP^{\Sigma_2^P \cap \Pi_2^P}}$ algorithm for Strong Avoid. Phrased more succinctly, our lower bound establishes that Strong Avoid is harder then \emph{any} decision problem which can be reduced to it, which by definition means we cannot establish the lower bound itself by reduction from a decision problem. In light of this, to prove Theorem \ref{thm:strongavoid-lb} we must develop new $\mathsf{AC^0}$ lower bound techniques which are specially tailored to total search problems.
+
+% \todo{add a pointer to the section where we compare our switching lemma with those in proof complexity}
+%\todo{Toni: should we add somewhere that we also get a fine grained separation with respect to the stretch of Avoid since by a simple reduction we get a superpoly depth-3 ckt lb also for avoid from [N] to [N + N/polylogn]?}
+
+Our second main lower bound (Theorem ~\ref{thm:bpp-np-lb}) places Strong 1-1 Avoid outside of $\mathsf{FBPP^{NP}}$. 
+%This can be equivalently viewed as giving strong lower bounds for randomized decision trees for Strong 1-1 Avoid:
+%\medskip
+%\begin{theorem}
+%\noindent{\bf Theorem ~\ref{thm:bpp-np-lb} (Restatement).}
+%{\it Associate $\B^{(N-1)\lceil \log N \rceil}$ with functions $f: [N-1] \to [N]$. Let $\mathcal{C}$ be a distribution over functions $C: \B^{(N-1) \lceil \log N \rceil} \to \B^{\lceil \log N \rceil}$, where each $C \in \mathrm{support}(\mathcal{C})$ is a $\mathsf{P^{NP}}$ decision tree of complexity $w$, and such that for all one-to-one assignments $f: [N-1]\to[N]$, 
+%\[
+%\Pr[\mathcal{C}(f) \notin \rng(f)] \geq %\frac{2}{3}
+%\]
+%Then $w \geq N^{\Omega(1)}$.}
+%\end{theorem}
+%\medskip
+%Informally, $\mathsf{FBPP^{NP}}$ correspond to randomized decision trees of small height which, instead of querying variables, are allowed to query the value of an arbitrary low-width DNF over the inputs. 
+%By Yao's minimax principle, it suffices to prove that any low-depth $\mathsf{P^{NP}}$ decision tree cannot solve Avoid with probability 2/3, with respect to the uniform distribution of 1-1 functions.
+%any $\mathsf{P^{NP}}$ for
+%We will review the formal definition of $\mathsf{P^{NP}}$ decision trees in Section \ref{sec:prelims} (Definition ~\ref{def:PNP-trees}). 
+%Informally, these are decision trees of small height which, instead of querying variables, are allowed to query the value of an arbitrary low-width DNF over the inputs in unit time. 
+Recall that Strong 1-1 Avoid has the property of having \emph{essentially unique solutions} and is thus reducible to a problem in $\mathsf{TFU\Sigma_2^P}$. We will see (Lemma ~\ref{lem:unique-intersect}) that this means it is reducible to a \emph{decision problem} in $\mathsf{\Sigma_2^P \cap \Pi_2^P}$. Combining this with the above lower bound we obtain Theorem ~\ref{thm:sigma2-pi2-separation}, which separates the decision tree class 
+$\mathsf{\Sigma_2^P \cap \Pi_2^P}$ from $\mathsf{BPP^{NP}}$ and in particular from $\mathsf{S_2^P}$.
+%the following novel separation for decision classes:
+%\begin{theorem}
+%In the decision tree model, $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{BPP^{NP}}$. In particular $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{S_2^P}$.
+%\end{theorem}
+This is in contrast to the situation for $\mathsf{NP} \cap \mathsf{coNP}$, which is known to collapse to $\mathsf{P}$ in the decision tree model. This improves a previous result of Fortnow and Yamakami \cite{forntnow-yamakami} who showed that $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{P^{NP}}$ in the decision tree model.
+
+\subsubsection{Lower Bound Methods}
+ 
+%\noindent{\bf Lower Bound Methods.} 
+%\todo{Oliver: some of this doesn't make sense because we haven't defined the relevant pigeonhole concepts yet}
+A main technical ingredient in both lower bounds is a new Switching Lemma (Lemma ~\ref{lem:switching-main})  specialized for Avoid. 
+%We use a coding style argument first introduced by Razborov \todo{raz} (see also \todo{beame}, \todo{add references}). 
+Switching lemmas have been used for both circuit lower bounds for computing functions, and in proof complexity to prove lower bounds on the size of proofs of hard tautologies (e.g., \cite{beame-sl,razborov-sl,BeameIKPPW92}). Between the two, our argument bears a stronger resemblance to the second, however there are some key conceptual differences. 
+The basic idea behind all switching lemmas is to show that under a random restriction $\rho$ (from a suitable distribution) a low-width DNF is likely to be represented by a low-depth decision tree. Since a low-depth decision tree representation for a function $f$ implies that both $f$ as well as its negation can be represented by low-width DNFs, this in turn allows us to collapse an AND of low-width DNFs into a single low-width DNF, thus reducing the circuit depth by 1.
+
+A major difference between various switching lemmas is the choice of  distribution over restrictions, and the way in which the decision tree {\it represents} a DNF. In the original Switching Lemmas used to prove $\mathsf{AC}_0$ lower bounds for parity, the restrictions are simply uniformly random partial restrictions, and the notion of represents is with respect to {\it every} input. That is, the decision tree computes the same function as the DNF.
+
+%In the case of switching lemmas used in proof complexity to prove $\mathsf{AC^0}$-Frege lower bounds for the pigeonhole principle, we think of $[N]$ as a ``nonstandard'' model, and thus we can view the input as specifying a 1-1 function from $[N]$ to $[N]$ (rather than from $[N]$ to $[N+1]$. The chosen distribution over restrictions are partial 1-1 matchings from $[N]$ to $[N]$, and a low-depth ``pigeonhole'' decision tree in this context can make queries to a pigeon or to a hole at each vertex, and every path in the tree corresponds to a partial matching. Then a pigeonhole decision tree represents a DNF if it is truth-functionally equivalent to the DNF with respect to all 1-1 functions from $[N]$ to $[N]$.
+
+% \todo{here is an attempt at rephrasing}
+In the case of switching lemmas used in proof complexity to prove $\mathsf{AC^0}$-Frege lower bounds for the $[N] \to [N+1]$ pigeonhole principle, we think of the input as specifying a purported 1-1 function from $[N]$ to $[N+1]$ (which cannot actually 
+exist if $N$ is finite).  
+%clearly such an assignment cannot actually exist. 
+The chosen distribution over restrictions are partial 1-1 matchings from $[N]$ to $[N+1]$, and a low-depth ``PHP decision tree'' in this context can make queries to a pigeon or to a hole at each vertex, and every path in the tree corresponds to a partial matching. Since, in reality, no 1-1 function from $[N]$ to $[N+1]$ exists, these trees do not represent the original DNF in any standard way. However, if the input variables instead corresponded to a total 1-1 assignment from $[N]$ to $[N]$ (which do exist), then we can apply the same PHP Switching Lemma to prove that under a random partial 1-1 restriction, a low-width DNF is likely to convert to a low-depth PHP decision tree, which now represents the DNF in the sense that it agrees with the DNF on all input assignments that correspond to 1-1 mappings from $[N]$ to $[N]$. 
+
+%we can use the PHP switching lemma  we only care about paths in the decision tree which follow partial 1-1 maps from $[N]$ to $[N+1]$. Since, in reality, no 1-1 functions $[N] \to [N+1]$ actually exist, these decision trees do not actually have well defined behavior on all true assignment $f:[N] \to [N+1]$.
+% \todo{END attempt}
+
+In the case of Avoid, we have to modify the way of constructing a decision tree associated with a DNF so that the decision tree represents the original DNF in the sense that they are truth-functionally equivalent with respect to all 1-1 input functions from $[N]$ to $[M]$, where now $M$ is strictly larger than $N$. 
+%The largest differences  is the way in which the decision tree represents the original DNF.  
+%that we require our pigeonhole decision trees to be equivalent to the hole disjunction that they represent, over all 1-1 input functions. In contrast, the pigeonhole decision trees used in proof complexity switching lemmas make queries to a pigeon or a hole at each vertex, and every path in the tree corresponds to a partial matching; because of this, if the number of pigeons and holes is unbalanced, the behavior of such trees is not actually well-defined on every total assignment $f: [N] \to [M]$. 
+To achieve this, we modify the notion of pigeonhole decision trees as follows. As in the original PHP Switching Lemma in proof complexity, each node of our decision tree will query either a pigeon or a hole. When a pigeon is queried at a node, we allow edges for all possible holes that it could be mapped to. But when a hole is queried, now we have to allow for the possibility that this hole is unmapped: in addition to allowing edges for each pigeon that could map to this hole, we allow an extra edge corresponding to the case where nothing maps to this hole. With this modification, our pigeonhole decision trees will represent the original DNF with respect to all 1-1 inputs from $[N]$ to $[M]$. 
+%have $N+1$ possible outgoing edges, one for each pigeon that could map to this hole, plus an extra edge corresponding to the case where nothing maps to this hole. 
+
+Another crucial distinction is how we use the Switching Lemma to reduce the depth of the circuit by one. In the proof complexity setting for the pigeonhole principle lower bounds, we think of $N$ as infinite, and therefore with respect to 1-1 inputs, a DNF can be written as a low-width {\it matching disjunction}, where each term in the disjunction corresponds to a partial 1-1 function (or matching) from $[N]$ to $[N]$. After applying the PHP Switching Lemma and a union bound, each matching disjunction $f$ (under $\rho$) becomes a low-depth ``matching decision tree'', enabling a reduction in the overall circuit depth by one. To summarize, in the classical PHP Switching Lemma, the underlying depth-2 subcircuits are always low-width matching disjunctions, both before and after each application of the PHP Switching Lemma. 
+%Underlying the classical switching lemma used in proof complexity shows that with high probability, a low-width matching restriction converts to a ``matching decision tree'' under a random matching restriction $\rho$. This in turn allows one to represent the original matching disjunction as well as its negation by a low-width matching disjunction. 
+%such that  we are able to flip a $\lor\land$ formula of some type to a $\land\lor$ formula of the same type; in 
+%particular if we start with a matching disjunction we can flip it to (the compliment of) another matching disjunction. 
+In our case, the underlying depth-2 subcircuits are not of the same type before and after applying our Pigeonhole Switching Lemma; a consequence is that our Switching Lemma \emph{cannot be applied twice}. This is not a defect of our method, but rather a necessary feature of any technique here, since our search problem \emph{can be solved} by circuits of one higher depth. More specifically, we show that initially the bottom depth-2 subcircuits of ${\cal C}$ can be expressed as low-width matching disjuncdtions. But after applying the Pigeonhole Switching Lemma, and subsequent depth reduction, the new depth-2 subcircuits become \emph{hole disjunctions} which are a generalization of matching disjunctions, where now each term in the DNF can specify not only a partial 1-1 matching, but also a subset of holes that are unmapped.
+%In our case we are only able to flip a matching to the compliment of a \emph{hole disjunction}, and for this reason our lemma cannot be applied twice. This is not a defect of our method, but rather a necessary feature of any technique here, since our search problem \emph{can be solved} by circuits of one higher depth. 
+With these appropriate modifications, our proof of the switching lemma is similar to previous proofs.
+
+Equipped with the Pigeonhole Switching Lemma, we can give the high level view of both proofs. 
+We start with Theorem ~\ref{thm:strongavoid-lb}.
+To prove Theorem ~\ref{thm:strongavoid-lb}, we would like to restrict  attention to the class of 1-1 input functions from $[N]$ to $[N+1]$. However if we truly restrict ourselves to 1-1 functions,
+%$f \in {\cal F}_{N,N+1}$, 
+then a lower bound is not possible by Lemma~\ref{lem:1-1-lop-unique}: for these inputs, there is a unique solution, and therefore a polynomial-size depth-3 circuits can easily check whether the unique solution has its $i^{th}$ bit equal to 1 or to 0 and hence solve the problem unconditionally.
+To circumvent this barrier, we will prove a strengthening of Theorem~\ref{thm:strongavoid-lb}, by giving a lower bound for Avoid on input functions $f: [N] \rightarrow [M]$, where $M$ is larger than $N+1$. By enlarging the range of $f$, we can focus our attention of $f$'s that are 1-1 since now for every input, there are at least $M-N$ distinct solutions.
+Note that this implies the lower bound stated above (with $M=N+1$), since there is a direct reduction from Avoid on instances $[N] \to [M]$ to instances $[N] \to [N+1]$: we simply map every element of $[M] \setminus [N+1]$ to the element $N+1$. Observe that this reduction does not preserve injectivity.
+
+Now assume there exists small-size $s$ depth-3 circuit ${\cal C}$ computing Strong Avoid on 1-1 functions from $[N]$ to $[M]$, $M>>N$. 
+We can first apply a standard argument (the Width Reduction Lemma ~\ref{lem:width-red}) so that we can assume that the bottom-level fanin of ${\cal C}$ is at most $O(\log s)$. After this step, we can assume that ${\cal C}$ is a size-$s$, depth-3 circuit, where the bottom depth-2 subcircuits are low-width matching disjunctions. 
+Next we apply our Pigeonhole Switching Lemma (as discussed above) which will guarantee that there exists a matching restriction $\rho$ such that under $\rho$, all depth-2 matching disjunctions in ${\cal C}$ will convert to low-depth pigeonhole decision trees. This will allow us to reduce the overall circuit depth by 1, and afterwards each output bit of ${\cal C}$ will be computed by a low-width \emph{hole disjunction}.
+As discussed above, a hole disjunction is a type of DNF that generalizes matching disjunctions: each term $t$ in the hole disjunction can be viewed as partial information about the input $f$. The partial information consists of two parts: (i) first, $t_1$ specifies a small partial matching, pairing up some pigeons in $[N]$ to some holes in $[N+1]$; (ii) secondly, $t_2$ specifies a small set of holes (disjoint from the holes mentioned in $t_1$ that are not in the range of $f$).
+It remains to prove a lower bound for circuits ${\cal C}$ for solving Avoid, where each output bit is specified by a low-width hole disjunction. This is also accomplished using a kind of restriction, but rather then choosing it at random we apply a careful deterministic process involving a novel covering argument. This step is somewhat reminiscent of early proofs of the Switching Lemma (e.g., \cite{FSS,Ajtai83}).
+
+
+The proof of Theorem ~\ref{thm:bpp-np-lb} again uses the Pigeonhole Switching Lemma, together with a direct argument. 
+We want to prove depth lower bounds for $\mathsf{FBPP^{NP}}$, which informally are randomized decision trees of small height which, instead of querying variables, are allowed to query the value of an arbitrary low-width DNF over the inputs. 
+By Yao's minimax principle, it suffices to prove that any low-depth $\mathsf{P^{NP}}$ decision tree cannot solve Avoid with probability 2/3, with respect to the uniform distribution of 1-1 functions. We think of this distribution in the following way: first sample a uniform \emph{partial} 1-1 assignment $\rho$, then sample a uniform extension of $\rho$ to a total assignment.
+Applying our Pigeonhole Switching Lemma and a union bound, we can argue that with high probability over the first choice of $\rho$, all of the $\mathsf{NP}$ queries in our $\mathsf{P^{NP}}$ decision tree $T$ can be simplified to small depth pigeonhole decision trees, which overall allows $T$ to be replaced by a low depth pigeonhole decision tree. It then remains only to argue that a pigeonhole decision tree of low depth cannot solve 1-1 Strong Avoid with non-trivial probability on a uniform extension $f$ of $\rho$, which can be accomplished with a direct argument.
+
+\subsection{Linear Ordering Principle}
+ 
+We now discuss in more detail our results on the newly defined Linear Ordering Principle problem, abbreviated LOP. Recall that our main result here is Theorem ~\ref{thm:avoid-to-lop-intro}, which says that Weak Avoid is polynomial time reducible to LOP. The proof follows much of the high level structure of Li's result placing Weak Avoid in $\mathsf{FS_2^P}$, with some key modifications. Roughly speaking, Li's proof shows that given an instance of Avoid $f: \B^n \to \B^{n+1}$, we can define a comparison relation $\sqsubset$ on $\B^{\poly(n)}$, so that for some unique distinguished element $\pi^* \in\B^{\poly(n)}$ we have $\pi^* \sqsubset \pi$ for all $\pi \neq \pi^*$, and $\pi^*$ contains a solution to the original Avoid instance. In our case we need to define a similar comparison relation, which in addition \emph{globally} acts as a total order on $\B^{\poly(n)}$. To explain the argument more clearly we split the reduction into two parts. We first introduce an intermediate search problem called Forest Termination and reduce Weak Avoid to this problem, then we reduce Forest Termination to LOP.
+We note that our proof, as well as Li's, also bears a strong resemblance to the work of \cite{Paris-Wilkie-Woods} who gave the first proof of the weak pigeonhole principle in the bounded arithmetic theory $T_2$.%\todo{Oliver: I changed this back to $T_2$ because I realized $S_2$ reads just like $\mathsf{S_2^P}$ and I don't want to confuse people... iss that ok?} \todo{Toni: may want to talk up this result more?}
+
+
+% \begin{theorem}
+% ~
+% \begin{enumerate}
+%     \item Any search problem which has a $\mathsf{P^{NP}}$ Turing reduction to $\mathrm{LOP}$ also has a polynomial time many-one reduction to $\mathrm{LOP}$.
+%     \item There is a language $\mathrm{DLOP} \subseteq \B^*$ (``Decisional LOP''), so that $\mathrm{LOP}$ is truth table reducible to $\mathrm{DLOP}$ and $\mathrm{DLOP}$ is many-one reducible to $\mathrm{LOP}$.
+% \end{enumerate}
+% \end{theorem}
+% The advantage is that unlike $\mathsf{FS_2^P}$, which has a purely \emph{semantic} definition and therefore seems unlikely to contain a complete problem, LOP is defined by a very natural total search problem. 
+Our subsequent results show some appealing structural properties of the complexity class defined by reducibility to LOP. We start by proving closure under a broad class of reductions:
+\begin{theorem}
+Any search problem which has a polynomial time $\mathsf{P^{NP}}$ Turing reduction to LOP also has a polynomial time many-one reduction to LOP.
+\end{theorem}
+Combining this closure property with the fact that LOP has essentially unique solutions, we are able to conclude that LOP is \emph{equivalent} in complexity to a decision problem. In particular we can define a decisional complexity class $\mathsf{L_2^P}$ for which LOP is the ``complete problem'' (despite being a search problem and not a language). We start by presenting a machine-based definition of $\mathsf{L_2^P}$:
+\begin{definition}
+A language $L$ is in the complexity class $\mathsf{L_2^P}$ if there is a polynomial time relation $R: (\B^*)^3 \to \B$ and a polynomial $p$, so that for all $x$, $R(x, \cdot, \cdot)$ defines a total order on $\B^{p(n)}$ whose minimal element $a$ has $a_1 = L(x)$. 
+\end{definition}
+
+We then have the following equivalent characterizations:
+\begin{theorem}
+The following are equivalent for a language $L$:
+\begin{enumerate}
+    \item $L \in \mathsf{L_2^P}$
+    \item $L$ is polynomial time many-one reducible to LOP.
+    \item $L$ is $\mathsf{P^{NP}}
+$-Turing reducible to LOP.
+\end{enumerate}
+Conversely, the search problem LOP is polynomial time truth table reducible\footnote{This is essentially the most restrictive reduction possible when reducing a search problem to a language.} to a language in $\mathsf{L_2^P}$.
+\end{theorem}
+We mentioned in passing before that LOP is easily shown to lie in the class $\mathsf{FS_2^P}$, the functional analogue of the decision class $\mathsf{S_2^P}$ (this will be shown in Lemma ~\ref{lem:lop-in-s2p}. The same reason shows that $\mathsf{L_2^P} \subseteq \mathsf{S_2^P}$. For those unfamiliar with the somewhat unconvential class $\mathsf{S_2^P}$, this is a complexity class introduced independently by Russell-Sundaram and Canetti \cite{russell-sundaram,canetti}. Their goal was to identify the smallest class in the polynomial hierarchy which is sufficient to capture randomized algorithms, in particular $\mathsf{BPP}$ and $\mathsf{MA}$. Beyond this purpose the class rarely appears, and so far no natural problems have been exhibited which lie in $\mathsf{S_2^P}$ and not one of its more traditional subclasses (such as $\mathsf{BPP}$ or $\mathsf{NP}$). In addition it seems that $\mathsf{S_2^P}$ does not have a complete problem, due to its definition involving a promise. We have identified here a subclass $\mathsf{L_2^P}$ of $\mathsf{S_2^P}$, which is characterized exactly by a simple and natural total search problem, and which nonetheless maintains the interesting properties that motivated the original definition of $\mathsf{S_2^P}$:
+\begin{theorem}
+\phantom\\
+\begin{enumerate}
+    \item $\mathsf{P^{NP}} \subseteq \mathsf{L_2^P}$ and $\mathsf{BPP} \subseteq \mathsf{MA} \subseteq \mathsf{L_2^P}$
+    \item $\mathsf{L_2^E}$\footnote{$\mathsf{L_2^E}$ is the exponential-time analogue of $\mathsf{L_2^P}$, where we replace ``polynomial time'' with $2^{O(n)}$ time'' in its definition} contains a language of circuit complexity $2^n/n$.
+\end{enumerate}
+\end{theorem}
+In each case, the result stated for $\mathsf{L_2^P}$ was previously known to hold for $\mathsf{S_2^P}$ and is now shown to be inherited by the more natural subclass $\mathsf{L_2^P}$. The only interesting property that is known of $\mathsf{S_2^P}$ which we were unable to prove for $\mathsf{L_2^P}$ is the Karp-Lipton theorem; we discuss this further Sections~\ref{sec:open-probs} and \ref{sec:lop}.
+
+
+\subsection{Open Problems}
+\todo{mention Volkavic stuff here, and Noah's paper}
+We conclude our introduction with a few interesting problems which remain open. The first is rather broad:
+\begin{problem}
+Show any additional inclusions or black-box separations which are not implied by the arrows in Figure~\ref{fig:classes}.
+\end{problem}
+We specifically highlight the following:
+\begin{problem}
+Is there an $\mathsf{FP^{NP}}$ Turing reduction from LOP to Weak Avoid?
+\end{problem}
+Our interest in this problem is the following observation:
+\begin{observation}
+Say that Linear Ordering Principle is $\mathsf{FP^{NP}}$ Turing reducible to Weak Avoid. Then there is a particular language $L$ of circuit complexity $\geq 2^n/n$, and a deterministic $\mathsf{NP}$ oracle algorithm $\mathcal{A}$ running in time $2^{O(n)}$, such that given oracle access to any language $L'$ of circuit complexity $2^{\Omega(n)}$, $\mathcal{A}^{L'}$ computes $L$.
+\end{observation}
+This follows by composing the reduction of Weak Avoid to LOP, which produces a unique solution, with the (purported) second reduction from LOP back to Weak Avoid. Such a consequence would be rather surprising and interesting purely from the perspective of circuit complexity.
+
+Next we highlight the problem of better clarifying the relationship between $\mathsf{L_2^P}$ and $\mathsf{S_2^P}$:
+\begin{problem}
+Does $\mathsf{L_2^P} = \mathsf{S_2^P}$? Can they be separated in the decision tree model? Does $\mathsf{L_2^P}$ satisfy a Karp-Lipton theorem?
+\end{problem}
+For this problem, we would say $\mathsf{L_2^P}$ ``satisfies a Karp-Lipton theorem'' if one could unconditionally prove the implication ``$\mathsf{NP} \in \mathsf{P/poly} \rightarrow \mathsf{PH}=\mathsf{L_2^P}$.'' A notable property of $\mathsf{S_2^P}$ is that it is the smallest complexity class for which this statement is known to hold.
+
+The next problem we highlight is in the realm of depth 3 circuits:
+\begin{problem}
+Does Weak Avoid have depth 3 circuits of polynomial size?
+\end{problem}
+Recall that Li's upper bound is only quasipolynomial, of size around $N^{\log N}$. This problem seems intimately connected to the long-standing open question in proof complexity of whether the Weak Pigeonhole Principle has polynomial size bounded depth Frege proofs; a \emph{quasipolynomial} upper bound was shown by Paris Wilkie and Woods \cite{Paris-Wilkie-Woods} using a very similar technique to Li's, and \cite{MacielPW02} give a different bounded-depth Frege upper bound of lower depth, but still quasipolynomial size. Despite the strong aesthetic similarities we do not know a formal connection in either direction between these problems.
+
+
+Lastly, the search problems discussed here have other connections to bounded arithmetic.
+In particular, the LOP principle has been investigated in several papers, defined explicitly for the first time in \cite{Chiari1998-CHIWFI} and studied mostly within the context of characterizing the  strength of Jerebek's bounded arithmetic theory of approximate counting relative to weaker theories, and also as a new avenue for approaching the longstanding problem of separating Buss' $T_2$ hierarchy by sentences of fixed complexity. 
+%(The latter problem is the proof theory analog of separating levels of the polynomial hierarchy by CNF/DNF functions.)
+%($APC_1$) probabilistic polynomial-time reasoning
+Buss, Kolodziejczyk and Thapen \cite{BussKT14} observe that the LOP principle is provable in both
+$T^2_2$ and in $APC_2$, and ask whether or not  
+LOP is provable in the weaker theory $T^1_2 ~ + ~ sWPHP$, 
+where $sWPHP$ is the surjective weak pigeonhole principle, and corresponds to the search problem Weak Avoid.
+Atserias and Thapen \cite{AtseriasT13} resolve this question,
+proving that in the relativized setting,
+$sWPHP$ does not prove the LOP principle over $T^1_2$.
+In fact they prove a stronger result, that 
+$sWPHP$ cannot prove the HOP principle over $T^1_2$,
+where HOP is a
+$\Sigma_1^b$ version of LOP. 
+It seems possible that the techniques here could be used to give a negative answer to Problem~\ref{prob:lop-to-avoid}.
+%that a converse to Theorem~\ref{thm:avoid-to-lop-intro} (reducing LOP to Weak Avoid) is unlikely to hold. 
+A relatively unexplored area that is likely to be fruitful is to discover more relationships between natural search problems lying in the second level of the polynomial hierarchy (and higher) and corresponding systems of bounded arithmetic. 
+
+
+%\todo{SAY SOMETHING NOT TOO DUMB.}
+
+
+
+%%%%%%%%%%%%%
+%%%%%%%%%%%%%
+%%%%%%%%%%%%%
+
+% \section{[OLD INTRO]}
+% \subsection{Search Problems In Question}
+% We now define the four $\mathsf{TF\Sigma_2^P}$ search problems which are the main focus of this work. It should be noted that from now on we will refer to the Range Avoidance problem, referenced in the introduction, as ``Weak Avoid.'' This is to distinguish it from the more general problem ``Strong Avoid.'' Both of these problems were originally defined in \todo{KKMP} under different names, however in subsequent work the name ``Avoid'' has become standard for the former problem.
+% \begin{definition}[Weak Avoid]
+% Given $f: \B^n \to \B^{n+1}$, find $y \in \B^{n+1} \setminus \rng(f)$
+% \end{definition}
+
+% \begin{definition}[Strong Avoid]
+% Given $f: \B^n \setminus \{0^n\} \to \B^n$, find $y \in \B^n \setminus \rng(f)$.
+% \end{definition}
+
+% \begin{definition}[Strong 1-1 Avoid]
+% Given $f: \B^n \setminus \{0^n\} \to \B^n$, find a pair $x\neq y $ in $\B^n \setminus \{0^n\}$ such that $f(x)=f(y)$, or else $y \in \B^n \setminus \rng(f)$, 
+% \end{definition}
+% \begin{definition}[Linear Ordering Principle]
+% Given $\prec: \B^n \times \B^n \to \B$, find a witness that $\prec$ does not define a total ordering on $\B^n$, or else find the minimal element in the ordering it defines.
+% \end{definition}
+
+% In each case, the input function, e.g. $f: \B^n \to \B^{n+1}$, is given in the form of a boolean circuit with the appropriate number of input/output wires. We start by observing that for three of these problems, nontrivial upper bounds on their complexity follow directly from their definition.
+% \begin{observation}\todo{ref}
+% Weak Avoid is solvable in $\mathsf{FZPP^{NP}}$
+% \end{observation}
+% This is a consequence of the fact that a random string $y \sim \B^{n+1}$ will be a solution with probability $\geq 1/2$, and can be checked using an $\mathsf{NP}$ oracle. 
+% \begin{observation}
+% Linear Ordering Principle and Strong 1-1 Avoid are both solvable in $\mathsf{FP^{\Sigma_2^P \cap \Pi_2^P}}$.
+% \end{observation}
+% We will not prove this formally here, but it follows from the fact that both search problems have the following property: there are two types of solutions, the first being checkable in polynomial time and thus of a lower verification complexity, and if an instance does not have a low-complexity solution then it has a unique solution. In the case of Strong 1-1 Avoid, this is because a one-to-one map $[2^n] \to [2^n +1]$ will miss exactly one point in the codomain; for Linear Ordering Principle, this is because a linear ordering has a unique minimal element. Digging more into the structure of Linear Ordering Principle (and using the definition of $\mathsf{FS_2^P}$ which we have yet to present), we can also observe easily:
+% \begin{observation}
+% Linear Ordering Principle is solvable in $\mathsf{FS_2^P}$.
+% \end{observation}
+
+% \subsection{Main Results}
+% In this work we establish new inclusions and separations amongst the subclasses of $\mathsf{TF\Sigma_2^P}$. Our results are summarized visually in Figure~\ref{fig:classes}, and we give a more in-depth description here.
+% \begin{figure}
+%     \centering
+%     \includegraphics[width= \textwidth]{Classes.pdf}
+%     % \captionsetup{width=1\textwidth}
+%     \caption{Inclusion diagram of relevant classes and search problems. Solid arrows represent the inclusion of the class at the base of the arrow into the class at its tip. Dotted arrows indicate non-inclusion of the base class into the tip class in the decision tree model. The main linear axis of classes along the top are all included from left to right, indicated by the long solid arrow above them. Our major results are the separations marked with $\spadesuit, \clubsuit$ and the inclusion marked with $\blacklozenge$. \todo{Toni: for the classes in the top long line, are they also all separated in decision tree worls?}}
+%     
+% \end{figure}
+% \subsubsection{Weak Avoid and the Linear Ordering Principle}
+% Our first set of results pertains to the newly defined Linear Ordering Principle problem, which we abbreviate as LOP. Amongst the novel results in \todo{the two papers}, the strongest is the upper bound of Li, which shows that Weak Avoid is contained in the class $\mathsf{FS_2^P}$. We show here that LOP represents a natural subclass of $\mathsf{FS_2^P}$ which is still powerful enough to capture the Weak Avoid problem. The main result is:
+% \begin{theorem}
+% There is a polynomial time many-one reduction from Weak Avoid to LOP.
+% \end{theorem}
+% This inclusion subsumes the new upper bounds for Weak Avoid given in \todo{ref}, since the inclusion $\mathrm{LOP} \in \mathsf{FS_2^P}$ follows directly from its definition.
+
+% The proof follows much of the high level structure of \todo{Li's} result placing Weak Avoid in $\mathsf{FS_2^P}$. Roughly speaking, Li's proof shows that given an instance of Avoid $f: \B^n \to \B^{n+1}$, we can define a comparison relation $\sqsubset$ on $\B^{\poly(n)}$, so that for some unique distinguished element $\pi^* \in\B^{\poly(n)}$ we have $\pi^* \sqsubset \pi$ for all $\pi \neq \pi^*$, and $\pi^*$ contains a solution to the original Avoid instance. In our case we need to define a similar comparison relation, which in addition \emph{globally} acts as a total order on $\B^{\poly(n)}$; this requires some significant additional work. We note in addition that our proof, as well as Li's, bears a strong similarity to the work of \todo{PWW} which gave the first proof of the weak pigeonhole principle in the bounded arithmetic theory $S_2$. \todo{Toni: may want to talk up this result more?}
+
+% \begin{theorem}
+% ~
+% \begin{enumerate}
+%     \item Any search problem which has a $\mathsf{P^{NP}}$ Turing reduction to $\mathrm{LOP}$ also has a polynomial time many-one reduction to $\mathrm{LOP}$.
+%     \item There is a language $\mathrm{DLOP} \subseteq \B^*$ (``Decisional LOP''), so that $\mathrm{LOP}$ is truth table reducible to $\mathrm{DLOP}$ and $\mathrm{DLOP}$ is many-one reducible to $\mathrm{LOP}$.
+% \end{enumerate}
+% \end{theorem}
+% The advantage is that unlike $\mathsf{FS_2^P}$, which has a purely \emph{semantic} definition and therefore seems unlikely to contain a complete problem, LOP is defined by a very natural total search problem. 
+% We next show that LOP is equivalent in complexity to a decision problem, and satisfies some strong closure properties under a wide class of reductions. In particular we define a \emph{decisional} complexity class $\mathsf{L_2^P}$ as follows:
+% \begin{definition}
+% A language $L$ is in the complexity class $\mathsf{L_2^P}$ if there is a polynomial time relation $R: (\B^*)^3 \to \B$ and a polynomial $p$, so that for all $x$, $R(x, \cdot, \cdot)$ defines a total order on $\B^{p(n)}$ whose minimal element $a$ has $a_1 = L(x)$. 
+% \end{definition}
+
+% We then have the following structural results:
+% \begin{theorem}
+% \phantom\\
+% \begin{enumerate}
+%     \item $L \in \mathsf{L_2^P}$ if and only if $L$ is $\mathsf{P^{NP}}
+% $-Turing reducible to LOP. In particular $\mathsf{L_2^P}$ is closed under $\mathsf{P^{NP}}$ Turing reductions.
+%     \item $\mathsf{L_2^P}$ has a complete language under many-one polynomial time reductions.
+% \end{enumerate}
+% \todo{Toni: Would it be more clear to define $L_2^P$ to be the class of decision problems that are polytime reducible to LOP. Or do you think it is important to specify decision version of LOP ?   Also for statement of Thm 2 maybe restate: if L is $P^{NP}$ 
+% reducible to LOP, then L is polytime reducible to LOP. Thus $L_2^P$ is closed under $P^{NP}$ reductions.  (Oliver): I thought about both ways; my motivation of doing it this way is that people familiar with the definition of $\mathsf{S_2^P}$ will see this as a natural subclass of $\mathsf{S_2^P}$; then we state as a theorem that it has the equivalent characterization you mention.}
+% \end{theorem}
+% Combining this with the previous theorem reducing Weak Avoid to LOP we get:
+% \begin{theorem}
+% \phantom\\
+% \begin{enumerate}
+%     \item $\mathsf{L_2^P} \subseteq \mathsf{S_2^P}$
+%     \item $\mathsf{P^{NP}} \subseteq \mathsf{L_2^P}$ and $\mathsf{BPP} \subseteq \mathsf{MA} \subseteq \mathsf{L_2^P}$
+%     \item $\mathsf{L_2^E}$ contains a language of circuit complexity $2^n/n$.
+% \end{enumerate}
+% \end{theorem}
+% % We believe this sequence of results greatly adds to our understanding of the new Weak Avoid upper bounds given in \todo{ref and ref}. 
+% The main takeaway of these results is the following. $\mathsf{FS_2^P}$ and its decisional counter part $\mathsf{S_2^P}$ are somewhat unconventional complexity classes, and since their definition involves a promise they are believed not to contain complete problems. We have identified a natural subclass $\mathsf{L_2^P}$ of $\mathsf{S_2^P}$, which is characterized by a simple and natural search problem, thus endowing it with a complete language, but which otherwise maintains most of the power of the larger class $\mathsf{S_2^P}$. \todo{(Oliver): I'm still not sure I'm selling this well... do you have any other ideas for how to make this sound cooler?}
+% \subsubsection{Circuit Lower Bounds for Pigeonhole Principles \todo{Lower Bounds and Separations?}}
+% Our two main results in this section show that Strong Avoid has no non-trivial upper bound within the identified subclasses of $\mathsf{TF\Sigma_2^P}$, and that for Strong 1-1 Avoid, the $\mathsf{FP^{\Sigma_2^P \cap \Pi_2^P}}$ upper bound in Observation~\todo{ref} is the best possible:
+% \begin{theorem}
+% In the decision tree model, Strong Avoid is not solvable in $\mathsf{FP}^{\Sigma_2^P}_{||}$.
+% \end{theorem}
+% \begin{theorem}
+% In the decision tree model, Strong 1-1 Avoid is not solvable in $\mathsf{FBPP^{NP}}$.
+% \end{theorem}
+% \todo{Toni: Perhaps reorder so thm 4 states both versions and we discuss that completely first, and then we state theorem 5 both versions and discuss it.}  
+% The first lower bound is the more involved of the two, and requires proving a novel depth 3 $AC^0$ circuit lower bound for a total search problem, which appears to be the first circuit lower bound of this kind. In particular Theorem\todo{ref} is equivalent to the following circuit lower bound:
+% \begin{theorem}
+% 
+% Consider the natural association of $\B^{n\lceil \log n \rceil}$ with functions $f: [n-1] \to [n]$ specified by their truth table. Say that $C:\B^{n\lceil \log n \rceil} \to \B^{\lceil \log n \rceil}$ is a depth 3 unbounded fanin boolean circuit which solves the Strong Avoid problem in the sense that $C(f) \notin \rng(f)$ for all assignments $f$. Then $|C| \geq 2^{n^{\Omega(1)}}$. 
+
+% More generally, if $C:\B^{n\lceil \log n \rceil} \to \B^{n^{\epsilon}}$ is a depth 3 circuit of size $2^{n^{\epsilon}}$  and $D: \B^{n^{\epsilon}} \to \B^{\lceil \log n \rceil}$ is an arbitrary postprocessing function, then $D \circ C$ cannot solve Strong Avoid provided $\epsilon$ is sufficiently small.
+
+% %\todo{(Toni)This last sentence is a bit hard to understand. Maybe something like: Moreover, the lower bound holds even if $C$ can output $n^{\epsilon}$ output bits which can be postprocessed arbitrarily to solve Strong Avoid.  }\todo{(Oliver) is this better? Also is it ok for me to still hint at the "non-adaptive decision tree" formulation as below or do you think its still too confusing?}
+% \end{theorem} 
+% This latter result yields a very fine-grained separation for the Strong Avoid problem. It is easy to construct a depth 4 circuit $C:\B^{n\lceil \log n \rceil} \to \B^{\lceil \log n \rceil}$ solving Strong Avoid, where moreover the bottom fan-in is only $O(\log n)$ \todo{reference williams}. More strongly, it is possible to construct a depth $O(\log n)$ decision tree, which at each step queries a depth 3, $\poly(n)$ size circuit on the input $f$, and at each leaf outputs a correct solution $y \notin \rng(f)$. Our lower bound can be interpretted as saying that if such a decision tree is forced to be non-adaptive, then either the circuits it queries at each step must grow to exponential size, or else the number of queries must grow to $n^{\Omega(1)}$.
+
+% This also contrasts the situation with Weak Avoid, where \todo{the new result} shows:
+% \begin{theorem}\todo{cite}
+% There is a depth 3 circuit $C:\B^{n\lceil \log 2n \rceil} \to \B^{\lceil \log 2n \rceil}$ of size $n^{O(\log n)}$ which solves the Weak Avoid problem: for every $f: [n] \to [2n]$, $C(f) \notin \rng(f)$. Moreover the bottom layer of gates in $C$ have fan-in $O(\log^2 n)$.
+% \end{theorem}
+
+% We believe our lower bound is of independent interest in %bounded depth 
+% circuit complexity. In particular, we give a very fined grained depth-3 lower bound for a \emph{total search problem}. It is of course possible to construct contrived examples of total search problems which are hard for $\mathsf{AC}^0$ circuits, for example ``given $x \in \B^n$ output $b \in \B$ such that $\mathrm{Parity}(x)=b$;'' in such examples we can derive hardness of the search problem \emph{by reduction from a decision problem}. In contrast, the lower bound we show here \emph{cannot be established by reduction from any decision or function problem}. This follows from the fact that any decision problem (resp. any function problem) which is reducible to a $\mathsf{TF\Sigma_2^P}$ search problem lies in $\mathsf{\Sigma_2^P \cap \Pi_2^P}$ (resp. $\mathsf{FP^{\Sigma_2^P \cap \Pi_2^P}}$). In the decision tree model, this means that any language or function which can be solved by a small depth decision tree querying instances of Strong Avoid has both $\Sigma_2^P$ and $\Pi_2^P$ circuits. However, the lower bound we are trying to show for Strong Avoid rules out the existence of any $\mathsf{FP^{\Sigma_2^P \cap \Pi_2^P}}$ algorithm for Strong Avoid. Phrased more succinctly, our lower bound establishes that Strong Avoid is harder then \emph{any} decision problem which can be reduced to it, which by definition means we cannot establish the lower bound itself by reduction from decision problem. In light of this, to establish the lower bound in Theorem \todo{ref thm} we must develop new $\mathsf{AC^0}$ lower bound techniques which are specially tailored to total search problems.
+
+% \todo{add a pointer to the section where we compare our switching lemma with those in proof complexity}
+% \todo{Toni: should we add somewhere that we also get a fine grained separation with respect to the stretch of Avoid since by a simple reduction we get a superpoly depth-3 ckt lb also for avoid from [N] to [N + N/polylogn]?}
+
+% Our second main separation for Strong 1-1 Avoid is equivalent to the following circuit lower bound: 
+% \begin{theorem}
+% Associate $\B^{n\lceil \log n \rceil}$ with functions $f: [n-1] \to [n]$ as above. Let $\mathcal{C}$ be a distribution over functions $C: \B^{n \lceil \log n \rceil} \to \B^{\lceil \log n \rceil}$, where each $C \in \mathrm{support}(\mathcal{C})$ is $\mathsf{P^{NP}}$ decision tree of complexity $w$, and such that for all one-to-one assignments $f: [n-1]\to[n]$, 
+% \[
+% \Pr[\mathcal{C}(f) \notin \rng(f)] \geq \frac{2}{3}
+% \]
+% Then $w \geq n^{\Omega(1)}$.
+% \end{theorem}
+
+% We will review the formal definition of $\mathsf{P^{NP}}$ decision trees in \todo{section}. Informally, these are decision trees of small height which, instead of querying variables, are allowed to query the value of an arbitrary low-width DNF over the inputs in unit time. Recall that Strong 1-1 Avoid is easily shown to lie in the class $\mathsf{FP^{\Sigma_2^P \cap \Pi_2^P}}$ (Observation~\ref{obs:s-cap-pi-innitial} above, which will be proven formally in Lemma~\ref{lem:1-1-lop-unique} later). Combining this with the above lower bound we obtain as a corollary the following separation for decision classes:
+% \todo{(Toni): shouldnt this be $P^{\Sigma_2 \cap \Pi_2}$ below? (Oliver):$P^{\Sigma_2 \cap \Pi_2} = \Sigma_2 \cap \Pi_2$ so it's the same thing }
+% \begin{theorem}
+% In the decision tree model, $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{BPP^{NP}}$. In particular $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{S_2^P}$.
+% \end{theorem}
+% This is in contrast to the situation for $\mathsf{NP} \cap \mathsf{coNP}$, which is known to collapse to $\mathsf{P}$ in the decision tree model. This improves a previous result of \todo{fortnow and someone} who showed that $\mathsf{\Sigma_2^P \cap \Pi_2^P} \not\subseteq \mathsf{P^{NP}}$ in the decision tree model.
+% % \subsection{Techniques}
+% % \todo{(Oliver): Should we include this? Or is it too redundant with our "Proof Overview" in section 3 and we can just postpone everything to then?}
+% % The main ingredient in our circuit lower bounds is a variant of the switching lemma. Roughly speaking, this lemma says the following. Say we are given a small-width DNF $D$ on $\approx N \log N$ boolean variables, where as above we identify each variable assignment with a function $f: [N] \to [N+1]$ in the natural way. As is common in random restriction arguments, we may choose a certain partial function $\rho: [N] \to [N+1]$, and restrict attention to only those assignments $f$ which extend $\rho$. Our switching lemma shows that if $\rho$ is sampled from an appropriate distribution, then after the restriction we may replace $D$ with a small height ``pigeonhole decision tree'' $T$ which has the same behavior on all assignments extending $\rho$. However, this decision tree $T$ is \emph{not} a standard decision tree querying the underlying variables defining $f$. Instead it is allowed to make both pigeon queries (what is $f(x)$?) as well as \emph{hole queries} (does $y$ have a preimage under $f$, and if so what is it?). This corresponds to a special kind of $\mathsf{P^{NP}}$ decision tree over the underlying variables. We then need a separate argument, not involving a random restriction, to show that the simplified circuit cannot solve the search problem. A different argument is needed for Theorems \todo{ref and ref}. 
+
+% % In the more involved case of the depth 3 circuit lower bound, we start out with a depth 3 circuit $\phi = \land_i D_i$ where $D_i$ are DNFs. After the random restriction, we are able to represent each $D_i$ by a small-height pigeonhole decision tree $T$, which in turn allows us to represent $\lnot D_i$ by a small-width \emph{hole disjunction}, which is a special type of depth 3 circuit which in some sense resembles a DNF. Overall this gives us a representation of $\lnot \phi = \lor_i \lnot D_i$ as a small-width hole disjunction. Although this translation does not reduce the depth of $\phi$ in the traditional sense (it is still depth 3), the special structure of the simplified circuit allows for a direct argument to be applied.
+
+% % Our switching lemma bears \todo{stronger resembelence to proof complexity ones then circuit complexity ones. However highlight following distinction: we need the decision tree to represent the original DNF semantically as a function, rather then in some syntactic sense as a formula. It is also distinct from switching lemmas which have appeared in circuit complexity, in that the decision tree we end up with is not a standard decision tree on the underlying variables, but rather a specialized kind of $\mathsf{P^{NP}}$ decision tree.} A consequence of this latter fact is that we cannot hope to apply the switching lemma repeatedly. This \todo{makes sense} in light of the fact that Strong Avoid \emph{does have} polynomial size circuits of depth 4.
+% \subsection{Open Problems}
+% We conclude our introduction with a list of natural problems that remain open:
+% \begin{enumerate}
+%     \item Is Linear Ordering Principle reducible to Weak Avoid?
+%     \item Is Linear Ordering Principle reducible to Strong Avoid?
+%     \item Is Weak Avoid reducible to Strong 1-1 Avoid?
+%     \item Can we separate $\mathsf{S_2^P}$ from $\mathsf{L_2^P}$?
+%     \item Does Weak Avoid have depth 3 circuits of polynomial size?
+% \end{enumerate}
+% In each case the problem remains interesting whether reductions are taken to be polynomial time or $\mathsf{FP^{NP}}$. We highlight the first problem in particular, whose positive answer would have the following interesting consquence:
+% \begin{observation}
+% Say that Linear Ordering Principle is $\mathsf{FP^{NP}}$ Turing reducible to Weak Avoid. Then there is a particular language $L$ of circuit complexity $\geq 2^n/n$, and a deterministic $\mathsf{NP}$ oracle algorithm $\mathcal{A}$ running in time $2^{O(n)}$, such that given oracle access to any language $L'$ of circuit complexity $2^{\Omega(n)}$, $\mathcal{A}^{L'}$ computes $L$.
+% \end{observation}
+
+
+\section{Derandomization from Time-Space Tradeoffs}
+% Mathematicians have long been familiar with the curious phenomenon of a \emph{non-constructive proof}: an argument which demonstrates the existence of an object satisfying some special property, but which fails to indicate a particular example of such an object.
+% The advent of complexity theory has provided us with a formal way of defining the level of ``inherent constructivity'' in a theorem: we can say that an existence theorem is constructive if there is an accompanying polynomial time algorithm supplying an example of one of the objects the theorem proves to exist, and is inherently non-constructive if no such algorithm exists. Papadimitriou initiated a formal complexity-theoretic treatment of this topic three decades ago \cite{christos}, where he provided a taxonomy of total search problems (problems that always have solutions) in \cl{NP} by classifying them based on the strength of the lemma guaranteeing the existence of a solution on all instances.
+
+In this chapter, as well as Chapter~\ref{chap:randomstrings}, we will give a deterministic polynomial time algorithm for solving a certain class of explicit construction problems. In both Chapters, the correctness of our algorithm will hinge on a certain complexity-theoretic \emph{hardness assumption}, placing these results within the rich landscape of \emph{hardness v.s. randomness} tradeoffs which have become ubiquitous in complexity theory since their introduction in \cite{Yao} and subsequent generalized treatment in \cite{NW, IW} \todo{reference a part of the introduction, or perhaps the first content chapter, which explains these}.
+
+We motivate the algorithm in this chapter by a certain \emph{counter-factual} thought experiment. When an explicit construction problem is defined, we have a nonconstructive proof that it is total; our starting point is to imagine a world in which some explicit construction problem is \emph{not solvable in polynomial time}, i.e. the nonconstructivity of said proof is \emph{inherent}.
+When a particular theorem appears to be inherently non-constructive, in that no polynomial time algorithm can witness the solutions it guarantees, one perspective we can take is that this theorem is ``effectively false'' in a certain context, despite being unconditionally true in general. This is essentially the outlook presented by Yao in his seminal paper introducing the basis of theoretical cryptography \cite{Yao}. Here, Yao focuses on the central tenets of Shannon's information theory.
+He argues that although Shannon's theorems are of course provably correct, in many scenarios it appears computationally infeasible to witness their truth. For example, an output of some function $f \colon\B^n \rightarrow \B^{2n}$ under the uniform distribution on $\B^n$ has entropy $n$, and thus by a result of Shannon can be encoded on average using $n$ bits. However for an observer who sees only the outputs of this distribution, there seems to be no efficient way to generate such a code without the ability to efficiently invert $f$. If we posit that there are some specific functions $f$ for which it is in fact impossible to efficiently realize Shannon's theorem in this sense, one might venture to say that Shannon's theorem \emph{effectively fails} for $f$ in the computational realm, perhaps allowing us to carry out tasks which would, in the absence of computational constraints, be deemed impossible. Indeed it is widely conjectured that there are efficiently computable functions $f$ of this form, and this conjecture underpins the security of many cryptographic protocols. Similar situations are abundant in the field of cryptography, where the computational infeasibility of \emph{witnessing} impossibility theorems from information theory allows us to effectively bypass them.
+
+With this perspective in mind, we turn our attention to the following kind of explicit construction problem. Suppose that there is a pair of efficiently computable functions  $\mathcal{G} = \{g_n \colon \B^{n} \rightarrow \B^{n-1}\}_{n \in \mathbb{N}}$, $\mathcal{F} = \{f_n \colon \B^{n-1} \rightarrow \B^n\}_{n \in \mathbb{N}}$, and our explicit construction problem is: given $1^n$, find some $n$-bit string $x$ such that $f_n(g_n(x)) \neq x$ in $poly(n)$. Note that this does not quite capture explicit construction problems reducible to range avoidance, since rather than a mear length-extending map $g_n$ we are also given its supposed ``inverse'' $f_n$. Now, if this explicit construction problem is not efficiently solvable, then we have found a pair of efficiently computable functions $\mathcal{F}, \mathcal{G}$, such that no polynomial time algorithm is able to construct an $n$-bit string $x$ such that $f_n(g_n(x)) \neq x$ in $poly(n)$ time. 
+In this hypothetical world where $\mathcal{F}, \mathcal{G}$ are an ``effective counterexample'' to the weak pigeonhole principle, we have access to an efficient compression scheme which allows us to encode any $n$-bit string using $n-1$ bits. What improbable feats can be accomplished in such a world? 
+
+In this work we give one answer to this question: if the weak pigeonhole principle \emph{effectively fails} in the above sense, we can utilize this failure to construct an efficient data structure which allows us to simulate RAM computations in low space and near-linear time on a 1-tape Turing machine. Our simulation procedes by bootstrapping our compression scheme that saves 1 bit, into a a \emph{dynamic} compression scheme that can store an $m$-bit memory in $m^{\epsilon}$ bits, such that each cell of memory can be read or updated in $m^{\epsilon}$ time. 
+Stated in contrapositive, if we assume mild time-space tradeoffs for simulating RAM machines on a 1-tape Turing machine, we obtain a generic deterministic algorithm to witness the weak pigeonhole principle for any pair of maps  $\mathcal{F}, \mathcal{G}$. 
+
+% We also make progress towards a characterization of \emph{full derandomization} (i.e. $\cl{prBPP} = \cl{prP}$) in terms of total search problems, by demonstrating a total search problem related to the weak pigeonhole principle which is compete for \cl{prBPP} under deterministic reductions. While the arguments underlying this proof are decades-old and completely standard, \todo{it's a nice way of looking at things...}. In the course of this proof, we observe that if a particular step in Yao's hybrid argument can be derandomized, then every problem in $\cl{prBPP}$ reduces to a search problem in $\cl{PPP} \subseteq \cl{TFNP}$.
+
+\todo{say something about the problem LOSSY, a more lasting contribution of this paper, along with the R-LOSSY thing...}
+
+
+\subsection{Our Contributions}
+\subsubsection{Derandomization from Time-Space Tradeoffs}
+Let $\mathcal{C}, \mathcal{D} = \{C_n\colon \B^{n} \rightarrow \B^{n-1}\}_{n \in \mathbb{N}}, \{D_n\colon \B^{n-1} \rightarrow \B^{n}\}_{n \in \mathbb{N}}$. We call such a pair a ``uniform compression scheme,'' where $\mathcal{C}$ is the ``compressor'' which encodes $n$-bit ``messages'' by $n-1$-bit ``codewords,'' and $\mathcal{D}$ is the ``decompressor'' which maps $n-1$-bit codewords to the messages they represent\footnote{The formal definition given in Section~\ref{lossy:sec:pigeons} is slightly more general, but we will focus on this special case for now.}. We use the term ``uniform'' since in the relevant cases, $\mathcal{C}$ and $\mathcal{D}$ will each be described by a single Turing machine which computes $C_n$ (resp. $D_n$) for all $n$. We will say that a string $x \in \B^n$ is ``incompressible'' for such a scheme if $D_n(C_n(x)) \neq x$, i.e. if $\mathcal{D}$ cannot be used to recover the message $x$ from the codeword assigned to it by $\mathcal{C}$. In this chapter, we study the complexity of the explicit construction problem of generating incompressible strings for uniform compression schemes. This task can be viewed naturally as a derandomization problem, since a randomly chosen $n$-bit string will be incompressible with high probability with respect to any fixed compression scheme.
+
+Our results then show how to derive efficient derandomized algorithms for generating incompressible strings, assuming certain \emph{uniform} lower bounds. The lower bounds we consider are time-space tradeoffs for simulating RAM by 1-tape machines. Roughly, they posit that there are problems solvable in time $T$ on a RAM machine which cannot be solved on a 1-tape machine using $T^{0.01}$ space and $T^{1.01}$ time. Depending on certain features of the compression scheme and the resources available to the explicit construction algorithm, the specifics of the tradeoff assumption will vary, as we shall explain in Figure~\ref{lossy:fig:results}.
+
+Initially, we consider the case of ``poly-time compression schemes'', where both $\mathcal{C}$ and $\mathcal{D}$ are computable in polynomial time. We show that for such schemes, incompressible strings can be constructed deterministically in polynomial time assuming time-space tradeoffs for deterministic exponential time:
+\begin{theorem*}[Theorem~\ref{lossy:thm:tisp-impl}]
+Suppose there is some exponential time bound $T(n) \geq 2^{\Omega(n)}$ and some $\epsilon > 0$ such that it is impossible to simulate $T(n)$-time RAM computations on 1-tape Turing machines that use $T(n)^{1+\epsilon}$ time and $T(n)^{\epsilon}$ space. Then for any poly-time compression scheme, there is a polynomial time algorithm that produces incompressible $n$-bit strings for this scheme on input $1^n$ (for infinitely many $n$).
+\end{theorem*}
+
+
+Constructing incompressible strings for poly-time compression schemes is a natural and quite broad derandomization problem. Theorem~\ref{lossy:thm:tisp-impl} gives a novel connection between derandomizing this task and proving \emph{uniform} time-space tradeoffs-- in contrast, the assumptions previously required to derandomize this sort of problem require a lower bound against \emph{non-uniform} algorithms, such as circuits. To put this derandomization task in a more familiar context, in Section~\ref{lossy:subsec:particular-pairs} we show that several well-studied explicit construction problems, such as the construction of large prime numbers or the construction of truth tables of high circuit complexity/formula size, can be reduced to the problem of finding incompressible strings for some uniform compression scheme. In each case, the compression scheme will either be computable efficiently, or efficiently with access to an oracle for some search problem in \cl{FNP} which is not known to be \cl{NP}-complete. 
+% We then consider, for some compression scheme $\mathcal{C},\mathcal{D}$, whether there is an efficient explicit construction algorithm that produces incompressible strings for the scheme. Our main results show that if there is no such algorithm, this implies the existence of a highly effective simulation of RAM machines using low space on a 1-tape machine, which makes short oracle queries to $\mathcal{C}, \mathcal{D}$. Depending on the precise features of the explicit construction algorithm presumed not to exist, our simulation will have varying properties. Ultimately these results are most interesting when stated in contrapositive form: they show that, assuming basic tradeoffs between time and space are necessary when converting a RAM algorithm to a 1-tape algorithm, a range of explicit construction problems can be efficiently derandomized.\\
+
+To state our other main results in their most interesting form, we focus our attention now on the construction of strings/truth tables of high complexity with respect to some non-uniform complexity measure, such as formula size, circuit size, or time-bounded Kolmogorov complexity. In each case there is an associated \cl{NP} search problem, where we are given a string/truth table and must find a small formula/circuit/program computing it (if one exists); we call this the ``compression problem.'' The following table shows how our three main theorems relate various time-space tradeoff hypotheses to such problems:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{space_results_table.pdf}
+    \caption{Main Results. We use the shorthand $T=T(n)$.}
+    
+\end{figure}
+
+The classes seen on the left hand side will be defined formally in Section~\ref{lossy:subsec:machines}, but we give a brief explanation here so that the table can be interpreted appropriately. $\cl{TIME}[T(n)]$ and $\cl{NTIME}[T(n)]$ are defined in the standard way using multitape machines; the prefixes $\cl{1}$ and $\cl{RAM}$ indicate, respectively, either a restriction of the model to 1-tape machines or a strengthening to random access machines. The class $\cl{TISP}[T(n),S(n)]$ consists of problems decidable simultaneously in time $T(n)$ and space $S(n)$. Finally, $\cl{NTISPG}[T(n),S(n),G(n)]$ consists of problems decidable by a nondeterministic machine running in time $T(n)$ which, on every computation path, uses at most $S(n)$ space and $G(n)$ nondeterministic guesses.
+
+For a concrete example of how to apply these results, lets focus on the compression problem {\sc Circuit Synthesis} (given a truth table find a small circuit for it if one exists), and the explicit construction problem of producing truth tables of exponential circuit complexity. The first hypothesis in the above table implies that if {\sc Circuit Syntheses} is in \cl{P} then there is a polynomial time construction of hard truth tables (i.e. $\cl{E}$ has exponential circuit complexity). The second hypothesis implies unconditionally that there is an efficient $\cl{NP}$ oracle construction of hard truth tables (i.e. $\cl{E}^\cl{NP}$ has exponential circuit complexity). Finally, the third and strongest hypothesis tells us that there is a polynomial time construction of hard truth tables using an oracle for {\sc Circuit Synthesis}.
+\\
+\\
+The case of large prime construction does not fit in as neatly to the above picture, as the scheme we devise for this problem will require a factoring oracle for both the compressor and decompressor (while the above problems have a polynomial-time computable decompressor). In this case we get the following result:
+\begin{theorem*}[Corollary~\ref{lossy:cor:prime-construction}]
+Under the hypothesis in the top row of the above table, a polynomial time algorithm for factoring implies a polynomial time algorithm to construct $32n$-bit primes of magnitude $>2^n$ for infinitely many $n$.
+\end{theorem*}
+
+If we forgo the questionable assumption that factoring lies in \cl{P}, we get:
+\begin{theorem*}[Corollary~\ref{lossy:cor:factoring-oracle}]
+One of the following is true:
+\begin{enumerate}
+    \item For every exponential time bound $T$ and every $\epsilon>0$, every language decidable in time $T(n)$ on a RAM machine can be decided in time $T(n)^{1+\epsilon}$ and space $T(n)^{\epsilon}$ by a 1-tape machine with a factoring oracle, which makes oracle calls of length at most $T(n)^{\epsilon}$.
+    \item There is a polynomial time algorithm with a factoring oracle that generates $32n$-bit primes of magnitude $>2^n$ for infinitely many $n$.
+\end{enumerate}
+\end{theorem*}
+
+The problem of deterministically generating large primes has been investigated previously in several works, and was notably the subject of the Polymath 4 project \cite{polymath}. In the public discussion forums for this project, it was explicitly asked whether a polyomial time algorithm for factoring, or more generally an oracle for factoring, would help. More recently, Oliviera and Santhanam gave a subexponential time ``pseudodeterministic'' construction of large primes \cite{pseudo-primes}, using only the fact that primality is testable in \cl{P} \cite{primes} and that primes occur with non-negligible frequency.
+
+\subsubsection{BPP and the Weak Pigeonhole Principle}
+In Section~\ref{lossy:sec:bpp} we briefly consider the relationship between various search problems associated with the weak pigeonhole principle, and the ``full derandomization task'' characterized by the class \cl{prBPP}. Observe that the problem introduced above of finding incompressibe strings for uniform compression schemes can be generalized to a \cl{TFNP} search problem -- instead of considering compression schemes generated by uniform Turing machines, we can consider the search problem where a compression scheme of some fixed length is given as input in the form of a pair of boolean circuits:
+\begin{definition}
+In {\sc Lossy Code}, we are given as input a pair of circuits $C\colon \B^n \to \B^{n-1}$, $D\colon\B^{n-1}\to\B^n$, and must output some $x \in \B^n$ such that $D(C(x))\neq x$.
+\end{definition}
+
+While finding a deterministic algorithm for {\sc Lossy Code} appears to be a quite generic derandomization problem, it would be a major breakthrough to show that {\sc Lossy Code} captures the ``full derandomization problem:'' since {\sc Lossy Code} lies in \cl{TFNP}, if \cl{prBPP} reduces to {\sc Lossy Code} then $\cl{BPP} \subseteq \cl{NP}$, which is a notorious open problem. In Section~\ref{lossy:sec:bpp}, we show that a natural generalization of {\sc Lossy Code}, where we allow the compressor $C$ to be randomized, is indeed strong enough to characterize \cl{prBPP} precisely. The formal problem is as follows:
+\begin{definition}
+In {\sc R-Lossy Code}, we are given as input circuits $C\colon \B^n \times \B^m \to \B^{n-1}$, $D\colon \B^{n-1}\to\B^n$, and must find some $x$ such that $Pr_r [D(C(x,r))=x] < \frac{1}{2}$. 
+\end{definition}
+In this work we demonstrate:
+\begin{theorem*}[Theorem~\ref{lossy:thm:bpp-pigeon}]
+{\sc R-Lossy Code} is complete for \cl{prBPP} under deterministic Turing reductions.
+\end{theorem*}
+
+The relation between pigeonhole principle search problems and more standard derandomization problems is summarized in Figure~\ref{lossy:fig:bpp}. 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{php_bpp_picture.pdf}
+    \captionsetup{width=1\textwidth}
+    \caption{Relations between the total search problems associated with various weak pigeonhole principles, and standard derandomization problems. Solid arrows represent deterministic polynomial time reductions, while dotted arrows represent \cl{NP}-oracle reductions.}
+    
+\end{figure}
+
+The proof of Theorem~\ref{lossy:thm:bpp-pigeon} is mostly standard, following quite directly from Yao's next bit predictor lemma. From the proof of this theorem we are able to extract the following interesting corollary:
+\begin{corollary*}[Corollary~\ref{lossy:cor:yao}, Informal]
+If the fixing of the leftover bits in Yao's hybrid argument can be derandomized, then $\cl{BPP} \subseteq \cl{NP}$. Indeed, under this assumption, every problem in $\cl{prBPP}$ reduces to the search problem {\sc Lossy Code} in $\cl{PPP} \subseteq \cl{TFNP}$.
+\end{corollary*}
+
+In other words, derandomizing a particular step in Yao's classical argument implies a quite universal derandomization of \cl{prBPP}.
+\subsection{Relation to Prior Work}
+\paragraph{Hardness vs. Randomness}
+As mentioned above, the task of constructing incompressible strings can be naturally viewed as a derandomization problem, and is thus amenable to the standard hardness/randomness paradigm. In particular, when the compression scheme is polynomial time computable as in Theorem~\ref{lossy:thm:tisp-impl}, the standard hardness assumptions used to derandomize \cl{BPP} (e.g. \cite{IW}) would suffice to yield a polynomial time construction of incompressible strings. Such hardness assumptions require a lower bound for a language in \cl{E} against some non-uniform model of computation, such as boolean circuits. In contrast, Theorem~\ref{lossy:thm:tisp-impl} gives a hardness/randomness connection for this problem which only requires a \emph{uniform lower bound} for a a language in \cl{E}, in particular a lower bound against low-space algorithms running in slightly more time using a weaker memory model.
+% \paragraph{Karp-Lipton Theorems:} 
+% As \todo{somethin}, the existence of explicit construction  algorithms witnessing the weak pigeonhole principle is intimately connected to the circuit complexity of exponential time classes. Since our results prove the existence of such algorithms assuming certain time-space lower bounds for uniform classes, these results can be broadly placed within the framework of ``Karp-Lipton type theorems:'' theorems which derive non-uniform circuit lower bounds from separations between uniform classes \cite{karp-lipton}. Perhaps most relevant are the collapses due to Meyer \cite{karp-lipton} and to Babai, Fortnow and Lund \cite{BFL}, which show that for various exponential time classes such as $\cl{EXP}, \cl{NEXP}$, or $\cl{EXP}^\cl{NP}$, if these classes have small circuits then they in fact collapse to low levels of the polynomial hierarchy, and in particular must lie in \cl{PSPACE}. When scaled upwards appropriately, these results would imply that, unless there are explicit constructions of truth tables with exponential circuit complexity, $\cl{E}$ can be decided in $2^{\epsilon n}$ space for any $\epsilon > 0$. Stated contrapositively, this means that if $\cl{E}$ \emph{cannot} be solved in subexponential space, then circuit lower bounds (and thus a constructive proof of the pigeonhole principle) follow. At the surface this seems roughly similar to the results we obtained above. However, the simulation implied by these results would have time complexity roughly $2^{2^{\epsilon n}}$, which is far less efficient then what we show above. In this sense, the uniform separations that we assume are much weaker then what is required to apply known Karp-Lipton style theorems: we leave open the possibility that exponential time can be simulated in very low (even polynomial space), but simply posit that such a simulation would require a strongly superlinear blowup in time.
+
+\paragraph{The Easy Witness Lemma:} Perhaps the closest prior work to our results is the ``Easy Witness Method,'' initiated by \cite{Kabenets} and furthered in \cite{IKW} and \cite{williams-sat}, which roughly says that assuming $\cl{E}^\cl{NP}$ has small circuits, any nondeterministic exponential time computation must have witnesses of low circuit complexity. This immediately implies that unless $\cl{E}^\cl{NP}$ requires large circuits, we can efficiently simulate $\cl{NTIME}[2^n]$ using limited nondeterminism by ``guessing a small circuit.'' In Appendix~\ref{lossy:appendix:ewl}, we show that this old method (along with one other well-known tool) is in fact enough to prove the second implication in Figure~\ref{lossy:fig:results}, although this connection to time-space tradeoffs does not seem to have been noted previously. However, this proof heavily utilizes the distinctive power of nondeterminism, whereby additional ``guesses'' allow us to vastly simplify the verification procedure, and does not seem to extend to our other two main results.
+
+\subsection{Known Time-Space tradeoffs:}
+Finally, we cover the known results on time-space tradeoffs and separations between the RAM and 1-tape models. We first emphasize the following: all three time-space tradeoff hypotheses stated on the left-hand side of Figure~\ref{lossy:fig:results} are known to hold \emph{unconditionally} when the time bound $T$ is $O(n)$. In particular, an old result of Maass \cite{palindromes} shows that the set of palindromes is recognizable in quasilinear time on a deterministic RAM machine, but requires $\Omega(n^2)$ time on a nondeterministic 1-tape machine. However, Maass's proof is essentially a counting argument which crucially relies on the entropy of the input being comparable in magnitude to the total computation time, which is no longer the case for exponential time computations. When it comes to separating the RAM and 1-tape models for generic time bounds, a result of \cite{robson} shows that there must be \emph{some} slowdown when simulating a RAM on a 1-tape machine for \emph{any time bound} greater then $n \log \log n$, but the slow-down is an astronomically small multiplicative factor, on the order of $\log \log T(n)$. 
+
+Another sequence of works (\cite{fortnow}, \cite{tisp-sat}, \cite{williams-tisp} among others) has shown unconditionally that nondeterministic linear time cannot be solved in $\cl{TISP}[n^{1+\epsilon}, n^{\epsilon}]$ for certain fixed values of $\epsilon>0$, even when the simulating machine is given access to RAM. These results can be scaled to larger time bounds as follows: for any time-constructible $T$, $\cl{\Sigma_2 TIME}[T(n)]$ is not contained in $\cl{TISP}[T(n)^{1+\epsilon}, T(n)^{\epsilon}]$ for certain fixed values of $\epsilon>0$. Such results are obtained by combining hierarchy theorems with a fast simulation result, whereby a $\cl{\Sigma_2}$ machine can simulate a $\cl{TISP}[T(n)^{1+\epsilon}, T(n)^{\epsilon}]$ computation in time $T(n)^{1 - \delta}$ time for some fixed $\epsilon, \delta > 0$. It is evident that such results will not be sufficient for our purposes, as they only rule out efficient low-space simulations of $\cl{\Sigma_2}$ computations by deterministic machines.
+
+
+\subsection{Main Tool: the J-tree}
+\todo{update the terminology here to match other parts of paper?}
+The basis of our main proofs is a construction which we call the ``J-tree.'' Roughly speaking, the J-tree is a data structure which allows us to store an array of $T$ elements, subject to fast update/query operations, using significantly less then $T$ bits. While this task is information-theoretically impossible (by the weak pigeonhole principle), the J-tree uses a compression scheme $C,D$ to perform its operations, and whenever it fails in its role as a data structure, it is able to print out an incompressible string for this scheme. Thus, assuming no polynomial time algorithm can witness the weak pigeonhole principle for $C,D$, no polynomial time algorithm can witness the failure of this data structure. This will allow our low-space simulations to operate a RAM memory using low space on a 1-tape machine, in such a way that if the simulation fails, then a polynomial time algorithm can witness this failure, and thus witness the weak pigeonhole principle for $C,D$.
+
+The core construction underlying the J-tree has an intriguing history dating back to the late 1970's. In the course of a decade, this construction was used, seemingly independently, to prove three seminal results in cryptography and logic: 
+\begin{enumerate}
+    \item In 1979\footnote{Although the cited work is dated to 1988, Merkle filed a patent for the concept about a decade earlier.}, Merkle showed how to iterate a cryptographically secure hash function $h\colon \B^{2n} \rightarrow \B^n$ in a tree-like fashion to construct a secure digital signature scheme whose signature size increases logarithmically in the number of messaged signed \cite{Merkle}\footnote{The Merkle Tree is in some sense ``dual'' to the other two examples, as it iterates a function which \emph{compresses} strings by a factor of two, while the others iterate a function that \emph{extends} by a factor of two.}.
+    \item In 1986, Goldwasser Goldreich and Micali showed how to iterate a pseudorandom generator $G\colon \B^n \rightarrow \B^{2n}$ in a similar tree-like manner into a family of functions $\{G_x\colon \B^n \rightarrow \B^n\}_{x \in \B^n}$ whose input/output behaviours are indistinguishable from random, assuming $G$ is a secure PRG \cite{GGM}.
+    \item In 1988, Paris, Wilkie, and Woods gave a novel proof of the weak pigeonhole principle in bounded arithmetic\cite{Paris-Wilkie-Woods}. Again, the same process of iterating a function $f\colon \B^n \rightarrow \B^{2n}$ is applied. Here, the function $f$ is assumed to be a bijection between $\B^n$ and $\B^{2n}$, and the iteration procedure is the first step towards establishing a contradiction in the relevant proof system.
+\end{enumerate}
+
+Following \cite{Paris-Wilkie-Woods}, \Jer \cite{Jerabek} used this same construction within bounded arithmetic to establish a deep connection between the weak pigeonhole principle and circuit complexity. This work most closely informs our perspective, hence the name ``J-tree.'' In \cite{Korten}, the techniques of \Jer were translated to the language of traditional complexity theory, which yield the following interpretation of this tree-like iteration process: given a circuit $D\colon \B^n \rightarrow \B^{2n}$, we can efficiently construct a new circuit $D^*\colon \B^n \rightarrow \B^{2^k n}$ satisfying the following: any string in the range of $D^*$ is a truth table of low circuit complexity, and any string outside the range of $D^*$ can be used to efficiently construct a string outside the range of $D$ using an \cl{NP} oracle. If we have a compression scheme $C\colon\B^{2n}\rightarrow \B^n, D\colon\B^n\rightarrow \B^{2n}$, the same argument lets us iterate these to a scheme $C^*,D^*$ of message length $2^kn$ and code length $n$, where again $D^*$ always outputs low complexity truth tables, and now we have that any incompressible string for $C^*,D^*$ can be transformed in polynomial time (without an oracle) into an incompressible string for $C,D$.
+
+Thus, if it is hard to witness the weak pigeonhole principle for $C,D$, then we will be able to take any string (``message'') of length $2^kn$ and find a small circuit computing it (``codeword'') by feeding it through $C^*$. A circuit can naturally be interpreted as a data structure storing an array subject to fast query operations: the truth table represents the contents of the array, and the circuit allows us to efficiently compute a particular bit in the truth table given its index. However, to use the J-tree to simulate RAM computations, we will also require fast update operations, which let  us set a position in the array to a new value. Our main addition to this line of work is the ``J-Tree Update Lemma'' (Lemma~\ref{lossy:lem:updates}), which gives a procedure that accomplishes this second task. The Update Lemma does not seem to have an analogue in any of the previously mentioned works.
+
+\section{Stronger Cell Probe Lower Bounds via Local PRGs}
+We start by briefly introducing the three main subjects of the work: static data structure lower bounds, $\mathsf{NC}^0$ pseudorandom generators, and range avoidance for $\mathsf{NC}^0$ circuits. 
+~\\~\\
+{\bf \noindent Static Data Structure Lower Bounds:} 
+The cell probe model of data structures introduced in \cite{eliasflower,Yao} is a fundamental computational model in which to study tradeoffs between storage space and access time for information retrieval problems. In the \emph{static} cell probe model, a data structure problem $F: [N] \times [M] \to \B$ is fixed, where $[M]$ is an abstract set of ``datapoints,'' $[N]$ is an abstract set of ``queries'' one might wish to make about a data point, and $F(x,y)$ is the correct answer to the $x^{th}$ query about the datapoint $y$. The goal is to preprocess any given datapoint $y\in [M]$ into a data structure $\mathcal{E}(y) \in \Sigma^S$ consisting of $S$ ``cells,'' each cell holding a character from some finite alphabet $\Sigma$, so that later we may answer different queries $x \in \N$ about $y$ by reading at most $t$ cells from the data structure $\mathcal{E}(y)$. $S$ is called the ``space complexity,'' $t$ the ``time complexity,'' and $w=\log|\Sigma|$ the ``word-length'' (number of bits to store the contents of a single cell).
+As a prototypical example (which our main lower bounds will apply to), let $d \leq n$ be given, $N=2^n$, $M = 2^{\binom{n}{\leq d}}$. Identifying $\N$ with $\mathbb{F}_2^n$, and $[M]$ with the set of degree $\leq d$ multilinear polynomials over $\mathbb{F}_2^n$, we can define the \emph{polynomial evaluation problem} $\mathbb{F}_2\dash\mathrm{Eval}_n^d:[N] \times [M] \to \B$ with $\mathbb{F}_2\dash\mathrm{Eval}_n^d(x,p)=p(x)$; in this case to solve the data structure problem, we want a method for preprocessing polynomials $p$ into small space data structures $\mathcal{E}(p)$, so that upon any query $x \in \mathbb{F}_2^n$ we may evaluate the polynomial $p$ at the point $x$ by querying only a few cells of the data structure.
+
+The basic problem in static data structure lower bounds is to prove, for a particular problem $F$, that any data structure solution for $F$ must use a large amount of either space, time, or word length (word length is generally of secondary importance). 
+For \emph{any explicit problem} $F: [N] \times [M] \to \B$, the best lower bound provable by techniques known prior to this work, for any $t>1$ and any setting of the word length $w$, is at best:
+\begin{gather}
+  S \geq N^{\frac{1}{t}} \cdot (\log M)^{1 - \frac{1}{t}}   
+\end{gather}
+Lower bounds of this kind were first achieved by \cite{Siegel89} using a method that was rediscovered in later work and which is now known as \emph{cell sampling}.
+In the special case of \emph{nonadaptive bit probe data structures} (queries chosen nonadaptively, word length $w=1$), a lower bound exceeding (\ref{cellprobe:eq:1}) has been shown in two recent works. First, \cite{viola-maximal} achieved a near-maximal space lower bound $S \geq \frac{N}{2}$ in the case $t=2$ for a problem with $M \leq \poly(N)$ datapoints. Subsequent work of \cite{golovnev} improved this to $S \geq (1-\epsilon)N$ for arbitrarily small $\epsilon>0$ (the lower bound is for a different explicit problem), and for all larger $t>2$ proved a bound like \ref{cellprobe:eq:1} with the exponent $\frac{1}{t}$ replaced with $\frac{1}{(t-1)}$. In Section~\ref{cellprobe:subsec:prior} we will discuss these works, as well as the broader history of static data structure lower bounds, in some more detail.
+
+~\\~\\
+{\bf \noindent $\mathsf{NC}^0$ Pseudorandom Generators:} 
+A prominent line of work initiated in \cite{goldreich-prg,cryan-miltersen}
+has studied the existence of cryptographic PRGs in $\mathsf{NC}^0$. An $\mathsf{NC}^0_t$-PRG is function $G: \B^n \to \B^m$, $m > n$, so that: (1) each output depends on only $t$ inputs, and (2) $G$ is a cryptographic pseudorandom generator: no polynomial time algorithm can distinguish a random output of $G$ from a truly random $m$ bit string.
+We say that $G$ is an $\mathsf{NC}^0$ generator if it is $\mathsf{NC}^0_t$ for some $t = O(1)$. 
+The existence of such PRGs has been the subject of a great deal of work over the past two decades; we refer the reader to a comprehensive survey \cite{apple-survey} and the references therein. 
+
+An important parameter is the \emph{stretch} of the generator, which denotes the relation between $n,m$. We say that $G$ has nontrivial stretch if $m >n$, and polynomial stretch if $m \geq n^{1+\Omega(1)}$. $\mathsf{NC}^0$ generators with nontrivial stretch can be shown to exist under standard number theoretic cryptographic assumptions \cite{randomized-encodings}, however their utility has so far been limited. On the other hand, $\mathsf{NC}^0$ generators with polynomial stretch are not known to exist under any more standard hardness assumptions, but have been found to have a wide range of advanced cryptographic applications \cite{ishai2008cryptography}, most notably in the construction of Indistinguishability Obfuscation \cite{jls1,jls2}. For this reason, a great deal of work has gone into studying the existence of polynomial stretch $\mathsf{NC}^0$ PRGs as a foundational assumption in its own right, and various algorithmic methods for distinguishing such PRGs have been studied. The current state of the art shows that an $\mathsf{NC}_t^0$ generator $G: \B^n \to \B^m$ can be broken in polynomial time once $m >> n^{\frac{t}{2}}$ (\cite{mossel-epsilon,aow,semirandom}).
+
+~\\~\\
+{\bf \noindent $\mathsf{NC}^0$ Range Avoidance:}
+We finally turn to our third main subject of study, $\mathsf{NC}^0$ range avoidance. The object in question here is the same as above: an $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with $m >n$ and $t = O(1)$. However, instead of trying the distinguish the output of $G$ from random, our goal now is to solve the \emph{range avoidance problem} for $G$: output a string $y \in \B^m$ such that $y \notin \rng(G)$. The range avoidance problem (for general $G: \B^n \to \B^m$ computed by polynomial size circuits) was introduced in \cite{KKMP}, and shown in \cite{Korten} to be intimately connected to derandomization and to the problem of proving circuit lower bounds for exponential time classes. In all cases, it is already of great interest to develop algorithms for this problem that use an $\mathsf{NP}$ oracle. \cite{RSW} was the first to investigate the range avoidance problem for $\mathsf{NC^0}$ circuits, and showed that a $\mathsf{P^{NP}}$ algorithm for this problem would imply the breakthrough circuit lower bound $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$. The same question of \emph{stretch} arises here: the aforementioned result of \cite{RSW} requires us to solve instances with barely nontrivial stretch. On the other hand unconditional algorithms have been given once the stretch is sufficiently large, in particular once $m >> \frac{n^{t-1}}{\log n}$ (\cite{guruswami2022range,karthik}). An important question posed in \cite{RSW} is whether unconditional $\mathsf{P^{NP}}$ algorithms for $\mathsf{NC}^0$ range avoidance can be found in the general polynomial stretch regime.
+
+~\\~\\
+{\bf \noindent The Main Correspondence:}
+The starting point of our work is the observation that the 3 problems discussed above are tightly related to one another. The relation between $\mathsf{NC}^0$ PRGs and $\mathsf{NC}^0$ range avoidance is rather obvious (although still insufficiently explored prior to this work), and so the key point is the relation we observe between these two topics pertaining to $\mathsf{NC}^0$ circuits on the one hand, and the project of proving cell probe lower bounds on the other. This relationship follows directly from the definitions of the objects in question, and is more appropriately understood as a \emph{perspective shift} rather than a new result. 
+
+To state the connection in its simplest form, we focus our attention for now on a special setting of the cell probe model: the word length is 1 (i.e. $\Sigma = \B$, often called the \emph{bit probe} model), and the data structures in question are \emph{nonadpative}. Here, nonadpative means that the data structure will decide which cells to probe as a function only of the query, in contrast to a general \emph{adaptive} data structure which may decide on the next cell to probe based on the outcomes of previous probes. In this setting we have:
+\begin{observation*}
+Let $F: [N] \times [M] \to \B$ be a data structure problem, which we interpret as a matrix $F \in \B^{N \times M}$ with $N$ rows and $M$ columns below. The following are equivalent:
+\begin{enumerate}
+    \item $F$ has \emph{does not have} nonadaptive bit probe data structures with space complexity $S$ and time complexity $t$.
+    \item The columns of $F$ are a set of $M$ strings $\mathcal{F} \subseteq \B^N$, $|\mathcal{F}|=M$, such that for any $\mathsf{NC}^0_t$ generator $G: \B^S \to \B^N$, there exists a string $f \in \mathcal{F}$ with $f \notin \rng(G)$.
+\end{enumerate}
+\end{observation*}
+\begin{proof}
+Say that $F$ has nonadaptive bit probe data structures of space $S$ and time $t$. Then, to every $y \in [M]$ we may associate an encoding $E_y \in \B^S$, so that for every $x \in [N]$ we may determine $F(x,y)$ by probing (nonadaptively) $t$ bits of $E_y$. Considering the $y^{th}$ column of $F$ as a string $f_y\in \B^N$, we see that there is a $\mathsf{NC}^0_t$ function $G: \B^S \to \B^N$ so that $G(E_y) = f_y$ for every $y\in [M]$; in particular, the $x^{th}$ output of $G$ runs the data structure's nonadaptive query procedure corresponding to the query $x$. The same reasoning applies in the reverse direction.
+\end{proof}
+
+In other words, finding an explicit data structure problem $F:\N \times [M] \to \B$ which requires large space for time $t$ in the nonadaptive bit probe model is \emph{exactly equivalent} to constructing explicit \emph{list-solutions} for $\mathsf{NC}^0_t$ range avoidance. By a list-solution, we mean a list of candidate strings, so that for \emph{any instance} of $\mathsf{NC}^0_t$ range avoidance $G$ (with appropriate parameters), one of the strings in this list must be a range avoidance solution for $G$. 
+We emphasize that an analogous connection exists for the general cell probe model (adaptive and with arbitrary word length), which is explained formally in Section~\ref{cellprobe:subsec:gen-vs-cell}.
+The problem of finding list-solutions for $\mathsf{NC}^0$ range avoidance was considered already in \cite{guruswami2022range}. Indeed, via the above correspondence the results of \cite{guruswami2022range} recover a nonadaptive bit-probe lower bound of \cite{golovnev} in a certain range of parameters.
+
+The connection between $\mathsf{NC}^0$-PRGs and cell probe lower bounds is more difficult to state formally, but even more central to our main results. In one direction, we will show how to use the best known methods for distinguishing $\mathsf{NC}^0$ PRGs to achieve state of the art lower bounds in the cell probe model; this is the most significant contribution in this work, and after stating our main results below we will describe this methodology in more detail in Section~\ref{cellprobe:subsec:techniques} (``Our Techniques'').
+In the other direction we will use the conjectured security of various $\mathsf{NC}^0$ PRGs to exhibit a \emph{natural properties barrier} for data structure lower bounds, in the spirit of Razborov-Rudich \cite{natural-proofs}.
+
+We note that connections of a similar flavor have been utilized in the literature on sampling lower bounds initiated by Viola \cite{viola-sampling}. Connections between restricted variants of range avoidance and data structures were first observed in \cite{guruswami2022range}, who used a cell probe data structure from \cite{succincter} to develop more efficient reductions to range avoidance; this proof was our original inspiration to explore more deeply the connections between $\mathsf{NC}^0$ range avoidance and the cell probe model.
+
+\subsection{Our Results}
+
+{\bf \noindent State of the Art Cell Probe Lower Bounds:} Using the perspective shift introduced above, we are able to break a decades-old barrier in static data structure complexity, and prove cell probe lower bounds for a explicit problems which are quadratically better for space as a function of time than all previous methods. Our first lower bound holds any data structure problem supporting a $k$-wise independent distribution; this is the class same problems originally considered by \cite{Siegel89} and in various follow up works (including \cite{panigrahy,kasper}), and we are able to obtain tight lower bounds across essentially the entire range of values $k \leq N$, provided the time complexity $t$ is an even number:
+\begin{theorem}
+%[Theorem~\ref{cellprobe:thm:k-wise-lb}]
+
+Let $F: [N] \times [M] \to \B$ be a data structure problem such that there exists a $k$-wise independent distribution supported on its columns. Let $S,t,w \in \mathbb{N}$ be given with $t$ an even number and assume $k > tw + 1$. Then, for any space $S$, time $t$, word length $w$ cell probe data structure solving $F$ we must have:
+\begin{enumerate}
+    \item $\begin{aligned}[t]
+    S \geq  \Bigl( \frac{N}{\log N}\Bigr)^{\frac{2}{t}} \cdot \Bigl(\frac{k}{\log N}\Bigl)^{1 - \frac{2}{t}}  \cdot\,t^{-1}2^{-O(w)}
+  \end{aligned}$ for all $t\log N \leq k \leq N 2^{-O(tw)} t^{-\frac{t}{2}}$
+  \item $\begin{aligned}[t]
+    S \geq   \Bigl( \frac{N}{\log N}\Bigr)^{\frac{1}{t(\frac{1}{2} + \frac{2}{k})}} \cdot t^{-1}2^{-O(w)}
+  \end{aligned}$ for all $tw+1 \leq k \leq t\log N$
+\end{enumerate}
+\end{theorem}
+Remember that we often interpret $F:[N] \times [M] \to \B$ as a boolean matrix with $N$ rows and $M$ columns, which explains our use of the phrase ``the columns of $F$.''
+If $t$ is an odd number, the above lower bound holds with $t+1$ in place of $t$; hence this lower bound gives a polynomial improvement (for space as a function of time) over previous methods for all $t > 3$, gives a near-quadratic improvement for all even $t$, and approaches a quadratic improvement for large odd values of $t$.  Using any of the various explicit examples of $k$-wise independent distributions with support size $N^{O(k)}$ (e.g. univariate polynomials over $\mathbb{F}_{2^n}$), we obtain explicit problems $F: [N] \times [M] \to \B$ satisfying the lower bound
+\[
+S \geq \tilde{\Omega}\Bigl( N^{\frac{2}{t}} \cdot \big(\log M\big)^{1 - \frac{2}{t}} \cdot 2^{-O(w)}\Bigr)
+\]
+across essentially the entire spectrum of nontrivial values $M \in \{1,\ldots,2^N\}$. We thus achieve a near-quadratic improvement in the state of the art explicit cell probe lower bounds across this entire spectrum of relations between $M,N$. 
+We emphasize that, in addition to giving a quadratic space improvement over the \emph{cell sampling} bound (the first improvement of any kind), our lower bound is also the first to achieve any polynomial improvement over the much simpler \emph{communication bound} $S \gtrsim N^{\frac{1}{t}}$ for a problem with $N$ queries and $M \leq \exp(N^{o(1)})$ datapoints (by setting $k=\log N$ in the above); this is discussed further in the Section~\ref{cellprobe:subsec:prior}. 
+
+By known constructions \cite{Siegel89,Siegel04} (see also \cite{pudlak}), the lower bound in Theorem~\ref{cellprobe:thm:k-wise-lb} is tight up to $\log N$ factors and the factors depending only on $w$ provided $t$ is not too large. Hence, for all small enough even values of $t$ and small enough $w$, we essentially completely resolve the cell probe complexity of representing $k$-wise independent distributions. The almost-matching upper bounds are nonconstructive, relying on unbalanced bipartite graphs with very strong unique-expansion properties; they yield data structures which are nonadaptive and have word length $w=1$, so the tightness of Theorem~\ref{cellprobe:thm:k-wise-lb} holds even in this restricted setting of nonadaptive bit probe data structures.
+
+Our lower bound for $k$-wise independent problems is actually a bit stronger than stated above, as we are able to establish the same bound for problems which only exhibit $\gamma$-\emph{almost} $k$-wise independence, for a nontrivially large value of $\gamma$. The stronger form (which is the form which will appear as Theorem~\ref{cellprobe:thm:k-wise-lb} in Section~\ref{cellprobe:subsec:k-wise-lbs}) is as follows:
+\begin{theorem*}[Theorem~\ref{cellprobe:thm:k-wise-lb}, Strengthened To Almost Independence]
+% 
+%[Theorem~\ref{cellprobe:thm:k-wise-lb}, Strengthened to Almost-Independence]
+Let $F: [N] \times [M] \to \B$ be a data structure problem such that there exists a $\gamma$-almost $k$-wise independent distribution supported on its columns. 
+Then the same lower bound as in the first presentation of Theorem~\ref{cellprobe:thm:k-wise-lb} (above) holds for $F$ provided $\gamma \leq  N^{t} 2^{-O(ktw)}$.
+\end{theorem*}
+An important consequence of this improvement is that, using known constructions of almost independent distributions \cite{naornaor}, in the case $t,w=O(1)$ we can set $k= O(\log N), \gamma = N^{-O(1)}$ and obtain an explicit problem $F: [N] \times [M] \to \B$ with $M \leq \poly(N)$ and satisfying the lower bound $S \geq \tilde{\Omega}(N^{\frac{2}{t}})$.
+This improvement will be necessary later on for obtaining polynomial time range avoidance algorithms with minimum possible stretch. 
+
+We next establish a lower bound that improves on the previous theorems in the special setting of \emph{nonadaptive bit probe} data structures; remember that ``bit probe'' denotes the word length setting $w= 1$. For this lower bound, the hardness property of our data structure problems is \emph{small bias} \cite{naornaor}: a distribution over $\B^N$ is $\gamma$-biased if it fools all parity functions with error $\leq \frac{\gamma}{2}$.
+\begin{theorem}
+
+%[Theorem~\ref{cellprobe:thm:biased-lb}]
+Let $t>1$, $t = O(1)$ be a fixed odd number.  Let $F:\N \times [M] \to \B$ be a data structure problem such that there exists a $N^{-c}$-biased distribution supported on its columns, for $c=O(1)$ a sufficiently large constant (depending on $t$). Then any nonadaptive bit probe data structure for $F$ with space $S$ and time $t$ must satisfy:
+\[
+S \geq \tilde{\Omega}(N^{\frac{1}{\frac{t}{2} -\frac{t- 2}{2(t+2)}}})  \geq N^{\frac{2}{t} + \epsilon_t}
+\]
+where $\epsilon_t > 0$ is a positive constant depending only on $t$.
+\end{theorem}
+
+Using explicit constructions of small bias probability spaces (again \cite{naornaor}), we obtain explicit problems $F: [N] \times [\poly(N)] \to \B$ which satisfy the lower bound $S \geq N^{\frac{2}{t} + \epsilon_t}$ for every odd constant $t$, where $\epsilon_t>0$ depends only on $t$. Small bias probability spaces were first used as a hard data structure problem in \cite{viola-maximal} to obtain near-maximal space lower bounds for nonadaptive bit probe data structures making $t=2$ queries. 
+We emphasize that, because of the optimality of the bound in Theorem~\ref{cellprobe:thm:k-wise-lb} (there is an upper bound almost matching the bound in Theorem~\ref{cellprobe:thm:k-wise-lb} even in the nonadaptive bit probe setting and even for odd values of $t$), the above Theorem~\ref{cellprobe:thm:biased-lb} is provably unattainable using \emph{only limited independence}. More formally, to construct any data structure problem $F: [N] \times [M] \to \B$ satisfying a lower bound $S \geq N^{\frac{2}{t} + \epsilon}$ for any constants $t > 1$, $\epsilon>0$, and $M \leq \exp(N^{o(1)})$, we provably cannot use $k$-wise independence as our only hardness property for the problem $F$. This result is therefore of special interest, as it the first example of a cell probe lower bound that is provably stronger than the best bound provable using limited independence alone: all of the previous best lower bound methods \cite{Siegel89,panigrahy,kasper,viola-maximal,golovnev}\footnote{Viola's lower bound for $t=2$ nonadaptive bit probe data structures \cite{viola-maximal} does no use $k$-wise independence, but $k$-wise independence was shown to achieve the same quantitative lower bound in the follow up work of \cite{golovnev}.} can be carried out using limited independence as the sole hardness condition.
+~\\~\\
+{\bf \noindent $\mathsf{NC}^0$ Range Avoidance Algorithms:}
+In Section~\ref{cellprobe:sec:avoid-and-linear-attack} we give the best known unconditional algorithms for $\mathsf{NC}^0$ range avoidance. Using our primary observation connecting range avoidance to data structure lower bounds together with known constructions of limited independence and small bias spaces \cite{naornaor}, we can immediately obtain state of the art $\mathsf{P^{NP}}$ algorithms for $\mathsf{NC}^0$ range avoidance using our new cell probe lower bounds as a black box. In the case of Theorem~\ref{cellprobe:thm:biased-lb} we get:
+
+\begin{theorem}
+
+%[Theorem~\ref{cellprobe:thm:pnp-avoid-odd}]
+Let $t = O(1)$ be a fixed odd number. There is a polynomial time algorithm which outputs a list of strings in $\B^m$, such that for any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
+\[
+m \geq  \tilde{O}( n^{\frac{t}{2} - \frac{t-2}{2(t+2)}})
+\]
+one of the strings in the list must be a range-avoidance solution for $G$. In particular, there is a polynomial time $\mathsf{NP}$-oracle algorithm for range avoidance on instances of the above form.
+\end{theorem}
+
+For our lower bound in Theorem~\ref{cellprobe:thm:k-wise-lb}, we are able to analyse it more effectively (rather than applying it as a black box) and remove the use of an $\mathsf{NP}$ oracle in the associated range avoidance algorithm:
+
+\begin{theorem}
+
+%[Theorem~\ref{cellprobe:thm:polytime-avoid}]
+Let $t,n$ be given with $t$ even. There is a $m^{O(t^2)}$-time algorithm which solves range avoidance given any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
+\[
+m \geq  n^{\frac{t}{2}} \log n \cdot t^{\frac{t}{2} + o(t)}
+\]
+More generally, the algorithm works if each output of $G$ is computed by a depth $t$ decision tree.
+%over $\B^n$.
+\end{theorem}
+We emphasize the last point; not only do we decrease the required stretch quadratically for $\mathsf{NC}^0_t$ functions compared to previous results \cite{guruswami2022range,karthik}, but our algorithm also works in the more general setting that every output of $G$ is a depth $t$ decision tree over the inputs. The full statement of Theorem~\ref{cellprobe:thm:polytime-avoid} is more general in two other ways which we didn't highlight above. First, it solves the harder \emph{remote point} problem for $G$: for any constant $\epsilon>0$, our algorithm will output a string which is $(\frac{1}{2}-\epsilon)$-far in relative hamming distance from every string in the range of $G$. Second, it works if $G$ is of the form $G: \Sigma^n \to \B^m$ for some nonboolean alphabet $|\Sigma|>2$, and each output is computable by an adaptive decision tree querying at most $t$ input symbols.
+~\\~\\
+{\bf \noindent Small Bias Generators in $\mathsf{NC}^0$:} In \cite{mossel-epsilon} it was shown that, if $G: \B^n \to \B^m$ is an $\mathsf{NC}^0_t$ generator such that $G(\bm{x})$ is $\poly(n)^{-1}$ biased when $\bm{x}$ is uniformly distributed on $\B^n$, then we must have $m \leq O(2^tn^{\lceil \frac{t}{2}\rceil })$; in other words, once $m >> n^{\lceil \frac{t}{2} \rceil}$ there is an $\mathbb{F}_2$-linear test that can distinguish $G(\bm{x})$ from random. Our Theorem~\ref{cellprobe:thm:biased-lb} improves this result for all odd values of $t$; in particular, as an immediate corollary we obtain:
+
+\begin{corollary}
+
+%[Corollary~\ref{cellprobe:cor:mossel-improvement}, follows from Theorem~\ref{cellprobe:thm:biased-lb}]
+For every odd constant $t$ there is $\epsilon_t>0$, so that every $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ is distinguished with $\poly(n)^{-1}$ advantage by an $\mathbb{F}_2$-linear test once $m \geq n^{\frac{t}{2} - \epsilon_t}$.
+\end{corollary}
+We note that Theorem~\ref{cellprobe:thm:biased-lb} in fact implies something much stronger, that $G(\bm{x})$ can be distinguished from uniform by linear tests for \emph{any} distribution of $\bm{x} \in \B^n$. The original result in \cite{mossel-epsilon} is specially tailored to the case where the random ``seed'' $\bm{x}$ is uniformly distributed on $\B^n$, and hence cannot be used to give a lower bound in the bit probe model. 
+An interesting feature of this is the following: because $\mathbb{F}_2$-linear tests can be performed by polynomial-size circuits, our result implies that every $\mathsf{NC}^0_t$ PRG can be distinguished efficiently by \emph{nonuniform} algorithms in the stretch regime $n \mapsto n^{\frac{t}{2} - \epsilon_t}$. However, in the typical approach to $\mathsf{NC}^0$ PRG constructions pioneered by Goldreich \cite{goldreich-prg}, the generator $G$ is sampled at random from a distribution of large ($\approx m$) entropy; in particular, such a cryptographic primitive does not consist of a single $\mathsf{NC}^0$ PRG, but rather a \emph{sampleable ensemble} of $\mathsf{NC}^0$ PRGs. Since our Corollary~\ref{cellprobe:cor:mossel-improvement} gives no indication as to how to \emph{find} the linear distinguisher for $G$ given the description of $G$, we seemingly cannot use it to attack Goldreich's generator in the stretch regime $n \mapsto n^{\frac{t}{2} - \epsilon_t}$, even if we allow nonuniformity in our attacker.
+~\\~\\
+{\bf \noindent Complexity-Theoretic Barriers to Higher Cell Probe Lower Bounds:}
+Next, in Section~\ref{cellprobe:sec:connections} we use our main correspondence between cell probe lower bounds and local generators to establish \emph{barrier results} for improving state of the art cell probe lower bounds. Our focus here is on the bit probe model (word length $w=1$), and on nonadaptive data structures with time complexity $t =O(1)$. We show the following two barrier-type results:
+
+% \begin{theorem}
+%  
+% %[Theorems~\ref{cellprobe:thm:explicit-vs-expnp} and \ref{cellprobe:thm:explicit-vs-polystretch}]
+% ~
+% %\begin{enumerate}
+%     If there is an explicit data structure problem $F: [N] \times [M] \to \B$, $M \leq \exp(N^{o(1)})$, which requires space $S \geq N - N^{o(1)}$ for bit probe data structures making 4 nonadaptive probes, then $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$.
+% \end{theorem}
+
+% \begin{theorem}
+% 
+% Assume there is a fixed absolute constant $\epsilon>0$, and for every $t \in \mathbb{N}$ an explicit data structure problem $F: [N] \times [\poly(N)] \to \B$ which requires space $S \geq N^\epsilon$ in the bit probe model for time $t$. Then there is a $\mathsf{FP^{NP}}$ algorithm for polynomial stretch $\mathsf{NC}^0$ range avoidance. 
+% \end{theorem}
+\begin{theorem}[Consequences of Explicit Data Structure Lower Bounds]
+~
+\begin{enumerate}
+    \item If there is an explicit data structure problem $F:[N] \times [M] \to \B$ with $M \leq \exp(N^{o(1)})$ which requires space $S \geq N - N^{o(1)}$ for data structures making 4 nonadaptive bit probes, then $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$.
+    \item If there is a universal constant $\epsilon>0$ and an explicit data structure problem $F:[N] \times [M] \to \B$ with $M = \poly(N)$ requiring space $S \geq N^{\epsilon}$ for nonadaptive data structures making $O(1)$ bit probes, then there is a polynomial time $\mathsf{NP}$ oracle algorithm for $\mathsf{NC}^0$ range avoidance with polynomial stretch.
+\end{enumerate}
+\end{theorem}
+
+The conclusion in (1) above would be a monumental breakthrough in complexity theory and is considered extremely hard. The conclusion in (2) above was directly posed in \cite{RSW} as an important direction in unconditional range avoidance algorithms.
+We note that (1) of Theorem~\ref{cellprobe:thm:explicit-vs-avoid} has a strong similarity to results in \cite{viola-maximal} and \cite{omri}. \cite{viola-maximal} shows that improved data static data structure lower bounds imply breakthrough circuit lower bounds for multi-output functions. The implied circuit lower bounds are of two kinds: lower bounds against low-depth circuits over a complete basis of large fan-in gates, and lower bounds against linear size log-depth circuits with bounded fan-in gates. 
+% Viola's results seem formally incomparable to ours; in terms of the required cell probe lower bound, \cite{viola-maximal} applies in a broader range of settings on the space/time tradeoff curve, and in general requires weaker lower bounds on the space $S$ but larger lower bounds on the time $t$ (super-constant). 
+% The circuit lower bounds in the conclusions of \cite{viola-maximal} and Theorem~\ref{cellprobe:thm:explicit-vs-avoid} are also apparently incomparable.
+On the other hand, \cite{omri} shows that improved data structure lower bounds (of a different kind) imply breakthrough constructions of rigid matrices; these results are specific to \emph{linear data structures} rather than general data structures as considered in this work and in \cite{viola-maximal}. 
+% imilar to our Theorem~\ref{cellprobe:thm:explicit-vs-avoid}, they require an $\mathsf{NP}$ oracle in their explicit construction of rigid matrices even if the hard data structure problem can be produced without such an oracle. 
+
+Next, we turn toward a different and more novel kind of barrier in the realm of data structure lower bounds, based on the \emph{natural proofs} paradigm of Razborov and Rudich \cite{natural-proofs}. Following Razborov-Rudich, we define a \emph{natural data structure lower bound} to be some efficiently testable property of functions $F:[N] \times [M] \to \B$, so that random functions have the property, and any function with the property satisfies a corresponding cell probe lower bound (see Section~\ref{cellprobe:subsec:natural-vs-prg} for a formal definition).
+% for problems with $N$ queries, $M$ data points, space $S$, time $t$ and word length $w$ is \emph{natural} if there is a polynomial time algorithm $\mathcal{A}$ which, given $F: [N] \times [M] \to \B$ as input (encoded by its entire truth table), outputs a value in $\{\mathsf{Hard}, \mathsf{?}\}$, so that: (1) if $\mathcal{A}(F) = \mathsf{Hard}$, then $F$ requires space $>S$ or time $>t$ or word length $> w$, and (2) if $F$ is chosen uniformly at random amongst all functions $[N] \times [M] \to \B$, then with probability at least $(NM)^{-O(1)}$, $\mathcal{A}(F) = \mathsf{Hard}$. 
+We argue in Section~\ref{cellprobe:subsec:natural-vs-prg} that the strongest lower bound methods in the cell probe model known prior to this work can be made \emph{natural} in this sense. This continues to hold for our new lower bound in Theorem~\ref{cellprobe:thm:k-wise-lb}.
+On the other hand, we show that under two widely believed cryptographic assumptions, certain lower bounds in the bit probe model are unachievable using proofs of this nature:
+\begin{theorem}[Natural Proofs Barriers for Data Structure Lower Bounds]
+
+%[Theorem~\ref{cellprobe:thm:nat-prop-barrier}]
+~
+\begin{enumerate}
+    \item Assume the existence of $\mathsf{NC}^1$ PRGs. Then there is no natural proof of a space lower bound $S \geq N - N^{0.99}$ for data structures making 4 nonadaptive bit probes solving a problem $F: [N] \times [\poly(N)] \to \B$.
+    \item Assume existence of polynomial stretch $\mathsf{NC}^0$ PRGs. Then for every $\epsilon>0$ there is $t \in \mathbb{N}$ so that no natural proof can establish a lower bound $S \geq N^{\epsilon}$ for data structures making $t$ nonadaptive bit probes solving a problem $F: [N] \times [\poly(N)] \to \B$.
+\end{enumerate}
+\end{theorem}
+% In both cases, if we assume the referenced PRG has subexponential security and distinguishing advantage, we reach a stronger conclusion that there are no natural proofs running in subexponential time for problems $F: [N] \times [M] \to \B$ with $M \leq \exp(N^{o(1)})$. 
+As mentioned above our lower bound in Theorem~\ref{cellprobe:thm:k-wise-lb} can be made natural, as well as all lower bounds proven prior using the cell sampling method or communication arguments. However, interestingly, we \emph{do not} know if the lower bound for small bias distributions in Theorem~\ref{cellprobe:thm:biased-lb} can. 
+It is therefore unclear at the moment whether or not the ``natural properties barrier'' for data structures, according to the definitions used above, has already been broken by the new results in this paper. 
+Regardless, we argue in Section~\ref{cellprobe:subsec:natural-vs-prg} that the lower bound in Theorem~\ref{cellprobe:thm:biased-lb} is still ``natural'' in a weaker and less formal sense, and that significantly stronger lower bounds will probably have to differ from it in this regard assuming the nonuniform security of $\mathsf{NC}^0$ PRGs.
+We discuss further the question of the ``naturalness'' of Theorem~\ref{cellprobe:thm:biased-lb} in Section~\ref{cellprobe:sec:avoid-and-linear-attack}.
+~\\~\\
+{\bf \noindent Approaches to Stronger Lower Bounds via Communication Complexity:}
+Finally, in Section~\ref{cellprobe:subsec:communication} we discuss possible approaches to proving lower bounds in the nonadaptive bit probe model of the form $S \geq N^{\epsilon}$ for time $t=O(1)$, where $\epsilon>0$ is a fixed universal constant not depending on $t$; this corresponds precisely to the regime in which the existence of cryptographically secure polynomial-stretch $\mathsf{NC}^0$ PRGs yields a natural proofs barrier. We formulate cell probe lower bounds in this regime in terms of an equivalent communication model, reminiscent of PIR schemes, in which a single party Alice holding an input $x \in X$ communicates with a council of $t$ Bobs holding a shared input $y \in Y$. We discuss an approach to analyzing this model based on ``lifting'' a query complexity measure investigated by \cite{hrubes-rao,lecomte2022composition}, and relate this model to other \emph{high end} communication complexity classes such as $\mathsf{PH^{cc}}$.
+
+\subsection{Subsequent Developments:}
+After the posting of an initial preprint of this work, two improvements to Theorem~\ref{cellprobe:thm:biased-lb} were communicated to us by Weiqiang Yuan \cite{weiqiang}:
+\begin{enumerate}
+    \item Our lower bound $S \geq \tilde{\Omega}(N^{\frac{1}{\frac{t}{2} - \frac{t-2}{2(t+2)}}})$ for small bias problems can be extended to hold for \emph{adaptive} bit probe data structures.
+    \item In the case of \emph{nonadaptive} bit probe data structures, the lower bound for small bias problems can be strengthened quantitatively to $S \geq \tilde{\Omega}(N^{\frac{2}{t-1}})$. 
+\end{enumerate}
+In both cases, it is required as in Theorem~\ref{cellprobe:thm:biased-lb} that $t=O(1)$ is an odd constant.
+
+\subsection{Our Techniques: Derandomizing Semirandom CSP Refutations}
+
+We now discuss at a high level our approach to proving our main cell probe lower bound for $k$-wise independent problems (Theorem~\ref{cellprobe:thm:k-wise-lb}). We will narrow down our discussion in three respects: (1) we focus on the case $t= O(1)$ and ignore multiplicative factors depending on $t$ in our space lower bound, (2) we restrict attention to \emph{nonadaptive bit probe} data structures, and (3) we focus on achieving a lower bound of the form $S \geq \tilde{\Omega}(N^{\frac{2}{t}})$ for $k$-wise independent problems in the special case $k = O(\log N)$.
+
+In this setting, using our main observation connecting $\mathsf{NC}^0$ generators and data structures, we need to show that any $O(\log N)$-wise independent random variable $\bm{f}^{\mathrm{pseud}}\in \B^N$ has the following property: for any $\mathsf{NC}^0_t$ generator $G: \B^S \to \B^N$ with $S =\tilde{o}(N^{\frac{2}{t}})$, with nonzero probability $\bm{f}^{\mathrm{pseud}}\notin \rng(G)$. Say for a moment that we view a candidate generator $G$ with the above parameters as a \emph{cryptographic PRG}. In this case, a body of work dedicated to the cryptanalysis of $\mathsf{NC}^0$ PRGs has shown that any such $G$ can be distinguished by polynomial time algorithms; more strongly, there is a polynomial time algorithm which can generate certificates of the fact $\bm{f}^{\mathrm{unif}}\notin \rng(G)$ with very high probability when $\bm{f}^{\mathrm{unif}}\in \B^N$ is a uniformly random vector\footnote{Some $\mathsf{NC}^0$ cryptanalysis techniques, e.g. Theorem 6 in \cite{mossel-epsilon}, do not yield certificates $f \notin \rng(G)$, and only give statistical distinguishers which rely crucially on the fact that the \emph{seed} of $G$ is generated uniformly; such techniques seem to have little relavance to cell probe lower bounds.}. Our goal is to look at the certificates generated by these algorithms, and argue that they will still be produced with high probability when we replace the truly random vector $\bm{f}^{\mathrm{unif}}$ with the \emph{pseudorandom} vector $\bm{f}^{\mathrm{pseud}}$.
+
+The task of certifying $\bm{f}^{\mathrm{unif}} \notin \rng(G)$ for a worst case $\mathsf{NC}^0_t$ generator $G$ is a special case of \emph{semirandom CSP refutation}. In particular, given an $\mathsf{NC}^0_t$ generator $G:  \B^S \to \B^N$ and any $f \in \B^N$, we may define a $t$-CSP instance with $S$ variables and $N$ constraints, which is satisfiable if and only if $f \in \rng(G)$: for each $x \in \N$ with $G_x$ depending on input cells $i_x^1,\ldots,i_x^t\in [S]$, we add the constraint 
+\[
+G_x(E(i_x^1),\ldots,E(i_x^t)) = f_x
+\]
+where $E(1),\ldots,E(S)$ are boolean-valued variables. If $G$ is fixed and $\bm{f}^{\mathrm{unif}}$ is uniformly random, we end up with a random distribution of $t$-CSP instances, where the \emph{left hand side} of each constraint is fixed (worst-case), while the \emph{right hand side} is sampled uniformly at random (average case). If we can give an efficient \emph{refutation algorithm} which, with high probability over this distribution, outputs a certificate that the given CSP is \emph{unsatisfiable}, then we can use it to distinguish the generator $G$: for a uniformly random right hand side the refutation algorithm will typically output ``UNSAT,'' while for $f \in \rng(G)$ the algorithm can never output ``UNSAT.''
+
+This hybrid worst-case/average-case model is known as the \emph{semirandom CSP} model\footnote{The semirandom CSP model is more general than the ``random right hand side'' variant introduced here, see e.g. \cite{semirandom} for a general definition and comparison to the special case presented here.}. This model was first introduced in \cite{feige-semirandom} and has been the subject of many followups including \cite{feige-semirandom,aow,semirandom,smoothed} (see the theses of Witmer and Manohar \cite{witmer-thesis,manohar-thesis} for a more in depth literature review).
+State of the art semirandom refutation algorithms (\cite{semirandom,smoothed,simpler-moore}) can certify $\bm{f}^{\mathrm{unif}} \notin \rng(G)$ for an $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ whenever $m \geq \tilde{\omega}(n^{t/2})$. Taking $m = N$, $n = S$ this is precisely the parameter regime $S \leq \tilde{o}(N^{\frac{2}{t}})$ we aim to investigate in our cell probe lower bound for $O(\log N)$-wise independent problems. 
+It is considerably easier to carry out the arguments in \cite{semirandom,smoothed,simpler-moore} in the case $t$ is even; we will only prove lower bounds for even values of $t$ in this work and hence avoid the technical difficulties that arise for odd $t$. 
+
+In the case $t$ is even, the refutation procedures in \cite{semirandom,smoothed,simpler-moore} can be divided into roughly three steps:
+\begin{enumerate}
+    \item Generate from $G$ a second $\mathsf{NC}^0_t$ generator $G':\B^{O(S)} \to \B^N$ which is $\mathbb{F}_2$-\emph{linear} (each output of $G'$ XORs together $t$ inputs); reduce the task of certifying $f \notin \rng(G)$ for an arbitrary $\mathsf{NC}^0_t$ PRG $G$, to certifying that $f$ is $(\frac{1}{2}-\epsilon)$ far in Hamming distance from $\rng(G')$\footnote{We actually need both $f$ and $\lnot f$ to be far in Hamming distance from the range.} for some small constant $\epsilon >0$. This is referred to as \emph{strong XOR refutation}.
+    \item Generate from $G'$ a sequence of real matrices $A_1,\ldots,A_N \in \mathbb{R}^{m\times m}$ for some $m = \poly(N)$; reduce the the task of certifying that $f$ is far from $\rng(G')$ (strong XOR refutation) to certifying that the $\infty\to1$ norm of the matrix
+    \[
+    A[f] = \sum_{x \in \N} (2f_x-1) A_x
+    \]
+    is small. The reader unfamiliar with the $\infty\to1$ norm should think of it for now as close relative of the spectral norm which can be approximated in polynomial time (a formal definition is in Section~\ref{cellprobe:subsec:basic-prelims}).
+    \item Show that the $\infty\to 1$ norm of $A[\bm{f}^{\mathrm{unif}}]$ is small with high probability where $\bm{f}^{\mathrm{unif}}$ is uniformly distributed on $\B^N$.
+\end{enumerate}
+
+To carry out our lower bound, we need to modify the final point, and prove that it continues to hold with high probability when we replace the truly random $\bm{f}^{\mathrm{unif}}$ with our pseudorandom $\bm{f}^{\mathrm{pseud}}$. This is argued in Section~\ref{cellprobe:subsec:infty-to-one-tail} and consists of two steps. The first is a reweighting trick from \cite{smoothed}, which replaces the $A_1,\ldots,A_N$ with a second sequence $B_1,\ldots,B_N$ so that for any $f \in \B^N$, whenever $A[f]$ has a large $\infty\to 1$ norm, $B[f]$ has a large spectral norm ($B[f]$ is defined analogously to $A[f]$). We then need to prove that $B[\bm{f}^{\mathrm{pseud}}]$ has small spectral norm with high probability. For this we use the fact that, for any matrix $D$ in $m$ dimensions and any even number $k$, $\norm{D}$ is approximated by the trace-moment polynomial $\mathrm{tr}( (D^\top D)^{k/2})^{1/k}$ within a factor $m^{1/k}$. Since in our case $B[f]$ lies in $\mathbb{R}^{m\times m}$ with $m \leq \poly(N)$ and $k= O(\log N)$, we have that $\mathrm{tr}((B[f]^\top B[f])^{k/2})^{1/k}$ approximates the spectral norm of $B[f]$ to within a constant factor. Since $\mathrm{tr}((B[\cdot ]^\top B[\cdot ])^{k/2})^{1/k}$ is (the $k^{th}$ root of) a degree $k$ polynomial, we can argue that its distribution with respect to $\bm{f}^{\mathrm{pseud}}$ and $\bm{f}^{\mathrm{unif}}$ will be similar which will complete the proof.
+
+There are several technical difficulties that we are leaving out of our discussion. First, to make our lower bound work in the setting of a general locally computable generator $G$ (with larger word length and adaptive decision trees at its outputs) we need a more involved argument in place of (1) above. Second, we need to exercise a bit more care in our analysis of the value of the trace moment polynomial $\mathrm{tr}((B[f]^\top B[f])^{k/2})^{1/k}$ to achieve the same bounds in the case that our distribution on $f$ is only $N^{-O(1)}$-wise $O(\log N)$-wise independent, rather than perfectly $O(\log N)$-wise independent. Finally, to deal with the case $k >> \log N$ we need to generalize (2) above, using another construction from semirandom CSP refutation called the ``Kikuchi Matrix'' \cite{wein2019kikuchi,smoothed}. 
+
+We will not sketch in any detail our proof of Theorem~\ref{cellprobe:thm:biased-lb} which gives a lower bound $N^{\frac{t}{2} + \Omega(1)}$ for odd constants $t$ in the nonadaptive bit probe model, however we note that it follows the same overall form: we take a semirandom refutation procedure (in this case, the refutations in Section 9 of \cite{smoothed} based on earlier work of \cite{FKO}), and show that we can still find the associated certificates in the pseudorandom case, for some appropriate notion of pseudorandomness. In this case we rely instead on small bias (fooling parity functions) as our pseudorandom property in place of $k$-wise independence. As mentioned earlier in the introduction, it is provably necessary to move beyond $k$-wise independence to achieve a lower bound of this form.
+
+\subsection{Open Problems}
+
+We present here three potentially tractable open problems we believe are of particular interest.
+We start with the (seemingly) most accessible problem:
+\begin{problem}
+Extend the bound in Theorem~\ref{cellprobe:thm:k-wise-lb} to hold for odd values of $t$, and the bound in Theorem~\ref{cellprobe:thm:biased-lb} to hold for even values of $t$.
+\end{problem}
+ The natural approach here is to utilize the CSP refutation procedures for odd order CSPs developed in \cite{semirandom,smoothed} and analyze them in the ``pseudorandom case'' as we have done for even order CSPs. It seems likely that a solution to the first part of Problem~\ref{cellprobe:prob:odd-vs-even} would automatically solve the second part (see the discussion at the end of Section~\ref{cellprobe:sec:nonadaptive-lbs}).
+
+Our second problem relates to Theorem~\ref{cellprobe:thm:biased-lb}. While our lower bounds for $k$-wise independent data structure problems are known to be optimal up to lower order terms (for even $t$), our nonadaptive bit probe lower bounds for $\epsilon$-biased distributions have no matching upper bound. We highlight closing this gap as an important open problem:
+\begin{problem}
+For $t \in \mathbb{N}$, determine the largest constant $\delta_t >0$ so that, in the nonadaptive bit probe model, we have the lower bound $S \geq N^{\delta_t-o(1)}$ for any data structure problem $F:[N] \times [M] \to \B$ which supports an $\exp(-N^{o(1)})$-biased distribution on its columns.
+\end{problem}
+Our Theorem~\ref{cellprobe:thm:biased-lb} yields the lower bound $\delta_t\geq \Bigl( \frac{t}{2} - \frac{t-2}{2(t+2)}\Bigr)^{-1}$, in particular $\delta_t > \frac{2}{t}$, for every odd value $t \geq 3$. Theorem~\ref{cellprobe:thm:k-wise-lb} (the second form described above) also implies $\delta_t \geq \frac{2}{t}$ for even values of $t$ since $\epsilon$-almost $k$-wise independence is a special case of $\epsilon$-biasedness; this latter lower bound holds in the more general adaptive setting and with larger word lengths. Both of these lower bounds hold even if we only aim to achieve bias $\poly(N)^{-1}$ (rather than $\exp(-N^{o(1)})$ as stated above). On the other hand a construction of \cite{mossel-epsilon} implies that $\lim\limits_{t \to \infty} \delta_t = 0$, in particular $\delta_t \leq O(\sqrt{\frac{1}{t}} )$. Closing this gap in either direction remains an intriguing open problem.
+
+% Second, we highlight the problem of replacing the term $\frac{N}{\log N}$ by $\Omega(N)$ in the setting $k = O(\log N)$ of Theorem~\ref{cellprobe:thm:k-wise-lb}, possibly using a different hard problem $F$:
+% \begin{problem}
+% \todo{maybe remove?} Prove cell probe lower bounds (in the general adaptive setting) of the form $S \geq \Omega(N^{\frac{2}{t}})$ for some explicit problem $F: [N] \times [\poly(N)] \to \B$ for any $t > 2$ and any word length.
+% \end{problem}
+% Note that Theorem~\ref{cellprobe:thm:biased-lb} holds only for nonadaptive data structures and hence does not answer this question. 
+% This problem seems connected to a \todo{variety of questions in the CSP literature}.
+% For all we know it is possible to achieve this using $N^{-O(1)}$-almost $O(\log N)$-wise independence, or more generally $N^{-O(1)}$-biasedness.
+% The current source of the $\log N$ factor in our main lower bounds stems from our method of proving that $\log N$-wised independence fools the $\infty\to1$ norm (Section~\ref{sec:independence-fools-norms}): we pass from the $\infty \to 1$ norm to the spectral norm, wherein the logarithmic term is known to be necessary in a certain sense\todo{remove if we haven't talked about that yet, and clarify what we mean}. It seems plausible that one could develop an argument that works directly with the $\infty\to1$ norm, or its well known SDP relaxation (the $\gamma_2^*$ norm, related to the $\infty\to1$ norm by Grothendiek's constant). Indeed, the setting of semi-random CSP relaxations, it is possible to find efficient refutations in the quantitative regime analogous to that in Problem~\ref{cellprobe:prob:log} using the Grothendiek relaxation.  
+
+Finally, we highlight two closely related problems: removing the $\mathsf{NP}$ oracle in Theorem~\ref{cellprobe:thm:pnp-avoid-odd} and removing the nonuniformity in Corollary~\ref{cellprobe:cor:mossel-improvement}:
+\begin{problem}
+For $\mathsf{NC}^0_t$ generators $G:\B^n \to \B^m$:
+\begin{enumerate}
+    \item[(a)] for any $t\geq 3, \epsilon>0$, give a subexponential time deterministic algorithm that solves range avoidance for $G$ whenever $m \geq n^{\frac{t}{2} - \epsilon}$
+    \item[(b)] for any $t \geq 5, \epsilon>0$, give a subexponential time uniform algorithm that distinguishes $G$ with subexponential advantage whenever $m \geq n^{\frac{t}{2}-\epsilon}$
+\end{enumerate}
+\end{problem}
+One approach to this problem is to prove an \emph{algorithmically constructive} variant of the hypergraph Moore bound of \cite{smoothed,simpler-moore}. 
+% The Moore bound asserts the existence of small linear dependencies in certain structured sets of vectors over $\mathbb{F}_2$. This naturally defines a $\mathsf{TFNP}$ search problem, which is to find short linear dependencies guaranteed by the theorem given such a list of vectors as input; an  ``algorithmically constructive variant of the moore bound'' means a polynomial time algorithm to solve this $\mathsf{TFNP}$ search problem.
+Such an algorithm would also improve the best known polynomial time refutation algorithm for random $t$-CSPs, and has been an open problem (in the case $t=3$) since the original work of \cite{FKO}; there appears to be some significant possibility that no such algorithm exists.
+% Nonetheless it is conceivable that one or both parts of Problem~\ref{cellprobe:prob:constructive-moore} could be solved unconditionally by a different approach.
+A different approach, tailored specifically to (b), is to show that the lower bound in Theorem~\ref{cellprobe:thm:biased-lb} can be made \emph{natural} in the sense of Razborov-Rudich. More specifically, it would actually be sufficient to develop an efficient algorithm with the following behavior: for some absolute constant $c \in\mathbb{N}$, the algorithm takes as input a uniformly random set $A \subseteq \mathbb{F}_2^n$, $|A|= n^c$, and with nonnegligble probability must output a certificate that $A$ is a $\frac{1}{4}$-biased probability space. See Section~\ref{cellprobe:sec:avoid-and-linear-attack} for more details.
+
+\subsection{Prior Work on Data Structure Lower Bounds}
+We give here a slightly more involved historical account of lower bound techniques that can prove the strongest lower bounds in the static cell probe model for some explicit problem\footnote{A great deal of work in the field is dedicated to adapting these techniques to prove the best possible lower bounds for particular \emph{natural} problems of interest, which we will not cover here.}. As mentioned earlier, the best known lower bound for general static data structures (for any $t >1$ and any $w$) prior to our work was $S \geq N^{\frac{1}{t}} (\log M)^{1 - \frac{1}{t}}$, first achieved by \cite{Siegel89} for $k$-wise independent problems ($M \approx N^k$).
+% using a method that was later termed \emph{cell sampling}. 
+Lower bounds of the form $S \gtrsim N^{\frac{1}{t}}$ can be established by a direct reduction to deterministic two party communication complexity. A more precise communication complexity analysis (keeping track of the number of rounds and the number of bits sent by each party in each round) developed in \cite{miltersen-assym,miltersen-et-al} gives a similar but more precise lower bound in various settings.
+To achieve a lower bound which includes the extra factor $\approx \log M$ requires techniques more specially adapted to the cell probe model. This can be achieved either by expansion-based arguments known as \emph{cell sampling} (\cite{Siegel89,Siegel04,panigrahy,kasper}), or in some cases by a more involved communication complexity argument using direct sum theorems \cite{patrascu-thorup}.
+% This was first achieved in \cite{Siegel89} (see also the full version \cite{Siegel04}), using a method that was rediscovered later and which is now known as cell sampling. Siegel's work seems to have existed in relative obscurity for many years, and \cite{patrascu-thorup} developed independently a method that could prove lower bounds of the form (\ref{cellprobe:eq:1}) in certain settings using a more involved communication complexity argument. Several years later \cite{panigrahy} rediscovered the cell sampling method (again, unaware of \cite{Siegel89}), and improved the range of settings to which it could be applied; further improvements were made by \cite{kasper}, who also showed that a suitable variant of the cell sampling method subsumes the communication argument of \cite{patrascu-thorup}. None of these improvements can prove lower bounds beyond (\ref{cellprobe:eq:1}), but rather are able to achieve it (or a bound close to it) in a wider range of parameter settings.
+% 
+
+In the special setting of \emph{nonadaptive bit probe} data structures (the setting in which our Theorem~\ref{cellprobe:thm:biased-lb} applies), two works have achieved lower bounds improving on the cell sampling bound. In \cite{viola-maximal}, when the time is $t=2$ a near-maximal space lower bound $S \geq \frac{N}{2}$ is shown for a problem with $M \leq N^{O(1)}$ datapoints. The lower bound applies to any $F: [N] \times [M] \to \B$ whose columns support a $\gamma$-biased distribution for $\gamma$ a sufficiently small constant. 
+In subsequent work of \cite{golovnev}, a lower bound of the form $S \gtrsim N^{\frac{1}{t-1}} (\log M)^{1-\frac{1}{t-1}}$ is obtained for $k$-wise independent problems ($M \approx N^k)$. Their method is a deterministic variant of cell sampling, and they prove that the given lower bound is essentially the best that cell-sampling type methods can achieve. \cite{golovnev} also improves quantitatively Viola's bound for $t=2$, showing a lower bound $S \geq (1-\epsilon)N$ for any $N^{-O(1)}$-almost $O(\log N)$-wise independent problem where $\epsilon > 0$ is any constant (and the $O(\cdot)$ terms hide linear dependencies on $\epsilon$).
+The results in \cite{golovnev} can be applied to larger word lengths $w>1$ provided we transition to data structure problems with nonboolean output, of the form $F:[N] \times [M] \to \B^w$. 
+
+Observe that, in the setting where $M$ is not much larger than $N$, e.g. $M \leq \exp(\poly\log N)$, the factor $(\log M)^{1 - \frac{1}{t}}$ has negligible effect on the cell sampling bound $S \geq N^{\frac{1}{t}} (\log M)^{1 - \frac{1}{t}}$. In this setting, no previously known method (even cell sampling) gives a lower bound significantly stronger than the direct communication reduction, which yields $S \gtrsim N^{\frac{1}{t}}$. We explain this reduction here since it is so simple. Say $F$ has a time $t$ space $S$ data structure with word length $w$. Consider a protocol in which Alice holds $x$, Bob holds $y$; Bob constructs the data structure encoding $\mathcal{E}(y)$, Alice simulates the query procedure on $x$, requesting cells of $\mathcal{E}(y)$ from Bob who responds with their contents. Alice sends $\log S$ bits in each round to request a cell, Bob sends $w$ bits to reveal the cell's contents, and communication lasts $t$ rounds, so the overall communication is $t \log S + tw$. For any problem $F$ with maximal two party communication complexity, e.g. $F:\N \times \N \to \B$ given by $F(x,y) = \mathbbm{1}\{x=y\}$, we then have $t\log S + tw \geq \log N$, i.e. $S\geq  N^{\frac{1}{t}} \cdot 2^{-w}$.
+
+Finally it is important to keep in mind that for \emph{non-explicit} problems, counting arguments show that most functions $F: [N] \times [N] \to \B$ require space very close to $N$ or time very close to $\log N$ \cite{miltersen-bit-probe}. The situation here is similar to many other areas in complexity; a nonconstructive counting argument implies that random functions exhibit an extremely high lower bound, and the heart of the subject is to prove similar bounds for explicit (and ideally natural) problems.
+
+
+\section{How to Construct Random Strings}
+\subsection{Motivation}
+
+{\noindent \bf Constructing Random Strings:}  Time-bounded Kolmogorov complexity $\K^T$ \cite{LV19} is a fundamental measure of complexity of a Boolean string. Given a string $x$ and a time bound $T$, $\K^T(x)$ is the size of the smallest program $p$ such that $\mathcal{U}(p)$ outputs $x$ within $T$ steps, where $\mathcal{U}$ is a universal Turing machine fixed in advance. Intuitively, for feasible time bounds $T(n)$, $\K^{T(n)}(x)$ measures the inherent compressibility or ``structure" in $x$ from the point of view of efficient algorithms, in the sense that any $x$ with low $\K^{T(n)}$ complexity has a short description from which it can be recovered efficiently. Thus a string with high $\K^T$ complexity can be considered unstructured or random-like.
+
+Given functions $T,\ell: \mathbb{N} \rightarrow \mathbb{N}$ and a sequence $(x_n)_{n\in \mathbb{N}}$ of strings, where each $x_n$ is of length $n$, let us call the sequence $(\K^T,\ell)$-hard if $\K^{T(n)}(x_n) \geq \ell(n)$ for all $n$. We are interested in the complexity of producing a $(\K^T,\ell)$-hard sequence of strings, for polynomial time bounds $T$ and for $\ell$ as large as possible. Three particularly important settings we focus on here will be $\ell(n) = n^{\Omega(1)}$, $\ell(n) = \tilde{\Omega}(n)$, and $\ell(n) = n - o(n)$. A simple argument shows that $\K^T$-hard strings cannot be produced in time $T' = o(T/\log(T))$ by an algorithm $A$ which outputs $x_n$ when given $n$ in unary. Indeed, the existence of such an algorithm would imply that $K^T(x_n) = O(\log(n))$, as the universal machine $\mathcal{U}$ can output $x_n$ in less than time $T$ when given $n$ in binary and a constant-size program for $\mathcal{A}$ \footnote{Here we use the standard fact that any algorithm $\mathcal{A}$ running in time $T'$ can be simulated by $\mathcal{U}$ in time $O(T' \log(T'))$.}. But is it possible for such a sequence to be produced by an algorithm running in time $\poly(T)$? \\
+\\
+{\bf \noindent Question 1:} Let $T: \mathbb{N} \rightarrow \mathbb{N}$ be any time-constructible function and let $\ell(n) \in \{ n^{\Omega(1)}, \tilde{\Omega}(n), n - o(n)\}$. Is there a deterministic algorithm $\mathcal{A}$, which given input $1^n$, runs in time $\poly(T)$ and outputs a $(\K^T,\ell)$-hard string? \\
+\\
+Question 1 is a fundamental question about Kolmogorov complexity, for which we currently do not have clear positive or negative complexity-theoretic evidence. A positive answer to Question 1 would be very interesting, as it would demonstrate the power of having polynomially more time: a $\poly(T)$ time algorithm would be capable of producing highly $T$-incompressible strings, while a $o(T/\log(T))$ time algorithm can only produce strings that are highly $T$-compressible. Indeed Hypothesis 1.19 in a recent work of \cite{RSW22} asks a very similar question\footnote{The difference is that instead of only asking about producing $\K^T$-hard strings for time-constructible functions $T$, \cite{RSW22} asks for an algorithm that gets $T$ and $n$ as input in unary, and outputs a $\K^T$-hard string of length $n$.} to Question 1, and states that ``The plausibility of Hypothesis 1.19 remains to be investigated". Question 1 also has implications for the theory of meta-complexity, which has seen much recent work \cite{Allender17, Hirahara22, LO22}.
+
+A natural approach to Question 1 is via pseudo-randomness. Under the assumption that $\E$ requires non-deterministic circuits of size $2^{\epsilon n}$ for some constant $\epsilon > 0$, it is known \cite{IW97, KvM99} that for any constant $c > 0$ there is a pseudo-random generator $G_n$ with seed length $O(\log(n))$ and error $o(1)$ against co-non-deterministic circuits of size $n^c$, computable in time $\poly(n)$. Consider $T(n) = n^d$, where $d < c$ is any constant. The property of being a $\K^T$-incompressible string, i.e., a length-$n$ string of $\K^T$-complexity $\geq n-1$, can be checked by a co-non-deterministic circuit of size at most $n^c$, and moreover at least half of all strings of length $n$ satisfy the property. Hence close to half of the outputs of $G_n$ satisfy the property of $\K^T$-incompressibility, which means that the range of $G_n$ is a $\poly(n)$ size set $S_n$ computable in time $\poly(n)$ and containing at least one $\K^T$-incompressible string for large enough $n$. However, it is unclear how to identify efficiently {\it which} of the strings in $S_n$ is incompressible - this seems to require calls to an $\NP$ oracle. We could try and {\it combine} the strings in $S_n$ together into a string that is $\K^t$-hard, for example by concatenating them. This approach has two drawbacks:
+\begin{enumerate}
+    \item  Concatenating the strings yields a new string of length $>> T(n)$ rather than length $n$, since the set $S_n$ has size $>> n^c$. Hence for any reasonable setting of $\ell(n)$, even $\ell(n) = n^{\Omega(1)}$, we do not get any interesting consequences for $K^T$-hardness when we are interested in time bounds as a {\it function} of input length.
+    \item Even if we don't mind destroying the relation between the time bound and input length, concatenating $\poly(n)$ strings which are maximally incompressible can, at best, achieve incompressibility $\ell(n) = n^{\Omega(1)}$. If we are in the more stringent compressibility settings $\ell(n) = \tilde{\Omega}(n)$ or $\ell(n) = n - o(n)$ which occur more frequently in explicit construction applications, concatenating $\poly(n)$ many strings appears to be useless.
+\end{enumerate}
+
+Like most of the interesting problems in derandomization, answering Question 1 {\it unconditionally} would be difficult, as any $(\K^T, n^{\Omega(1)})$-hard string for $T > n^2$ can be transformed easily into the truth table of a hard Boolean function in $\E$, i.e., a function with circuit complexity at least $2^{\epsilon m}$ for some $\epsilon$, and hence would imply $\E \not\subseteq \P/\poly$. 
+% Here $m$ is the input length of the Boolean function. This is because a truth table for a Boolean function can be computed very efficiently from a circuit for the function.
+Instead, we would simply like complexity-theoretic evidence in favor of or against Question 1. Preferably, this evidence should avoid exotic assumptions, and involve standard beliefs about the difficulty of simulating one resource efficiently by another, e.g., the belief that time cannot be simulated by much smaller space or by much smaller non-uniformity. \\
+\\
+{\bf \noindent Explicit Constructions and Range Avoidance:} Recently there has been a lot of interest \cite{Korten21, KKMP21, RSW22, GLW22, ILW23, GGNS23, CGLOSS23, CHLR23, CL24, CHR24, Li24, KP24} in the Range Avoidance problem, where the input is a circuit $C$ from $\ell$ bits to $n$ bits, where $n > \ell$, and the task is to find a non-output of $C$. This task is efficiently doable with randomness - we can just output a random string of length $n$, and this will be a non-output of $C$ with probability at least $1/2$. The question is whether this can be done efficiently deterministically.
+
+The problem was motivated in \cite{Korten21, KKMP21} by its applications to {\it explicit constructions} of combinatorial objects. Let $\Pi$ be a property, such as the property of a graph being Ramsey or of a matrix being rigid, that is satisfied by a random object with probability very close to $1$. For many natural such $\Pi$, including the Ramsey and Rigidity properties, it can be shown that objects {\it not satisfying} $\Pi$ can be efficiently recovered from a compressed representation. This recovery process can be modeled by a small Boolean circuit $C$ for which any non-output is the representation of an object satisfying $\Pi$. In other words, solving Range Avoidance on $C$
+enables an efficient explicit construction for $\Pi$.
+
+Given that explicit constructions for properties such as Ramsey and Rigidity have been long sought after, this motivates the study of the complexity of Range Avoidance, and in particular the search for evidence that Range Avoidance is feasible. Unfortunately it was shown in \cite{ILW23} that under plausible cryptographic and complexity-theoretic assumptions, Range Avoidance is {\it intractable}.
+
+However the intractability of Range Avoidance doesn't give evidence for the intractability of the explicit construction problems mentioned above - it could be that a {\it weaker} assumption than solving Range Avoidance is sufficient for efficient explicit constructions. Indeed such an assumption was identified in \cite{ILW23} - solving Range Avoidance for {\it uniformly generated} circuits. It turns out that all of the explicit construction problems studied in \cite{Korten21} can be captured by Range Avoidance on uniform circuits. This now raises the question of how tractable it is to solve Range Avoidance in this special case. \\
+\\
+{\bf \noindent Question 2:} Is there compelling complexity-theoretic evidence in favour of efficient explicit constructions for properties such as Ramsey and Rigidity, and more generally in favour of the tractability of Range Avoidance on uniform circuits? \\
+\\
+Indeed the tractability of Range Avoidance on uniform circuits is raised explicitly in \cite{ILW23}. It is also stated there that ``some of the authors are skeptical that this special case of Avoid is easy.''
+
+The pseudorandomness approach to Question 1 can be applied to Question 2 as well. Essentially the same argument as we used there gives that, for properties such as Ramsey and Rigid, under standard derandomization assumptions, there is an efficient construction of a list of objects at least one of which satisfies the property. However, as we do not know polynomial-time algorithms for verifying the Ramsey or Rigidity properties, it is unclear how to pick out a single object satisfying the property from such a list. Indeed the pseudo-randomness approach applies to general Range Avoidance as well, but in that case we now have evidence that the problem is not tractable.
+% hence the task of picking out a correct range avoidance solution from a polynomial size list of candidates guaranteed to contain at least one is likely to be intractible in general.
+
+
+\subsection{Our Results}
+
+We give positive answers to Questions 1 and 2, under believable complexity assumptions. Our hardness assumptions are of the following two forms, each involving a parameter $d \in \mathbb{N}$:
+\begin{hypothesis*}[Hardness Assumptions for $d^{th}$-Exponential Time Bounds]
+~
+\begin{enumerate}
+    \item (Strong Form) There is an absolute constant $\epsilon > 0$ so that the following holds. For any time constructible $T(n), m(n)$, with $T(n) \geq n$ having at most $d^{th}$-order exponential growth rate and $n \leq m(n) \leq \poly(n)$, there is a function $f:\mathbb{N} \mapsto \B^{*}$, $|f(n)| =m(n)$ computable in $\poly(T(n))$ time, which cannot be computed in time $T(n)^\epsilon$ with $m(n)^\epsilon$ bits of advice by any $\NP$-oracle machine for more than finitely many $n$.
+    \item (Weak Form) Let $T(n) = \exp^{[d+1]}(n)$. There is some $\epsilon>0$ and a language computable in time $T(n)$ which is not computable in time $T(n)^\epsilon$ with an $\NP$ oracle and $2^{\epsilon n}$ bits of advice even infinitely often.
+\end{enumerate}
+% For any time constructible $T(n)$ with at most $d^{th}$-order exponential growth rate, there is $\epsilon > 0$ so that $\TIME[T(n)]$ is not contained in $\TIME^{\NP}[T^{\epsilon}]/2^{\epsilon n}$.
+\end{hypothesis*}
+
+We are using $\exp^{[d]}(n)$ for the $d$-fold iteration of the exponential function $\exp(n) = 2^n$. Such assumptions, particularly of the second kind, are fairly standard in complexity theory. Indeed, when $d = 0$, the second assumption is a standard derandomization assumption, asserting that there is a language in $\TIME[2^{n}]$ which does not have $\NP$ oracle circuits of size $2^{o(n)}$. The main novelty in our case is that we use these assumptions for larger values $T$, in particular for time bounds $T$ which have iterated-exponential growth rate. While we state the strong form assumption by quantifying over all time constructible $T(n),m(n)$, in fact we only require the assumption to hold for quite a limited class of bounds: the bounds $T(n)$ needed are representable by constant length arithmetic expressions with $\exp,\log$, and ceiling/floor functions, while the bounds $m(n)$ needed are simply of the form $m(n) = \exp(c\lceil \log n \rceil )$ for constants $c$.
+
+%\todo{arguments for assumption (time vs non-determinism and advice, generalization of standard assumption for E, random oracle), comparison with Chen-Tell}
+
+The first assumption is analogous to assumptions made in the recent literature on hardness vs randomness \cite{CT21a}, and generalizes the second assumption in a natural way. Both the first and second assumptions involve natural beliefs about the relationships between the fundamental resources of time, non-determinism and advice. Both assumptions formalize the intuition that time cannot be sped up by an arbitrary polynomial amount using non-determinism and advice. Indeed, note that there is no known way to speed up time even by a {\it super-constant} amount by using non-determinism and advice. 
+
+We believe that our assumptions hold relative to a {\it random oracle}, and here is an informal argument for the case of the second assumption. Given oracle $A$, define the time $T$ bounded Turing machine $M^A$ to accept $x$ of length $n$ if the $x$'th string of length $T(n)$ is in $A$ (where we consider the lexicographic order on strings). For a random oracle $A$, the truth table of $A$ at length $T(n)$ is Kolmogorov-random even conditioned on truth tables below length $T(n)$. Since $T(n)^{\epsilon}$ time non-deterministic oracle machines can only access strings of $A$ at length $T(n)^{\epsilon}$ or below, it should not be possible to compute the first $2^n$ bits of $A$ at length $T(n)$ from this information together with arbitrary $T(n)^{\epsilon}$ bits of advice.
+
+Our approach to using these assumptions in service of constructing random strings is via pseudo-randomness, and is a variation on the strategy we critiqued a few paragraphs ago: construct a pseudorandom generator, enumerate its range, and concatenate the constituent strings. The problems with this approach discussed in the last section boiled down to one issue: for a standard complexity-theoretic PRG fooling polynomial size nondeterministic circuits, we can at best achieve a seed length of $O(\log n)$, and hence will end up needing to concatenate a very long list of $\poly(n)$ strings. To remedy the situation, it would suffice to use pseudorandom generators with much smaller seed length of $o(\log n)$ or even $\log \log n$. While it is known that $O(\log n)$ seed length is information-theoretically optimal for fooling \emph{nonuniform} circuits of size $\poly(n)$, we aim to exploit the uniformity of the adversary we are fooling to get seed length {\it as small as possible}; for uniform adversaries the lower bound of $\log n$ no longer applies. This yields a result which is interesting in its own right: efficient constructions of small pseudo-random sets for uniform (or even slightly non-uniform) algorithms, under assumptions of the form discussed in the previous paragraph. 
+
+
+
+
+\begin{theorem}[Informal, see Theorems~\ref{randomstrings:thm:elementary-generator} and \ref{randomstrings:thm:weak-generator}]
+
+Under the Hypotheses above with $d=1$, there is a pseudorandom generator with seed length $O(\log \log n)$ which fools $\TIME^{\NP}[\poly(n)]$; if we assume the strong form the generator runs in polynomial time, and if we assume the weak form it runs in quasipolynomial time.
+
+More generally, under the above hardness assumption with large parameters $d$ (i.e. for higher-exponential time bounds), we obtain pseudorandom generators fooling $\TIME^{\NP}[\poly(n)]$ with seed length $O(\log^{[d+1]}(n))$ (for infinitely many $n$). If we assume the strong form hypothesis our generators will run in polynomial time, and if we assume the weak form they will run in iterated quasipolynomial time. When $d > 1$, our construction will require in addition that the input length $n$ is of the form $n = \exp^{[d-1]}(n')$ for some $n'$, or more generally that $\K^{\poly(n)}(n) \leq \log^{[d]}(n)$.
+\end{theorem}
+
+Some terms in the above require clarification. We are using $ \log^{[d]}(\cdot)$ to denote the $d$-fold iteration of the logarithmic function. 
+Our notion of ``iterated quasipolynomial time'' will be defined in the preliminaries - it describes a family of runtime bounds which grows faster than polynomial and quasipolynomial, but is much closer to polynomial than to exponential. Finally, the notation $\K^{\poly(n)}(n)$ denotes the time bounded Kolmogorov complexity of the \emph{number} $n$, when written as a string in standard binary notation.
+
+Our PRG construction can actually handle advice (nonuniformity) up to $\log^{[d]}(n)$ when the seed length is $\log^{[d+1]}(n)$, which we observe is optimal via a standard argument (Lemma~\ref{randomstrings:lem:optimal}). It also holds for fooling larger time bounds $\TIME^\NP[T(n)]$ for $T(n)>> \poly(n)$ (at the cost of the time complexity of the generator being low as a function of $T(n)$ rather than of $n$), and for other oracles $\mathcal{O}$ in place of the $\NP$ oracle (provided we use $\mathcal{O}$ in place of $\NP$ in the hardness assumption).
+
+We then turn our attention briefly to PRGs fooling uniform algorithms \emph{without} $\NP$ oracles: what is the minimal seed length such that we can fool $\TIME[T(n)]$ by a PRG with running time $T(n)^{O(1)}$? For this problem we show in Theorem~\ref{randomstrings:thm:deterministic} that the machinery developed above is unnecessary: if the PRG is capable of simulating the distinguishers it is trying to fool, there is a straighforward method which can reduce seed length $O(\log n)$ to arbitrarily small seed length. Hence under the standard assumptions that achieve logarithmic seed length for $\TIME[T(n)]/n$ (namely that $\E$ requires exponential circuit size) we can obtain an arbitrarily strong reduction in seed length for $\TIME[T(n)]$. Like our $\NP$-oracle result, this result applies to distinguishers with mild nonuniformity, and the achievable seed length scales with the uniformity in a way that is provably optimal according to Lemma~\ref{randomstrings:lem:optimal}.
+
+
+~\\
+{\bf \noindent Random Strings and Explicit Constructions:} We next use our short-seed pseudorandom generators for $\P^{\NP} $ (Theorem~\ref{randomstrings:thm:mainthm1}) to give (conditional) constructions of $\K^{\poly}$-random strings. Our first construction of random strings is the following, which achieves incompressibility $\tilde{\Omega}(n)$:
+\begin{theorem}[Informal, see Theorems~\ref{randomstrings:thm:elementary-random-strings-ae} and \ref{randomstrings:thm:elementary-random-strings-weak}]
+
+Under our main hardness assumption with $d=1$, for any $k \in \mathbb{N}$ there is an algorithm $\mathcal{A}$ such that $\mathcal{A}(1^n)$ outputs an $n$-bit string $x$ satisfying $\K^{n^k}(x) \geq \frac{n}{\polylog(n)}$ for all $n$; the algorithm will run in polynomial time if we use the strong form of the assumption, and quasipolynomial time if we use the weak form.
+
+More generally under our main hardness assumption for larger values of $d$, we obtain constructions of strings with $\K^{n^k}(x) \geq \frac{n}{\poly(\log^{[d]}(n))}$. Using the strong form of the assumption the construction runs in polynomial time, and under the weak form it runs in iterated quasipolynomial time. When $d > 1$ we require the integer $n$ to be of the form $n = \exp^{[d-1]}(n')$ for some integer $n'$, or more generally to satisfy $\K^{\poly(n)}(n) \leq \log^{[d]}n$.
+% Assume that, for every time-constructible bound $T(n)$ with at most doubly-exponential growth rate, there is $\epsilon > 0$ a language in $\TIME^{\NP}[T(n)]$ which is not contained in $\TIME^{\NP}[T(n)^\epsilon]/2^{\epsilon n}$. Then for $k \in \mathbb{N}$ there is a polynomial time $\mathcal{A}$ such that $\mathcal{A}(1^n)$ outputs an $n$-bit string $x$ satisfying $\K^{n^k}(x) \geq \frac{n}{\polylog(n)}$ for all $n$.
+\end{theorem}
+
+If we are satisfied with our construction algorithms succeeding on some unknown infinite set of input lengths, we are able to bootstrap the above constructions so that the $\log^{[d]}(n)$ loss in $\K$-complexity becomes additive rather than multiplicative:
+\begin{theorem}[Informal, see Theorem~\ref{randomstrings:thm:elementary-strings-io}]
+
+Assume the first version of our main hardness assumption for all $d$.
+Then for any $k,d \in \mathbb{N}$ there is a polynomial time algorithm $\mathcal{A}$ such that $\mathcal{A}(1^n)$ outputs an $n$-bit string $x$ satisfying $\K^{n^k}(x) \geq n - \log^{[d]}n$ for infinitely many $n$.
+\end{theorem}
+
+In Section~\ref{randomstrings:subsec:ecs} we then use the previous results to give conditional polynomial time explicit constructions of various important combinatorial objects shown reducible to Range Avoidance in \cite{Korten21}. We will defer most of the specifics to Section~\ref{randomstrings:subsec:ecs}, but highlight the following two results:
+\begin{theorem*}[See Theorems~\ref{randomstrings:thm:conditional-ecs-strong} and \ref{randomstrings:thm:conditional-ecs-weak}]
+~
+\begin{enumerate}
+    \item Under the strong form of our main hardness assumption with $d=2$, there is a $\poly(n)$ time algorithm which produces a matrix $M \in \mathbb{F}_2^{n \times n}$ which is Valiant-Rigid whenever $n$ is a power of 2.
+    \item Assuming that there is a language in $\TIME[2^{2^n}]$ that is not computable in $\TIME^\NP[2^{\epsilon 2^n}]/2^{\epsilon n}$ (even infinitely often)\footnote{This is a particular case of the weak form hardness assumption.}, there is a language in $\EXP$ that requires Boolean circuits of size $\frac{2^n}{\poly(n)}$ for all $n$.
+\end{enumerate}
+\end{theorem*}
+
+Crucially, our results give the first standard-form hardness assumptions under which the above explicit construction problems (and others in Section~\ref{randomstrings:subsec:ecs}) have an efficient algorithm, and they do so via a universal approach: we have a single object, $\K^{\poly}$-random strings, whose efficient explicit construction follows from plausible hardness assumptions, and which automatically satisfies various other pseudorandom properties, e.g. rigidity as a matrix or maximal hardness as a Boolean function. 
+
+~\\
+{\bf \noindent Further Applications:} In Sections~\ref{randomstrings:subsec:condense} and \ref{randomstrings:subsec:uniform-vs-nonuniform} we discuss two further applications of our random string constructions. The first shows a ``hardness condensation'' phenomenon for the main hardness assumptions we use in this paper (with the lower bound relativized to a $\mathsf{PSPACE}$ oracle), whereby we may amplify the degree of nonuniformity in the lower bounds from $2^{n^{\epsilon}}$ to $2^{n - o(n)}$.
+The second addresses the question of the relative difficulty of \emph{uniform} range avoidance and general (nonuniform) range avoidance posed in \cite{RSW22,ILW23}, where we observe using our main results and some previous hardness results (\cite{ILW23,ABK24}) that under plausible hardness assumptions, nonuniform range avoidance is significantly harder than the uniform variant. 
+
+% Next, we show a kind of ``Hardness Condensation'' result for elementary time classes using our main random string construction. {\color{red} Oliver: rahul can you fill this in or remove, I didn't know what to put yet since that parts not complete}. 
+
+
+% {\color{red} more in between}
+~\\
+{\bf \noindent Barriers to Improving Our Main Results:} 
+In the final section we give two sets of results indicating barriers to improving our main PRGs and random string constructions. Our first result casts our iterated-logarithmic seedlength PRG fooling $\P^{\NP}$ (Theorem~\ref{randomstrings:thm:mainthm1}) as a reconstructive \emph{multi-source} extractor, similar to Trevisan's analysis \cite{trevisan} of the classical hardness randomness connection in \cite{NW94,IW97} in terms of reconstructive single-source extractors. We show that any such extractor must have iterated-logarithmic seed length, and thus that any improvement to the seed length of our PRG in Theorem~\ref{randomstrings:thm:mainthm1} must use substantially different techniques.
+
+Second, we give an oracle separation showing that it is not possible via black-box arguments to obtain our main results from more standard assumptions like $\E \not\subseteq \SIZE[2^{\epsilon n}]$. In \cite{Korten21} it is shown that explicit construction of $(\K^{\poly},n-1)$ random strings and $2^{\epsilon n}$ hard truth tables are equivalent with respect to $\NP$ oracle reductions. If such an equivalence held without $\NP$ oracles it would supersede our main results here: we could start with an assumption that $\E$ requires $2^{\epsilon n}$-size circuits, and then use the reduction to produce from the hard truth table a string with high time bounded Kolmogorov complexity. We show that no such reduction exists which is \emph{relativizing}. This justifies in some sense the need for more high-end hardness assumptions to achieve our main results. 
+
+% The main idea behind this lower bound is the following: since hard truth tables have low $\K^{n^2}$ complexity, it suffices to show we cannot have a relativizing polynomial-time reduction from producing $\K^{n^6}$-random strings to producing $\K^{n^2}$ random strings. The argument is as follows. A potential reduction attempts to produce a $\K^{n^6}$-random string by querying some $\K^{m^2}$-random strings for $m \leq \poly(n)$, which we split into two cases: $m \leq 4n$ and $m > 4n$. In the first case, we argue that the set of $\K^{m^2}$-random strings has no ``relativizing connection'' to the set of $\K^{n^6}$ random strings since $m^2 = O(n^2) << n^6$; we may thus argue that these queries are useless. On the other hand, for the queries to $\K^{m^2}$-random strings for $m > 4n$, we know that if we answer these queries uniformly at random we would be correct on each query with probability $\geq 1 - 2^{-m} > 1-2^{-4n}$; if such queries could be used to compute a $\K^{n^6}$-random string, then we would obtain a polynomial time randomized, relativizing algorithm which can produce $\K^{n^6}$-random strings of length $n$ relative to any oracle with probability $1 - 2^{-4n}$. It is then shown that $1 - 2^{- n}$ is essentially the best probability achievable for this task.
+\subsection{Overview of Main Construction}
+% {\bf \noindent PRG for Uniform Algorithms with Small Seed Length:} 
+We describe at a high level our construction of pseudorandom generator with small seed length secure against any $L \subseteq \B^n$ computable in $\TIME^\NP[\poly(n)]$. Using the classical hardness-randomness connection, under the assumption that $\TIME[2^{O(n)}]$ requires exponential size $\NP$-oracle circuits we can obtain a generator $G^0: \B^{s_0(n)} \to \B^n$ with seed length $s_0(n) \leq O(\log n)$. The key observation is that this first attempt at a generator significantly overshoots our primary goal in one respect: the generator $G^0$ obtained from the generic hardness-randomness connection would in fact be secure against $\TIME^\NP[\poly(n)]/n$ machines which have access to $n$ bits of advice. On the other hand we only want a generator which fools \emph{uniform} algorithms. 
+
+To use this to our advantage, we consider a recursive argument. Let $n_1 = s_0(n)$, and consider $n_1$ as our \emph{new input length}. Define the language $L_1 \subseteq \B^{n_1}$ consisting of the seeds $z$ of $G^0$ such that $G^0(z) \in L$. We know that $\Pr_{z \sim \B^{n_1}}[z \in L_1] \approx \Pr_{x \sim \B^n}[x \in L]$ by the security of our first generator $G_0$, and therefore if we could find a second generator $G_1: \B^{s_1(n_1)} \to \B^n$ which fools the language $L_1$, we would find that the composition $G_0 \circ G_1$ fools the original language $L$. If $s_1(n_1) = O(\log  n_1) = O(\log \log n)$ we would have made significant progress. For such a generator $G^1$ to fool $L_1$, we would need it to fool $\NP$-oracle algorithms with running time $\poly(n)$; however the input length of $L_1$ is $n_1 = O(\log n)$, so as a function of the new input length we need $G^1$ to fool algorithms running in \emph{exponential time} with an $\NP$ oracle. We may proportionally increase the allowable runtime of $G^1$ to exponential as well; so overall we have scaled the time complexities of our generator/distinguisher by an exponential. However, crucially, the \emph{advice complexity} of deciding $L_1$ remains $O(1)$: this is where we use crucially the uniformity of our distinguisher. If $L$ required $n$ bits of advice compute, then the best advice upper bound we could place on $L_1$ is $n\approx 2^{n_1}$ which is trivial.
+
+Continuing in this way, we are able to iteratively reduce the seed length of our original generator by a logarithmic composition, for an arbitrary constant number of phases. The cost is that we need to obtain, in each step, psuedorandom generators with logarithmic seed length that fool algorithms running in $\exp(\exp(\cdots \exp(n) \cdots ))$ time with an $\NP$ oracle, and which are computable in a comparable amount of time (without an $\NP$ oracle). To achieve such generators we rely on the standard toolkit of hardness-randomness transformations \cite{NW94,IW97,umans}. In this way, we can argue the security of our construction based on the kind of hardness assumptions described above.
+
+There are a few additional intricacies that we are skimming over here, which contribute to the two caveats in our main theorem statements: the weaker runtime bounds when using the second version of our hardness assumptions, and the requirement that the number $n$ is of the form $n = \exp^{[d-1]}(n')$ for some $n'$ when using the first version of our hardness assumptions. The first of these issues roughly stems from the fact that, when trying to apply our hardness assumption to get an $O(\log n_j)$ seed length generator on input length $n_j \approx \log^{[j]}(n)$ (which we will then compose with the outer generator to reduce the total seed length by another logarithm), we will actually need to apply our hardness assumption on some other input length $m_j = O(n_j)$; this will mean that we can at best hope for our generator to run in time $\poly(\exp^{[j]}(O(n_j))) \approx \exp^{[j]}(O(\log^{[j]}n))$, which will be superpolynomial when $j>1$. This issue can be avoided by considering the more refined first version of our hardness hypothesis.
+
+For the second issue, it turns out that we can only guarantee the security of our generator on inputs lengths $n$ such that the \emph{number $n$} itself has time-bounded Kolmogorov complexity $\log^{[d]}(n)$. For $d = 1$ this changes nothing, since every number $n$ has $\K^{O(n)}(n) \leq \log n$ via its binary representation, so we achieve a generator with seed length $O(\log \log n)$ which is valid on all input lengths, but for large values of $d$ our construction is only valid for infinitely many $n$ (in particular it will work for all $n$ of the form $\exp^{[d-1]}(n')$ for some $n'$). The reason for this issue is as follows: in the above exposition, we considered the language $L_1 \subseteq \B^{n_1}$ of seeds mapping to strings in the base language $L$, and argued it is computable in time exponential in its input length. When we continue this argument for more steps and obtain languages $L_2,L_3,\ldots$, we would like to argue at each step that they are uniformly computable with a small amount of advice (comparable to the input length they are defined on). However, the definition of these languages depends on the original input length $n$ that we started on, and since $\log^{[d]}(\cdot)$ is not injective for any $d > 0$, we cannot determine $n$ solely from the smaller input lengths, but will need to somehow supply the number $n$ as advice. If we assume the number $n$ is sufficiently compressible, we are able to skirt this issue and complete the argument. 
+
+
+\subsection{Related Work}
+
+We have already mentioned connections of our work to meta-complexity and Range Avoidance. In terms of derandomizing uniform algorithms, there has been a lot of work on uniform hardness-randomness tradeoffs, beginning with \cite{IW98}, but much of that work is not relevant to our setting as the emphasis is on uniform assumptions for derandomization, while we are interested instead in decreasing the seed length, and are not concerned with uniformity of the assumption. 
+
+However the recent work of \cite{CT21a} on super-fast derandomization is indeed very relevant from a technical point of view.
+They give a (conditional) derandomization of $\BPTIME[T(n)]$ into $\TIME[T(n)^{1 + \epsilon} n]$. The classical approach to derandomizing $\BPTIME[T(n)]$ would be to model it as a circuit of size $T(n)$ with input length $T(n)$ (the input represents the randomness) and use a PRG fooling this class. To fool this class of circuits requires a PRG with seed length $\log T(n)$ and running time $T(n)$, and if $T(n) = n^3$ we could therefore not hope to achieve derandomization in time $T(n)^{1+\epsilon} n$ no matter how fast the PRGs runtime is. A key observation in \cite{CT21a} is that that this approach to derandomizing $\BPTIME[T(n)]$ actually \emph{overshoots} whats required: if we model the $\BPTIME[T(n)]$ machine more precisely as a $\TIME[T(n)]$ machine on input length $T(n)$ with nonuniformity $n << T(n)$, then we only need a PRG which fools $\TIME[T(n)]/n$; for this task, it is possible (at least information-theoretically) to achieve a seed length of $\log n$ or more generally $(1 + \epsilon)\log n$ rather than $\log T(n)$, which means that the enumeration of seeds will only cost us $n^{1 + \epsilon}$ time.
+
+They then proceed to construct a PRG for $\TIME[T(n)]/n$ with seed length $(1 + \epsilon) \log n$ and computable in time $T(n)^{1 + \epsilon}$. In their case a great deal of work must be dedicated to optimizing the runtime of the PRG which has no relevant parallel in our work; however the question of reducing the seed length down to the true level of uniformity, and the assumptions under which they are able to achieve it, have similarities to ours. In particular, they require assumptions of the form $\TIME[T(n)] \not\subseteq \TIME[T(n)^{1- \delta}]/2^{(1-\delta)n}$ where $T(n) = 2^{k n}$ for a large constant $k$.
+
+The innovation in our work is the use of recursion to achieve dramatically smaller seed length against inefficient uniform adversaries using a small amount of non-uniformity, which enables us to address Questions 1 and 2.
+

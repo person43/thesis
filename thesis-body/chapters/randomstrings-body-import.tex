@@ -152,7 +152,7 @@ The innovation in our work is the use of recursion to achieve dramatically small
 
 
 \section{Preliminaries}
-We start with some notation for the classes of growth rates appearing in this work:
+We start with some notation for the classes of growth rates appearing in this chapter:
 % \begin{definition}[Growth Rates]
 
 % % For each $d \in \mathbb{N}$, we define an asymptotic notation $\od{d}(\cdot)$ as follows. We say that say that $f(n) \leq \od{0}(g(n))$ if $f(n) \leq g(n) + O(1)$. For $d > 0$, we say $f(n) \leq \od{d}(f(n))$ if $f(n) \leq \exp(\od{d-1}(\log g(n)))$. We say that a function $f$ is feasible if $f(n) = \od{d}(n)$ for some $d$; $d$ is its feasibility level, and we may also refer to $f$ as $d$-feasible.
@@ -173,11 +173,8 @@ Similarly, $\omd{1}(n) = \Omega(n)$, $\omd{2}(n) = n^{\Omega(1)}$, $\omd{3}(n) =
 
 
 \begin{definition}[Languages and Complexity Classes]
-
-
 For functions $f,g:\mathbb{N} \to \mathbb{N}$ and language $A \subseteq \B^*$ we define the complexity class $\TIME^A[f(n)]/g(n)$ consisting of those languages decidable in time $O(f(n))$ with an oracle for the language $A$ and using $O(g(n))$ bits of advice on inputs of length $n$. When $g(n)=0$ we omit this argument.
 % We will say more generally that $\Phi[\cdot]$ is a ``standard complexity measure'' if $\Phi \in \{ \DTIME^A[\cdot] ,\NTIME^A[\cdot]\}$ for some $A \subseteq \B^*$ and use $\Phi[f(n)]$, $\Phi[f(n)]/g(n)$ accordingly. 
-
 For a language $L \subseteq \B^*$ we use $L_n: \B^n \to \B$ to denote the restriction of $L$ to $\B^n$, and $\SIZE[f(n)]$ to denote the set of languages $L$ so that $L_n$ is computed by Boolean circuits of size $O(f(n))$ for all $n$.
 \end{definition}
 
@@ -207,16 +204,16 @@ Let $s: \mathbb{N} \to \mathbb{N}$, $\epsilon: \mathbb{N} \to [0,1]$. If $\mathc
 
 \subsection{Range Avoidance and Construction of Random Strings}
 
-We formalize a general notion of explicit construction problems as follows: 
-\begin{definition}[Explicit Construction Problems]
-An explicit construction problem is defined by a language $\Pi \subseteq \B^*$, such that $\Pi_n \neq \emptyset$ for all $n$. The computational task is: given $1^n$ as input, output a string $x \in \Pi_n$.
-
+Recall the general definition of an explicit construction problem, defined by a language $\Pi \subseteq \B^*$, where given $1^n$ we are tasked with finding $x \in \B^n \cap \Pi$. We define here a certain class of algorithm for solving explicit construction problems:
+\begin{definition}[List Solution]
+% An explicit construction problem is defined by a language $\Pi \subseteq \B^*$, such that $\Pi_n \neq \emptyset$ for all $n$. The computational task is: given $1^n$ as input, output a string $x \in \Pi_n$.
 If $\Pi$ is an explicit construction problems, we say that a function $S: \B^* \to \B^*$ is a ``list solution'' to $\Pi$ if $S(1^n) \cap \Pi_n \neq \emptyset$ for all $n$. The ``list size'' $\ell(\cdot)$ is defined as $\ell(n) = |S(1^n)|$.
 \end{definition}
-As discussed in the introduction, an important class of explicit construction problems are those reducible to the problem \emph{range avoidance}:
-\begin{definition}[Range Avoidance \cite{KKMP21,Korten21,RSW22}]
-Range avoidance, or ``Avoid,'' is the following search problem: given a Boolean circuit $C: \B^m\to \B^n$ with $m < n$, output a string $x\in \B^m \setminus \mathrm{range}(C)$. We say that this Avoid instance has ``stretch'' $m \mapsto n$.
 
+Next, we give some terminology for describing reducibility of an explicit construction problem to Avoid:
+
+\begin{definition}
+% Range avoidance, or ``Avoid,'' is the following search problem: given a Boolean circuit $C: \B^m\to \B^n$ with $m < n$, output a string $x\in \B^m \setminus \mathrm{range}(C)$. We say that this Avoid instance has ``stretch'' $m \mapsto n$.
 We say that an explicit construction problem $\Pi$ reduces to Avoid in polynomial time with stretch function $\ell(n)$, if there is a polynomial time algorithm which, given $1^n$, outputs an Avoid instance $C_n: \B^{\ell(n)} \to \B^n$ so that whenever $x $ is a solution for $C_n$, we have $x \in \Pi$. 
 \end{definition}
 % It was shown in \cite{Korten21} that a wide variety of important unsolved explicit construction problems can be reduced efficiently to range avoidance. Hence one approach to generically solving such problems is to find an efficient algorithm for the general range avoidance problem. Unfortunately, recent results \cite{ILW23} suggest that this is impossible. However, solving range avoidance in the worst case seems to significantly overshoot the goal of solving explicit construction problems: the key distinction, which we will address further in Section~\ref{randomstrings:subsubsec:uniform-vs-nonuniform}, is that to solve an explicit construction problem reducible to range avoidance, we only need to solve \emph{uniformly defined} instances of range avoidance, which is equivalent to producing strings of large $\K^{\poly(n)}(\cdot) $ complexity:
