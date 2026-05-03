@@ -71,6 +71,7 @@
 \renewcommand{\cftsubsecafterpnum}{\vskip\baselineskip}
 \renewcommand{\cftsubsubsecafterpnum}{\vskip\baselineskip}
 \renewcommand\contentsname{Table of Contents}
+\setcounter{secnumdepth}{3}
 
 \titleformat{\chapter}[display]
   {\normalfont\bfseries\filcenter}{}{0pt}
@@ -78,6 +79,7 @@
 \titlespacing*{\chapter}{0pt}{0pt}{30pt}
 \titleformat{\section}{\normalfont\bfseries}{\thesection}{1em}{#1}
 \titleformat{\subsection}{\normalfont}{\thesubsection}{0em}{\hspace{1em}#1}
+\titleformat{\subsubsection}{\normalfont}{\thesubsubsection}{0em}{\hspace{1em}#1}
 
 \newtheorem{theorem}{Theorem}[chapter]
 \newtheorem*{theorem*}{Theorem}

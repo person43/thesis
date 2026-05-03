@@ -125,7 +125,7 @@ Following \cite{Paris-Wilkie-Woods}, \Jer \cite{Jerabek} used this same construc
 Thus, if it is hard to witness the weak pigeonhole principle for $C,D$, then we will be able to take any string (``message'') of length $2^kn$ and find a small circuit computing it (``codeword'') by feeding it through $C^*$. A circuit can naturally be interpreted as a data structure storing an array subject to fast query operations: the truth table represents the contents of the array, and the circuit allows us to efficiently compute a particular bit in the truth table given its index. However, to use the J-tree to simulate RAM computations, we will also require fast update operations, which let  us set a position in the array to a new value. Our main addition to this line of work is the ``J-Tree Update Lemma'' (Lemma~\ref{lossy:lem:updates}), which gives a procedure that accomplishes this second task. The Update Lemma does not seem to have an analogue in any of the previously mentioned works.
 \section{Preliminaries}\label{lossy:sec:prelim}
 \subsection{Basics}\label{lossy:subsec:basics}
-Our notation for basic concepts is standard, e.g. all logarithms are base 2, we use $[n]$ to denote $\{1,\ldots,n\}$, $|x|$ to denote length of a binary string. We will define the following precise notion of an ``exponential time bound:''
+Throughout this chapter we will define the following precise notion of an ``exponential time bound:''
 \begin{definition}
 We say a function $T\colon \mathbb{N} \rightarrow \mathbb{N}$ is an ``exponential time bound'' if $T$ is time constructible, and there exist constants $0< \beta < B$ such that for sufficiently large $n$, $2^{\beta n} \leq T(n) \leq 2^{Bn}$.
 \end{definition}
@@ -173,14 +173,7 @@ Let $x \in \B^N$. We say that $x$ ``has circuits of size $s$'' if there is a boo
 Fix some efficient universal Turing machine $U$. For $x \in \B^*$, we define $K^t(x)$ to be the length of the smallest string $y$ such that $U$ outputs $x$ on input $y$ in at most $t$ steps.
 \end{definition}
 \subsection{Search Problems}\label{lossy:subsec:search-problems}
-\begin{definition}
-A ``search problem'' is simply a relation $R \subseteq \B^* \times \B^*$. The associated computational task is: given $x \in \B^*$, find some $y \in \B^*$ such that $(x,y) \in R$, or else determine that no such $y$ exists. We say that $R$ is ``bounded'' if there exists a polynomial $p$ such that $(x,y) \in R \Rightarrow |y| \leq p(|x|)$. We say that $R$ is ``total'' if $\forall x \in \B^*$, $\exists y \in \B^*$ such that $(x,y) \in R$.
-\end{definition}
-
-% \begin{definition}
-% For $i > 0$, we define $\cl{TF\Sigma_i^P}$ as the set of total, bounded relations $R$ such that the language $\{\langle x, y \rangle \mid (x,y) \in R\}$ lies in $\cl{\Pi_{i-1}^P}$, and define $\cl{TFPH} = \cup_{i} \cl{TF\Sigma_i^P}$. The classes $\cl{F\Sigma_i^P}$ are defined identically, but without the restriction that $R$ is total.
-% \end{definition}
-At some points in this work we will be concerned with functions that are efficiently computable with access to an oracle for solving some search problem. A subtlety arises here, since an instance of a search problem may have many valid solutions, and this may cause our oracle machine to have a variety of possible outputs. To formalize the notion of search problem oracles correctly, it seems necessary to define the following notion of ``functional oracles'':
+At some points in this work we will be concerned with functions that are efficiently computable with access to an oracle for solving some search problem. A subtlety arises here, since an instance of a search problem may have many valid solutions, and this may cause our oracle machine to have a variety of possible outputs. To formalize the notion of search problem oracles correctly, we need to recall the definition of a function solving a search problem from Chapter\ref{chap:prelims}:
 \begin{definition}
 Let $R$ be a search problem. We say that $\mathcal{O}\colon \B^* \rightarrow \B^* \sqcup \{\perp\}$ is a ``functional oracle'' for $R$ if the following holds for all $x \in \B^*$:
 \begin{enumerate}
@@ -192,6 +185,8 @@ Let $R$ be a search problem. We say that $\mathcal{O}\colon \B^* \rightarrow \B^
 Functional oracles give us a natural way to complexity classes solved by $R$-oracle machines for some bounded relation $R$ -- an $R$-oracle machine computes a certain function, or solves some other search problem, if it has a valid output on every input when given access to an arbitrary functional oracle for $R$.
 
 \section{Pigeonhole Principles and Compression Schemes}\label{lossy:sec:pigeons}
+
+\todo{reevaluate this section for redundancies during intro-unification stage}
 We now define the basic formalization of the weak pigeonhole principle we will investigate in this work, and introduce the relevant terminology.
 \subsection{Compressors and Decompressors}\label{lossy:subsec:gi}
 \begin{definition}

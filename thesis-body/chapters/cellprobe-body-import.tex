@@ -294,8 +294,8 @@ Finally it is important to keep in mind that for \emph{non-explicit} problems, c
 \section{Preliminaries}\label{cellprobe:sec:prelims}
 We introduce some basic notation and definitions which will be used throughout. We strongly encourage the reader not to skip Section~\ref{cellprobe:subsec:gen-vs-cell} which defines our notation for locally computable generators and cell probe data structures, and establishes the connection between them which will be used in the rest of the paper.
 \subsection{Basics}\label{cellprobe:subsec:basic-prelims}
-For a natural number $N$ use $\N =\{1,\ldots,N\}$. For a finite set $V$ and integer $k$ we use $\binom{V}{k}$ to denote the set of subsets of $V$ of size $k$. If $X$ is a finite set, $\phi:X \to \mathbb{R}$ we write $\E_{x\in X} \phi(x)$ as shorthand for $|X|^{-1}\sum_{x \in X} \phi(x)$.
-We will use boldface variables e.g. $\bm{v}$ exclusively for random variables. When $\bm{v}$ is a random variable and $A$ is a set, we write $\bm{v} \in A$ to indicate that the support of $\bm{v}$ is contained in $A$. When an expression references only a single random variable $\bm{v}$ we will use $\Exp \phi(\bm{v})$ for some $\phi: \supp(\bm{v}) \to \mathbb{R}$ to mean that the expectation is taken with respect to $\bm{v}$; this is in contrast to the notation $\E_{x\sim X} \phi(x)$ above, where we always include the subscript.
+For a natural number $N$ use $\N =\{1,\ldots,N\}$. For a finite set $V$ and integer $k$ we use $\binom{V}{k}$ to denote the set of subsets of $V$ of size $k$. If $X$ is a finite set, $\phi:X \to \mathbb{R}$ we write $\Exp_{x\in X} \phi(x)$ as shorthand for $|X|^{-1}\sum_{x \in X} \phi(x)$.
+We will use boldface variables e.g. $\bm{v}$ exclusively for random variables. When $\bm{v}$ is a random variable and $A$ is a set, we write $\bm{v} \in A$ to indicate that the support of $\bm{v}$ is contained in $A$. When an expression references only a single random variable $\bm{v}$ we will use $\Exp \phi(\bm{v})$ for some $\phi: \supp(\bm{v}) \to \mathbb{R}$ to mean that the expectation is taken with respect to $\bm{v}$; this is in contrast to the notation $\Exp_{x\sim X} \phi(x)$ above, where we always include the subscript.
 At one point we will use the set theoretic operator $\Delta$ denoting symmetric difference $a \Delta b = (a \setminus b) \cup (b \setminus a)$. For a collection of sets $(a_j)_{j \in J}$ we define $\mathop{\Delta}\limits_{j \in J} a_j$ in the natural way using the commutativity/associativity of $\Delta$ as a binary operation.
 
 In Section \ref{cellprobe:subsec:k-wise-lbs} we will deal with various vector and matrix norms, whose (standard) definitions we review here:
@@ -397,7 +397,7 @@ For a sign-pattern $f: X \to \{\pm 1\}$
 and assignment $R \in \{\pm 1\}^V$ to the underlying variables,
 we define
 \[
-\mathrm{Val}(\mathcal{C}, f,R):= \bigl|\E_{x \in X} f_x  \prod_{i \in c_x}R(i)\bigr|
+\mathrm{Val}(\mathcal{C}, f,R):= \bigl|\Exp_{x \in X} f_x  \prod_{i \in c_x}R(i)\bigr|
 \]
 In some cases, we will have a ground set $\N$, and a subset $X\subseteq \N$ with an XOR scheme $\mathcal{C}$ indexed by $X$; in this case, for $f\in \{\pm 1\}^N$ and an assignment $R$, we define $\mathrm{Val}(\mathcal{C},f,R)$ to equal $\mathrm{Val}(\mathcal{C},f',R)$, where $f'$ is the restriction of $f$ to the coordinates in $X$.
 
@@ -778,13 +778,13 @@ Let $G: \{\pm 1\}^S \to \{\pm 1\}^N$ be an $\mathsf{NC}^0_t$ generator. Then the
 \begin{proof}
 For each $x \in \N$, $G_x: \{\pm 1\}^S \to \{\pm 1\}$ depends on $t$ input cells which we list in some fixed order $p_x^1,\ldots,p_x^t$. For each $x$ there is a predicate $h_x: \{\pm 1\}^t \to \{\pm 1\}$ so that if, on input $E \in \{\pm 1\}^S$, $G_x(E)$ sees the query outcomes $\xi_1 =E(p^1_x),\ldots, \xi_t=E(p_x^t)$, then $G_x(E) = h_x(\xi)$. Hence there exists $h: \{\pm 1\}^t \to \{\pm 1\}$ so that, for the set $X = \{ x\in \N\mid h_x = h\}$ we have $|X| \geq 2^{2^{-t}}N$. Fix this choice $X,h$ for the remainder of the proof.
 
-Let $V^1,\ldots,V^t$ be copies of $[S]$. For each $u \subseteq [t]$, we define the XOR scheme $\mathcal{C}_u = (X,V^u,c^u)$ indexed by $X$ with variable set $V^u=\cup_{j \in u} V^j$ and constraints $c^u_x = \{p^j_x \mid j \in u\}$ where $p^j_x$ is considered to live inside $V^j$; note that this is well-defined even for $u = \emptyset$, in which case we get a $0$-XOR scheme $\mathcal{C}_\emptyset$ over 0 variables with $\Opt(\mathcal{C}_\emptyset,f) = \E_{x \in X} f_x$. The function $h$ may be expressed uniquely as $h(\xi)= \sum_{u \subseteq [t]} \hat{h}(u) \cdot \prod_{ j \in u} \xi_j$, where $(\hat{h}(u))_{u \subseteq [t]}$ are its Fourier coefficients. Now let $f\in \rng(G)$ with encoding $E_f$, we have:
+Let $V^1,\ldots,V^t$ be copies of $[S]$. For each $u \subseteq [t]$, we define the XOR scheme $\mathcal{C}_u = (X,V^u,c^u)$ indexed by $X$ with variable set $V^u=\cup_{j \in u} V^j$ and constraints $c^u_x = \{p^j_x \mid j \in u\}$ where $p^j_x$ is considered to live inside $V^j$; note that this is well-defined even for $u = \emptyset$, in which case we get a $0$-XOR scheme $\mathcal{C}_\emptyset$ over 0 variables with $\Opt(\mathcal{C}_\emptyset,f) = \Exp_{x \in X} f_x$. The function $h$ may be expressed uniquely as $h(\xi)= \sum_{u \subseteq [t]} \hat{h}(u) \cdot \prod_{ j \in u} \xi_j$, where $(\hat{h}(u))_{u \subseteq [t]}$ are its Fourier coefficients. Now let $f\in \rng(G)$ with encoding $E_f$, we have:
 \begin{gather*}
-1 = \E_{x \in X} f_x \cdot h(E_f(p_1(x)),\ldots,E_f(p_t(x)))
-= \E_{x \in X} f_x \sum_{u \subseteq [t]} \hat{h}(u) \prod_{j \in u} E_f(p_j(x)) \\
-\leq  \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot |\E_{x \in X} f_x \prod_{j \in u} E_f(p_j(x))|  
+1 = \Exp_{x \in X} f_x \cdot h(E_f(p_1(x)),\ldots,E_f(p_t(x)))
+= \Exp_{x \in X} f_x \sum_{u \subseteq [t]} \hat{h}(u) \prod_{j \in u} E_f(p_j(x)) \\
+\leq  \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot |\Exp_{x \in X} f_x \prod_{j \in u} E_f(p_j(x))|  
 % = |\hat{h}(\emptyset)| \cdot (\Exp\limits_{x \in X} f_x) +  \sum_{\emptyset \neq u \subseteq [t]} |\hat{h}(u)| \cdot |\E_{x \in X} f_x \prod_{i\in c_u(x)} E^u_f(i)|\\
-=  \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot |\E_{x \in X} f_x \prod_{i\in c^u_x} E^u_f(i)|\\
+=  \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot |\Exp_{x \in X} f_x \prod_{i\in c^u_x} E^u_f(i)|\\
 \leq   \sum_{u \subseteq [t]} |\hat{h}(u)| \cdot \mathrm{Val}(\mathcal{C}_u, f)
 \leq  \sum_{u \subseteq [t]} \mathrm{Val}(\mathcal{C}_u, f)
 % \leq 2^t\max_{|u| < t} \mathrm{Val}(\mathcal{C}_u,f) + \mathrm{Val}(\mathcal{C}_{[t]},f) 
@@ -977,7 +977,7 @@ m \geq  n^{\frac{t}{2}} \log n \cdot t^{\frac{t}{2}}2^{(3+o(1))tw} \cdot \poly(\
 outputs a string in $\B^m$ which is $\geq (\frac{1}{2}-\epsilon)$-far in relative hamming distance from every string in the range of $G$.
 \end{theorem*}
 
-We will set $N=m$, $S=n$ in the following, where $m,n$ are as above. To obtain the hamming distance bound we require a strengthening of Theorem~\ref{cellprobe:thm:cell-csp}. Recall that Theorem~\ref{cellprobe:thm:cell-csp} showed how to construct from a generator $G:\Sigma^S \to \B^N$ a small collection of XOR schemes indexed by large subsets of $\N$, so that whenever $f \in \rng(G)$, $f$ will induce a large value in one of the CSPs. The following strengthening will give us a similar conclusion under the weaker assumption that $f$ is close in hamming distance to $\rng(G)$. In the following, for two strings $f,g\in \{\pm 1\}^N$ and $X \subseteq \N$, we use $\mathrm{Cor}_X(f,g) = |\E_{x \sim X} f_x g_x|$; by default $\mathrm{Cor}(\cdot,\cdot)=\mathrm{Cor}_{\N}(\cdot, \cdot)$. 
+We will set $N=m$, $S=n$ in the following, where $m,n$ are as above. To obtain the hamming distance bound we require a strengthening of Theorem~\ref{cellprobe:thm:cell-csp}. Recall that Theorem~\ref{cellprobe:thm:cell-csp} showed how to construct from a generator $G:\Sigma^S \to \B^N$ a small collection of XOR schemes indexed by large subsets of $\N$, so that whenever $f \in \rng(G)$, $f$ will induce a large value in one of the CSPs. The following strengthening will give us a similar conclusion under the weaker assumption that $f$ is close in hamming distance to $\rng(G)$. In the following, for two strings $f,g\in \{\pm 1\}^N$ and $X \subseteq \N$, we use $\mathrm{Cor}_X(f,g) = |\Exp_{x \sim X} f_x g_x|$; by default $\mathrm{Cor}(\cdot,\cdot)=\mathrm{Cor}_{\N}(\cdot, \cdot)$. 
 % Finally for $A \subseteq \{\pm 1\}^N$ we use $\mathrm{Cor}(f,A) = \max_{g\in A} \mathrm{Cor}(f,g)$.
 \begin{theorem}[Correlation Variant of Theorem~\ref{cellprobe:thm:cell-csp}]\label{cellprobe:thm:cell-csp-correlation}
 Let $G: \Sigma^S \to \{\pm 1\}^{N}$ be a locally-computable generator with time complexity $t$, word length $w= \log |\Sigma|$. There exists a collection of sets $(X_j \subseteq \N)_{j \leq 2^{tw + 1}}$, $|X_j| \geq \epsilon2^{-tw-1}N$, and a collection of $t$-XOR schemes $(\mathcal{C}_j)_{j \leq 2^{tw + 1}}$, with $\mathcal{C}_j$ a $t$-XOR scheme indexed by $X_j$ and having $\leq tS$ variables, so that for every $f,g\in \{\pm 1\}^N$ with $g\in \rng(G)$, $\mathrm{Cor}(f,g) \geq \epsilon$, there exists $j \leq 2^{tw + 1}$ with $\mathrm{Val}(\mathcal{C}_j,f) \geq \epsilon2^{-tw-1}$.
