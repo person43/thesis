@@ -1,0 +1,22 @@
+\documentclass[12pt]{report}
+
+\input{preamble}
+\input{macros}
+
+\begin{document}
+\doublespacing
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\chapter{Intro Integration}
+\input{chapters/intro-integration}
+
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{References}
+\begin{singlespace}
+\printbibliography[title={References}]
+\end{singlespace}
+
+\end{document}

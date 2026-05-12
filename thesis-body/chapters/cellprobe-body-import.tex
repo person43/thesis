@@ -5,7 +5,7 @@
 % commands have been omitted for thesis integration.
 
 \section{Introduction}
-We start by briefly introducing the three main subjects of the work: static data structure lower bounds, $\mathsf{NC}^0$ pseudorandom generators, and range avoidance for $\mathsf{NC}^0$ circuits. 
+We start by briefly introducing the three main subjects of this chapter: static data structure lower bounds, $\mathsf{NC}^0$ pseudorandom generators, and range avoidance for $\mathsf{NC}^0$ circuits. 
 ~\\~\\
 {\bf \noindent Static Data Structure Lower Bounds:} 
 The cell probe model of data structures introduced in \cite{eliasflower,Yao} is a fundamental computational model in which to study tradeoffs between storage space and access time for information retrieval problems. In the \emph{static} cell probe model, a data structure problem $F: [N] \times [M] \to \B$ is fixed, where $[M]$ is an abstract set of ``datapoints,'' $[N]$ is an abstract set of ``queries'' one might wish to make about a data point, and $F(x,y)$ is the correct answer to the $x^{th}$ query about the datapoint $y$. The goal is to preprocess any given datapoint $y\in [M]$ into a data structure $\mathcal{E}(y) \in \Sigma^S$ consisting of $S$ ``cells,'' each cell holding a character from some finite alphabet $\Sigma$, so that later we may answer different queries $x \in \N$ about $y$ by reading at most $t$ cells from the data structure $\mathcal{E}(y)$. $S$ is called the ``space complexity,'' $t$ the ``time complexity,'' and $w=\log|\Sigma|$ the ``word-length'' (number of bits to store the contents of a single cell).
@@ -18,7 +18,6 @@ For \emph{any explicit problem} $F: [N] \times [M] \to \B$, the best lower bound
 \end{gather}
 Lower bounds of this kind were first achieved by \cite{Siegel89} using a method that was rediscovered in later work and which is now known as \emph{cell sampling}.
 In the special case of \emph{nonadaptive bit probe data structures} (queries chosen nonadaptively, word length $w=1$), a lower bound exceeding (\ref{cellprobe:eq:1}) has been shown in two recent works. First, \cite{viola-maximal} achieved a near-maximal space lower bound $S \geq \frac{N}{2}$ in the case $t=2$ for a problem with $M \leq \poly(N)$ datapoints. Subsequent work of \cite{golovnev} improved this to $S \geq (1-\epsilon)N$ for arbitrarily small $\epsilon>0$ (the lower bound is for a different explicit problem), and for all larger $t>2$ proved a bound like \ref{cellprobe:eq:1} with the exponent $\frac{1}{t}$ replaced with $\frac{1}{(t-1)}$. In Section~\ref{cellprobe:subsec:prior} we will discuss these works, as well as the broader history of static data structure lower bounds, in some more detail.
-
 ~\\~\\
 {\bf \noindent $\mathsf{NC}^0$ Pseudorandom Generators:} 
 A prominent line of work initiated in \cite{goldreich-prg,cryan-miltersen}
@@ -27,11 +26,12 @@ We say that $G$ is an $\mathsf{NC}^0$ generator if it is $\mathsf{NC}^0_t$ for s
 The existence of such PRGs has been the subject of a great deal of work over the past two decades; we refer the reader to a comprehensive survey \cite{apple-survey} and the references therein. 
 
 An important parameter is the \emph{stretch} of the generator, which denotes the relation between $n,m$. We say that $G$ has nontrivial stretch if $m >n$, and polynomial stretch if $m \geq n^{1+\Omega(1)}$. $\mathsf{NC}^0$ generators with nontrivial stretch can be shown to exist under standard number theoretic cryptographic assumptions \cite{randomized-encodings}, however their utility has so far been limited. On the other hand, $\mathsf{NC}^0$ generators with polynomial stretch are not known to exist under any more standard hardness assumptions, but have been found to have a wide range of advanced cryptographic applications \cite{ishai2008cryptography}, most notably in the construction of Indistinguishability Obfuscation \cite{jls1,jls2}. For this reason, a great deal of work has gone into studying the existence of polynomial stretch $\mathsf{NC}^0$ PRGs as a foundational assumption in its own right, and various algorithmic methods for distinguishing such PRGs have been studied. The current state of the art shows that an $\mathsf{NC}_t^0$ generator $G: \B^n \to \B^m$ can be broken in polynomial time once $m >> n^{\frac{t}{2}}$ (\cite{mossel-epsilon,aow,semirandom}).
-
 ~\\~\\
 {\bf \noindent $\mathsf{NC}^0$ Range Avoidance:}
-We finally turn to our third main subject of study, $\mathsf{NC}^0$ range avoidance. The object in question here is the same as above: an $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with $m >n$ and $t = O(1)$. However, instead of trying the distinguish the output of $G$ from random, our goal now is to solve the \emph{range avoidance problem} for $G$: output a string $y \in \B^m$ such that $y \notin \rng(G)$. The range avoidance problem (for general $G: \B^n \to \B^m$ computed by polynomial size circuits) was introduced in \cite{KKMP}, and shown in \cite{Korten} to be intimately connected to derandomization and to the problem of proving circuit lower bounds for exponential time classes. In all cases, it is already of great interest to develop algorithms for this problem that use an $\mathsf{NP}$ oracle. \cite{RSW} was the first to investigate the range avoidance problem for $\mathsf{NC^0}$ circuits, and showed that a $\mathsf{P^{NP}}$ algorithm for this problem would imply the breakthrough circuit lower bound $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$. The same question of \emph{stretch} arises here: the aforementioned result of \cite{RSW} requires us to solve instances with barely nontrivial stretch. On the other hand unconditional algorithms have been given once the stretch is sufficiently large, in particular once $m >> \frac{n^{t-1}}{\log n}$ (\cite{guruswami2022range,karthik}). An important question posed in \cite{RSW} is whether unconditional $\mathsf{P^{NP}}$ algorithms for $\mathsf{NC}^0$ range avoidance can be found in the general polynomial stretch regime.
-
+We finally turn to our third main subject of study, $\mathsf{NC}^0$ range avoidance. The object in question here is the same as above: an $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with $m >n$ and $t = O(1)$. However, instead of trying the distinguish the output of $G$ from random, our goal now is to solve the Range Avoidance problem for $G$.
+%  output a string $y \in \B^m$ such that $y \notin \rng(G)$. The range avoidance problem (for general $G: \B^n \to \B^m$ computed by polynomial size circuits) was introduced in \cite{KKMP}, and shown in \cite{Korten} to be intimately connected to derandomization and to the problem of proving circuit lower bounds for exponential time classes. 
+%  In all cases, it is already of great interest to develop algorithms for this problem that use an $\mathsf{NP}$ oracle.
+ \cite{RSW} was the first to investigate the range avoidance problem for $\mathsf{NC^0}$ circuits, and showed that a $\mathsf{FP^{NP}}$ algorithm for this problem would imply the breakthrough circuit lower bound $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$. The same question of \emph{stretch} arises here: the aforementioned result of \cite{RSW} requires us to solve instances with barely nontrivial stretch. On the other hand unconditional algorithms have been given once the stretch is sufficiently large, in particular once $m >> \frac{n^{t-1}}{\log n}$ (\cite{guruswami2022range,karthik}). An important question posed in \cite{RSW} is whether unconditional $\mathsf{FP^{NP}}$ algorithms for $\mathsf{NC}^0$ range avoidance can be found in the general polynomial stretch regime.
 ~\\~\\
 {\bf \noindent The Main Correspondence:}
 The starting point of our work is the observation that the 3 problems discussed above are tightly related to one another. The relation between $\mathsf{NC}^0$ PRGs and $\mathsf{NC}^0$ range avoidance is rather obvious (although still insufficiently explored prior to this work), and so the key point is the relation we observe between these two topics pertaining to $\mathsf{NC}^0$ circuits on the one hand, and the project of proving cell probe lower bounds on the other. This relationship follows directly from the definitions of the objects in question, and is more appropriately understood as a \emph{perspective shift} rather than a new result. 
@@ -63,6 +63,7 @@ We note that connections of a similar flavor have been utilized in the literatur
 \begin{theorem}
 %[Theorem~\ref{cellprobe:thm:k-wise-lb}]
 \label{cellprobe:thm:k-wise-lb}
+
 Let $F: [N] \times [M] \to \B$ be a data structure problem such that there exists a $k$-wise independent distribution supported on its columns. Let $S,t,w \in \mathbb{N}$ be given with $t$ an even number and assume $k > tw + 1$. Then, for any space $S$, time $t$, word length $w$ cell probe data structure solving $F$ we must have:
 \begin{enumerate}
     \item $\begin{aligned}[t]
@@ -148,7 +149,7 @@ An interesting feature of this is the following: because $\mathbb{F}_2$-linear t
 Next, in Section~\ref{cellprobe:sec:connections} we use our main correspondence between cell probe lower bounds and local generators to establish \emph{barrier results} for improving state of the art cell probe lower bounds. Our focus here is on the bit probe model (word length $w=1$), and on nonadaptive data structures with time complexity $t =O(1)$. We show the following two barrier-type results:
 
 % \begin{theorem}
-% \label{cellprobe:thm:explicit-vs-expnp} 
+%  
 % %[Theorems~\ref{cellprobe:thm:explicit-vs-expnp} and \ref{cellprobe:thm:explicit-vs-polystretch}]
 % ~
 % %\begin{enumerate}
@@ -156,7 +157,7 @@ Next, in Section~\ref{cellprobe:sec:connections} we use our main correspondence 
 % \end{theorem}
 
 % \begin{theorem}
-% \label{cellprobe:thm:explicit-vs-polystretch}
+% 
 % Assume there is a fixed absolute constant $\epsilon>0$, and for every $t \in \mathbb{N}$ an explicit data structure problem $F: [N] \times [\poly(N)] \to \B$ which requires space $S \geq N^\epsilon$ in the bit probe model for time $t$. Then there is a $\mathsf{FP^{NP}}$ algorithm for polynomial stretch $\mathsf{NC}^0$ range avoidance. 
 % \end{theorem}
 \begin{theorem}[Consequences of Explicit Data Structure Lower Bounds]\label{cellprobe:thm:explicit-vs-avoid}
@@ -238,7 +239,7 @@ There are several technical difficulties that we are leaving out of our discussi
 We will not sketch in any detail our proof of Theorem~\ref{cellprobe:thm:biased-lb} which gives a lower bound $N^{\frac{t}{2} + \Omega(1)}$ for odd constants $t$ in the nonadaptive bit probe model, however we note that it follows the same overall form: we take a semirandom refutation procedure (in this case, the refutations in Section 9 of \cite{smoothed} based on earlier work of \cite{FKO}), and show that we can still find the associated certificates in the pseudorandom case, for some appropriate notion of pseudorandomness. In this case we rely instead on small bias (fooling parity functions) as our pseudorandom property in place of $k$-wise independence. As mentioned earlier in the introduction, it is provably necessary to move beyond $k$-wise independence to achieve a lower bound of this form.
 
 \subsection{Open Problems}
-
+\todo{update w venkat paper}
 We present here three potentially tractable open problems we believe are of particular interest.
 We start with the (seemingly) most accessible problem:
 \begin{problem}\label{cellprobe:prob:odd-vs-even}
@@ -290,6 +291,7 @@ The results in \cite{golovnev} can be applied to larger word lengths $w>1$ provi
 Observe that, in the setting where $M$ is not much larger than $N$, e.g. $M \leq \exp(\poly\log N)$, the factor $(\log M)^{1 - \frac{1}{t}}$ has negligible effect on the cell sampling bound $S \geq N^{\frac{1}{t}} (\log M)^{1 - \frac{1}{t}}$. In this setting, no previously known method (even cell sampling) gives a lower bound significantly stronger than the direct communication reduction, which yields $S \gtrsim N^{\frac{1}{t}}$. We explain this reduction here since it is so simple. Say $F$ has a time $t$ space $S$ data structure with word length $w$. Consider a protocol in which Alice holds $x$, Bob holds $y$; Bob constructs the data structure encoding $\mathcal{E}(y)$, Alice simulates the query procedure on $x$, requesting cells of $\mathcal{E}(y)$ from Bob who responds with their contents. Alice sends $\log S$ bits in each round to request a cell, Bob sends $w$ bits to reveal the cell's contents, and communication lasts $t$ rounds, so the overall communication is $t \log S + tw$. For any problem $F$ with maximal two party communication complexity, e.g. $F:\N \times \N \to \B$ given by $F(x,y) = \mathbbm{1}\{x=y\}$, we then have $t\log S + tw \geq \log N$, i.e. $S\geq  N^{\frac{1}{t}} \cdot 2^{-w}$.
 
 Finally it is important to keep in mind that for \emph{non-explicit} problems, counting arguments show that most functions $F: [N] \times [N] \to \B$ require space very close to $N$ or time very close to $\log N$ \cite{miltersen-bit-probe}. The situation here is similar to many other areas in complexity; a nonconstructive counting argument implies that random functions exhibit an extremely high lower bound, and the heart of the subject is to prove similar bounds for explicit (and ideally natural) problems.
+
 
 \section{Preliminaries}\label{cellprobe:sec:prelims}
 % We introduce some basic notation and definitions which will be used throughout. We strongly encourage the reader not to skip Section~\ref{cellprobe:subsec:gen-vs-cell} which defines our notation for locally computable generators and cell probe data structures, and establishes the connection between them which will be used in the rest of the paper.
@@ -865,7 +867,7 @@ Set $L = S^{\frac{1}{t+2}}$, and assume that $N = \tilde{O}(1) \cdot \Bigl(\frac
 \]
 On the other hand, using the fact that $\bm{f}$ is $\gamma$-almost $\log N$-wise independent and supported on the columns of $F$, with $\gamma \leq 2^{-O(tk)} = N^{-O(1)}$, we conclude using Theorem~\ref{cellprobe:thm:k-wise-csp} (and the fact that $t-1$ is even) that for every $|u|<t$ we have:
 \[
-\Pr[\Opt(\mathcal{C}_u,\bm{f}) \geq \delta] \leq N^{-1} << 2^{O(t)}, \quad \text{ provided }N  \geq \omega( \frac{1}{\delta^2}\log \frac{1}{\delta} S^{\frac{t-1}{2}} \log N)
+\Pr[\Opt(\mathcal{C}_u,\bm{f}) \geq \delta] \leq N^{-1}, \quad \text{ provided }N  \geq \omega( \frac{1}{\delta^2}\log \frac{1}{\delta} S^{\frac{t-1}{2}} \log N)
 \]
 Plugging in $\delta  = \tilde{O}(1)\cdot  2^{-t} \cdot L^{-1}$, and using the fact $N  = \omega( L^{2} S^{\frac{t-1}{2}} \log N)$ as per our setting of $L$, there is a positive probability that 
 \[
@@ -889,7 +891,7 @@ S \geq \tilde{\Omega}(N^{\frac{1}{\frac{t}{2} -\frac{t- 2}{2(t+2)}}})
 \]
 \end{proof}
 
-The only reason we needed to assume $t$ is odd is in our application of Theorem~\ref{cellprobe:thm:k-wise-csp}; if this theorem could be generalized to odd-arity XOR schemes (which seems attainable using methods for odd-arity CSPs, e.g. \cite{smoothed}), the results here would be valid for all $t > 2$.
+The only reason we needed to assume $t$ is odd is in our application of Theorem~\ref{cellprobe:thm:k-wise-csp}; if this theorem could be generalized to odd-arity XOR schemes (which seems attainable using methods for odd-arity CSPs, e.g. \cite{smoothed}), the results here would be valid for all $t > 2$. \todo{mention subsequent work that solved this}
 % \subsection{Explicit Cell Probe Lower Bounds}
 % Using known constructions of $\gamma$-almost independent $k$-wise independent distributions over $\{\pm 1\}^N$ with support size $(\frac{k \log N}{\gamma})^{O(1)}$ \cite{naornaor} together with our main cell probe lower bounds, we obtain the following explicit constructions of hard data structure problems:
 % \begin{theorem}\label{cellprobe:thm:explicit-k-wise}
