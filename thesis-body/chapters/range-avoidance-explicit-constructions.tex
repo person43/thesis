@@ -1,0 +1,193 @@
+% Chapter content to be written.
+In this chapter, we \todo{something}
+\section{The Range Avoidance Search Problem}
+\begin{enumerate}
+    \item Remind reader (again) the definition of the problem
+    \item Give basic upper/lower bounds for the problem
+    \item relate it to classical hardness/randomness theory
+\end{enumerate}
+\section{Reductions to Range Avoidance}
+We start with \todo{sparse string encodings, remote point}
+\subsection{Hard Functions, Random Strings, and Pseudorandom Generators}
+The first and most important reduction we cover is the construction of truth tables of boolean functions which require exponential circuit complexity. In this setting, the input length $N$ of our explicit construction problem is a power of 2 and represents the truth table of a boolean function:
+\todo{modify later terminology to match this}
+\begin{definition}
+Let $s: \mathbb{N} \to \mathbb{N}$ be some ``size bound.'' Define the search problem {\sc $s(n)$- Hard} as follows: given $1^{2^n}$, output the truth table of a boolean function $f: \B^n \to \B$ such that $x$ is not computed by any circuit of size at most $s(n)$.
+\end{definition}
+Shannon famously showed that, for $s(n) \leq \frac{2^n}{n}$, this problem is \emph{total} for $n$ sufficiently large. We show below that for $s(n) \leq \frac{2^n}{2n}$, this problem reduces in polynomial time to Avoid. Recall that the input to this problem is $1^{2^n}$, which has length $2^n$, so when we say our reduction runs in ``polynomial time'' we mean $\poly(2^n)$ time.
+
+\begin{theorem}\label{thm:truth-tables-in-apepp}
+{\sc $\frac{2^n}{2n}$-Hard} reduces in polynomial time to Avoid.
+\end{theorem}
+\begin{proof}
+This proof directly follows Shannon's aforementioned classical argument. We construct an instance of Avoid in the form of a circuit $C$ which maps an encoding of a circuit to its corresponding truth table. $C$ interprets its input as a circuit on $n$ bits (using an encoding of circuits to be described below), evaluates it on every possible input to generate a $2^{n}$ bit truth table, and outputs the truth table.
+
+We now describe the encoding of circuits used by $C$, which will guarantee that any length-$2^n$ truth table $f$ which has a circuit of size $\frac{2^n}{2n}$ is in the range of $C$. Given a circuit of size $s \geq n $ on $n$ inputs computing $f$, for each of its $s$ gates we can use 2 bits to encode whether it is an $\land, \lor$, or $\lnot$ gate, and an additional $2\log (s+n) \leq 2\log s + O(1)$ bits to specify its inputs. We can then use an additional $\log s$ bits to specify which gate is the terminal output gate. Overall this requires $2s\log s + O(s)$ bits. It is clear that from such an encoding, $C$ can efficiently decode the represented circuit and evaluate it on all possible input values. For $s \leq \frac{2^n}{2n}$, we have that $2 s \log s + O(1) < 2^n$ for $n$ sufficiently large. So $C$ is indeed a valid instance of Avoid, and any string outside the range of $C$ is a solution to {\sc $\frac{2^n}{2n}$-Hard}. It is also clear from the above description that $C$ can be constructed in $poly(2^n)$ time.
+
+\end{proof}
+
+Following the original publication of this work, it was shown in \cite{CHR} that the above argument could be sharpened using a more involved circuit encoding procedure:
+\begin{theorem}\cite{CHR}
+    {\sc $\frac{2^n}{n}$-Hard} reduces in polynomial time to Avoid.
+\end{theorem}
+
+A related problem was studied in \cite{total}, referred to there as ``{\sc Complexity}.'' Rather then an explicit construction problem with sparse input, in this problem you are given as input one truth table $f:\B^n \to \B$, and asked to produce another truth table $g$ such that $g$ requires large circuits, even with access to $f$-oracle gates. More formally:
+
+\begin{definition}\label{def:complexity}
+The problem {\sc Complexity} is defined as follows: given an $f: \B^n \to \B$, find another $g: \B^n \to \B $ such that $g$ requires $f$-oracle circuits of size $\frac{2^n}{n^2}$.
+\end{definition}
+In \cite{total} the following is shown:
+\begin{theorem}
+{\sc Complexity} reduces in polynomial time to {\sc Avoid}.
+\end{theorem}
+\todo{mention Ilango's proof that this is hard, if the oracle is a bit longer}
+
+Finally, we discuss another important generalization of Theorem~\ref{thm:truth-tables-in-apepp} due to subsequent work \cite{RSW}. An important contribution of \cite{RSW} was to emphasize the importance of ``parameterizing'' Avoid instances in two key ways. For an Avoid instance $C: \B^n \to \B^m$, we may classify it according to (1) the \emph{stretch} of the instance, which denotes the quantitative relationship between $m$ and $n$, and (2) the \emph{circuit complexity} $C$, e.g. whether it is a constant depth boolean formula, an unbounded depth formula, or a fully general boolean circuit. 
+When reducing the construction of hard truth tables to Avoid, there is a natural tradeoff between the quantitative strength of the lower bound and stretch of Avoid instance: if we wish to produce $f: \B^n \to \B$ hard for circuits of size $s$, we can reduce to an Avoid instance which stretches $\poly(s(n)) $ bits to $ 2^n$ bits.
+
+More interestingly, \cite{RSW} show that if we wish to produce explicit truth tables hard for some class of circuits $\cl{C}$ (e.g. formulas, branching programs, circuits), we can reduce this problem to an Avoid instance $C$ where each output bit of $C$ is in the \emph{same class $\cl{C}$}. This will hold (using the same proof as in Theorem~\ref{thm:truth-tables-in-apepp}) provided that the ``truth table generator'' mapping circuits in the class $\cl{C}$ to their truth tables is computable in the same class $\cl{C}$. This is sometimes referred to as a circuit class having the ``universal property,'' and many important classes of restricted circuits are known to have it (see \cite{RSW} for a further discussion). As a consequence we have:
+
+\begin{theorem}[\cite{RSW}]\label{thm:strong-tt-to-avoid}
+\sloppy Let $\cl{C}$ be a circuit class with the universal property, for example $\cl{C} \in \{\mathsf{AC^0},\mathsf{ACC^0}, \mathsf{TC^0}, \mathsf{NC^1}, \mathsf{L}\}$. Then producing $f: \B^n \to \B$ requiring $\cl{C}$-circuits of size $s(n)$ is polynomial time reducible to solve a $\cl{C}$-Avoid instance stretching $\poly(s(n))$ bits to $ {2^n}$ bits.
+
+As a corollary, if Avoid for $\cl{C}$-circuits is solvable in polynomial time (resp. with an $\mathsf{NP}$ oracle) then $\mathsf{E}$ (resp. $\mathsf{E^{NP}}$) requires $\cl{C}$-circuits of size $2^{\Omega(n)}$.
+\end{theorem}
+\todo{about the corollary: when do we first bring up this connection between circuit lower bounds and explicit construction of hard truth tables? need to have that here, and mention it right below the first Shannon-hard reduction}
+
+% Note that, for circuit classes such as $\mathsf{TC^0}$ and $ \mathsf{NC^1}$, it an important open problem to show that $\mathsf{E^{NP}}$ does not have $\poly(n)$ size circuits from the class. By the above connection, this means that we would already achieve a breakthrough from, for example, a $2^{O(n)}$ time $\mathsf{NP}$ oracle algorithm for $\mathsf{TC^0}\dash\avoid$ in the stretch regime $n^{\omega(1)} \mapsto 2^n$, i.e. when the number of outputs is almost exponential in the number of inputs.
+
+Next, we turn our attention to the explicit construction of pseudorandom generators.
+\begin{definition}
+We will say that a sequence $R = (x_1, \ldots, x_m)$ of $n$-bit strings is a pseudorandom generator if, for all $n$-input circuits of size $n$:
+\[
+|Pr_{i \sim m}[C(x_i)=1] - Pr_{x \sim \B^n}[C(x)=1]| \leq 1/n
+\]
+\end{definition}
+
+Standard applications of the probabilistic method show that such pseudorandom generators exist of size polynomial in $n$. In particular, for some polynomial $p(n)$ we may define the following explicit construction problem:
+\begin{definition}
+{\sc $p(n)$-Prg} is the following search problem: given $1^n$, output a pseudorandom generator $R = (x_1, \ldots, x_m)$, $x_i \in \B^n$, $m = p(n)$.
+\end{definition}
+
+A polynomial time algorithm for {\sc $p(n)$ Prg} would suffice to derandomize \cl{BPP} \cite{NW} \todo{link this to earlier discussion}. We will show here that the explicit construction of a PRG of size $n^6$ is reducible to Avoid.
+As noted in \todo{somewhere}, the results of Impagliazzo and Wigderson \cite{IW} imply that {\sc Prg} reduces directly to {\sc $2^{\epsilon n}$-Hard} for any constant $\epsilon > 0$, so a reduction of PRG construction to Avoid follows from Theorem~\ref{thm:truth-tables-in-apepp}. However, we provide here a much simpler direct proof that PRG construction reduces to Avoid, relying only on Yao's next bit predictor lemma, and neither the nearly disjoint subsets construction of Nisan and Wigderson \cite{NW} nor the rather involved worst-case to average-case reductions of Impagliazzo and Wigderson \cite{IW}. Together with our completeness result in Section~\ref{sec:completeness} \todo{fix section reference}, this gives an alternative, self-contained proof that worst-case-hard truth tables can be used to construct pseudorandom generators (although it yields a weaker result, as our derandomization will require an \cl{NP} oracle).
+
+The basic idea of the proof is as follows: if $R$ fails to be a pseudorandom generator for circuits of size $n$, then applying Yao's lemma there exists a next bit predictor circuit $P$ of size $O(n)$ which can predict the $i^{th}$ bit of most strings in $R$ from the previous $i-1$ bits. This will allow us to compress $R$ by omitting the $i^{th}$ bits of all the strings in $R$ and replacing them with the predictor $P$ and some advice bits which will correct the errors made by $P$.
+
+\begin{theorem}\label{thm:prg}
+{\sc $n^6$-Prg} reduces in polynomial time to {\sc Empty}
+\end{theorem}
+
+\begin{proof}
+We start by describing the Avoid instance $C$. $C$ interprets its input as representing a list $R^- = (z^1, \ldots, z^{n^6})$ of $n^6$ strings of length $n-1$, a circuit $P$ of size $cn$ (for a fixed universal constant $c$ to be defined later) with $n-1$ input bits and one output bit, a $\log n$-bit index $j \in [n]$, and a string $S$ encoding an $n^6$-bit string with weight at most $\frac{n^6}{2} - n^4$. Given these, $C$ feeds each $n-1$-bit string $z^i \in R^-$ through $P$, then inserts the output as an extra bit at the $j^{th}$ position of $z^i$ to obtain an $n$-bit string $x^i$. In the final step, $C$ decodes the $n^6$-bit string represented by $S$, and flips the $j^{th}$ bit of $x^i$ if and only if the $i^{th}$ position of $S$ has a 1. $C$ then outputs $R = (x^1, \ldots, x^{n^6})$.
+
+It is clear that $C$ can be implemented as a circuit of size polynomial in $n$, and further that $C$ can be constructed in polynomial time given $1^n$. We now show there are fewer inputs than outputs. Note that the input size is equal to the number of bits needed to specify $R^-, P, j, S$, which is $n^7 - n^6 + \Tilde{O}(n) + \log n + bits(S)$, where $bits(S)$ is the number of bits needed to specify $S$. Since $S$ an $n^6$-bit string with weight at most $\frac{n^6}{2} - n^4 = n^6(\frac{1}{2} - \frac{1}{n^2})$, we can apply Lemma~\ref{lem:sparse-enc}\todo{make sure we are using correct reference} with $\epsilon=\frac{1}{n^2}$ to give an encoding for $S$ using $n^6(1-\frac{1}{n^4}) + \log (n^6) = n^6 - n^2 + 6\log n$ bits. Thus the overall number of bits of input is at most $n^7 - n^6 + \Tilde{O}(n) + \log n + n^6 - n^2 + 6\log n = n^7 + \Tilde{O}(n) + 7\log n - n^2$ which is strictly less then the $n^7$ bits of output (for sufficiently large $n$). So this is indeed a polynomial time reduction to a valid instance of Avoid. It remains to show that any string outside the range of $C$ is a pseudorandom generator.
+
+Let $R = (x^1, \ldots, x^{n^6})$ be a sequence of $n$-bit strings which fails to be a pseudorandom generator; we aim to show that $R$ lies in the range of $C$. By definition, there exists a circuit $D$ of size $n$ such that:
+\[
+|Pr_{i \sim [n^6]}[D(x^i)=1] - Pr_{x\sim \B^n}[D(x)=1]| > 1/n
+\]
+
+For $x \in \B^n$ and $j \in [n]$, let $x_{-j}$ be the $n-1$-bit string obtained by deleting the $j^{th}$ bit of $x$. By Yao's next bit predictor lemma \cite{Yao} \cite{Vadhan}, the previous inequality implies the existence of an index $j \in [n]$ and a circuit $P: \B^{n-1} \rightarrow \B$ of size $cn$ for some fixed universal constant $c$, such that
+\[
+Pr_{i \sim [n^6]}[P(x_{-j}) = x_j] > \frac{1}{2} + \frac{1}{n^2}
+\]
+Since $R$ has size $n^6$, this implies that $P$ correctly guesses the $j^{th}$ bit of $x^i$ from the other $n-1$ bits for at least $n^6(\frac{1}{2} + \frac{1}{n^2}) = \frac{n^6}{2} + n^4$ of indices $i \leq n^6$. So if we let $S$ be the $n^6$-bit string with a 1 at the indices $i$ where $P$ guesses the wrong value of $x^i_j$, we see that the weight of $S$ is at most $\frac{n^6}{2} - n^4$ as required. Taking $R^- = (x^1_{-j}, \ldots, x^{n^6}_{-j})$, we have that from $R^-,P,j,S$, our Avoid instance will successfully reconstruct $R$. Thus, any string outside the range of $C$ is a pseudorandom generator.
+\end{proof}
+
+Finally, we turn to the construction of strings of high time-bounded Kolmogorov complexity:
+\begin{definition}
+Let $U$ be any fixed universal Turing machine, and let $T: \mathbb{N} \rightarrow \mathbb{N}$ be a time bound. For a string $x$, $\cl{K}_U^T(x)$ denotes the length of the shortest string $y$ such that $U$ outputs $x$ on input $y$ in $\leq T(|x|)$ steps. 
+
+For a Turing machine $U$ and time bound $T$, we define the following explicit construction problem {\sc $\cl{K}_U^T$-Random}: given $1^n$, output an $n$ bit string $x$ such that $K_U^T(x) \geq n - 1$
+\end{definition}
+
+\begin{theorem}\label{thm:kt-random}
+For any fixed Turing machine $U$ and fixed polynomial time bound $t$, {\sc $K_U^t$-Random} reduces in polynomial time to {\sc Empty}.
+\end{theorem}
+\begin{proof}
+We construct a circuit $C$ with $n-1$ input bits and $n$ output bits as follows. If the input is of the form $0^*1y$ ($0^*$ denotes an arbitrary length string of zeros), $C$ simulates $U$ on $y$ for $t(n)$ steps and outputs the result, padded/truncated to length $n$ if it is not already. Otherwise, $C$ outputs $0^n$. It is clear that $C$ can be produced in polynomial time given $1^n$ for any fixed $U,t$. Further, for any $n$-bit string $x$ with $K_U^t(x) \leq n - 2$, there is some $y$ of length $k \leq n-2$ such that $U$ outputs $x$ on input $y$ in $t(n)$ steps, and so $C$ will output $x$ on input $0^{n-k-2}1y$. So any string $x$ outside the range of $C$ must have $K_U^t(x) \geq n - 1$.
+\end{proof} 
+\subsection{Strongly Explicit Extractors}
+Here we describe a technique which allows us to reduce to Avoid the construction of circuits computing functions $f: \B^n \to \B^n$ with certain strong pseudorandom properties. The reductions here run in time $\poly(n)$, and produce a circuit for $f$ of size $\poly(n)$; this is in contrast to the reduction in \todo{hard truth table} which produce $n$-bit boolean functions in time $2^{O(n)}$ given as truth tables.
+
+The reductions here hinge on a simple high-level construction involving $k$-wise independent generators. To explain the method in sufficient generality we require the following definition:
+\begin{definition}
+Let $\mathcal{A} \subseteq \binom{\B^n}{k}$, $\mathcal{B} \subseteq (\B^{n})^k$ be given. We say that $f: \B^n \to \B^n$ is a $(\mathcal{A},\mathcal{B})$ extractor if whenever $(x_1,\ldots,x_k) \in \mathcal{A}$, $(f(x_1),\ldots, f(x_k)) \notin \mathcal{B}$.
+\end{definition}
+The idea behind the definition is as follows. We think of $\mathcal{A} \subseteq \{S \subseteq \B^n, |S| = k\}$ as defining a class of \emph{structured} subsets of $k$ inputs, with $|\mathcal{A}| << \binom{2^n}{k}$. For any fixed set of $k$ inputs $(x_1,\ldots,x_k)$ and a function $f: \B^n \to \B^n$, we may think of $(f(x_1),\ldots,f(x_k)) \in \mathcal{B}$ as some unlikely event, i.e. $|\mathcal{B}| << 2^{nk}$. We then have that $f$ is an $(A,B)$ extractor iff $f(S)$ avoids the event $f(S) \in \mathcal{B}$ whenever $S \in \mathcal{U}$. If $\Pr[(y_1,\ldots,y_k) \in \mathcal{B}]$ is very small for a random sequence $y_1,\ldots,y_k \sim \B^n$, then for any fixed $S = \{x_1,\ldots,x_k\} \in \mathcal{U}$ of size $k$, if we choose $f$ uniformly at random we are very likely to have $f(S) = \{f(x_1),\ldots,f(x_k)\} \notin \mathcal{B}$. If $|\mathcal{A}|$ is also sufficiently small than we can union bound over $S \in \mathcal{A}$ and argue that a random $f$ will be an $(\mathcal{A},\mathcal{B})$ extractor with high probability. 
+
+This existence argument can be improved in the following sense: say that instead of choosing the function $f \sim \B^n \to \B^n$ uniformly at random, we sampled it from a $k$-wise independent distribution $\mathcal{F}$: for every fixed $\{x_1,\ldots,x_k\} \in \B^n$ distinct, $(f(x_1),\ldots,f(x_k))$ is distributed uniformly on $(\B^{n})^k$ when $f \sim \mathcal{F}$. Then in this case we have $f(S) \notin \mathcal{B}$ with the same high probability over $f \sim \mathcal{F}$, and the rest of the argument goes through as before. Thus we can argue for the existence of an $(\mathcal{A},\mathcal{B})$ extractor inside of any $k$-wise independent function family $\mathcal{F}$.
+
+The following reduction formalizes this using the standard construction of $k$-wise independent families by univariate polynomials over a finite field. The reduction works provided that the ``smallness'' of $\mathcal{A}, \mathcal{B}$ can also be exhibitted by reductions to Range Avoidance, i.e. we can cover these sets by the range of some explicit length-expanding functions $A: \B^{\ell} \to \binom{\B^n}{k}$, $B: \B^{r} \to \B^{nk}$. The technique here is quite similar to an old result of Razborov \cite{razborov-ramsey}. 
+\begin{theorem}\label{thm:general-extractor-to-avoid}
+Let $A: \B^{\ell} \to \binom{\B^n}{k}$, $B: \B^{r} \to \B^{nk}$ be given as circuits. Provided $\ell + r < nk$, the following problem is reducible in polynomial time to range avoidance: output the description of a polynomial size circuit $f: \B^n \to \B^n$ which is an $(\rng(A), \rng(B))$ extractor. Moreover:
+\begin{enumerate}
+	\item The circuit $f$ produced by the reduction lies in $\mathsf{AC}^0[2]$.
+	\item If $A, B \in \mathsf{NC}^2$ the Range Avoidance instance produced by the reduction also lies in $\mathsf{NC}^2$.
+\end{enumerate} 
+\end{theorem}
+\begin{proof}
+We construct an instance of range avoidance $C: \B^{\ell + r} \to \B^{nk}$. Elements of $\B^{nk}$ are interpreted as vectors $\bar{\alpha}=(\alpha_1,\ldots,\alpha_k) \in \mathbb{F}_{2^n}$, and to each $\bar{\alpha}$ we associate the function $f_{\bar{\alpha}}: \B^n\to \B^n$ given by:
+\[
+f_{\bar{\alpha}}(x) = \sum_{i = 1}^k \alpha_i x^{i-1}
+\]
+where $\B^n$ and $\mathbb{F}_{2^n}$ are associated in some standard way. We will construct $C$ so that $f_{\alpha}$ fails to be a $(\rng(A),\rng(B))$ extractor, then $\bar{\alpha} \in \rng(C)$ which will give the theorem. The fact that $f_{\bar{\alpha}}$ lies in $\mathsf{AC}^0[2]$ for any choice of $\bar{\alpha}$ follows from results of \cite{finite-field} on the complexity of arithmetic over $\mathbb{F}_{2^n}$.
+
+$C$ is constructed as follows. We interpret the input as encoding $(a,b)$ with $a \in \B^{\ell}$ and $b \in \B^{r}$. Let $(x_1,\ldots,x_k) = A(a)$ and let $(v_1,\ldots, v_k) = B(b)$. We then compute the unique degree $k-1$ polynomial $p \in \mathbb{F}_{2^n}[x]$ such that $p(x_i)=v_i$ for all $i$; this can be accomplished in polynomial time using Gaussian elimination on the corresponding Vandermonde matrix (by assumption $A(a)$ outputs a list of $k$ distinct strings). Finally $C$ outputs the coefficients $(\alpha_1,\ldots,\alpha_k)$ of $p$. Clearly we have $\bar{\alpha} \in \rng(C)$ whenever $f_{\bar{\alpha}}$ fails to be an $(\rng(A), \rng(B))$ extractor. The complexity of $C$ is upper bounded by the complexity of computing $A,B$, together with that of Gaussian elimination over $\mathbb{F}_{2^n}$ which lies in $\mathsf{NC}^2$.
+\end{proof}
+The above Lemma can be used to reduce the construction of various ``structured seed extractors'' with near-optimal parameters to Range Avoidance. An important case of a structured seed extractor is a 2-source extractor: 
+\begin{definition}
+We say that a function $f:\{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ is a $(k,\epsilon)$ 2-source extractor if the following holds: for any two sets $X,Y \subseteq \{0,1\}^n$ of size $2^k$, $|Pr_{x \sim X, y \sim Y}[f(xy) = 1] - \frac{1}{2}| \leq \epsilon$.
+\end{definition}
+To see that this is a special case of our general $(\mathcal{A}, \mathcal{B})$-extractor paradigm, consider our two-source extractor $f$ to be a function $f: \B^{2n} \to \B^{2n}$, for which we only care about it's first output bit. The family of simple sets $\mathcal{A}$ is the set of ``combinatorial rectangles:'' sets of the form $L \times R$ for some $L, R \subseteq \B^n$, $|L|=|R|=2^k$. Such a combinatorial rectangle has size $2^{2k}$ but can be encoded using $2^{k+1}n$ bits, which yields the appropriate circuit $A$ for the reduction. The ``bad event'' $\mathcal{B}$ is that the first bit of the function $f$ is biased towards 1 or 0 over the rectangle; here we can use the sparse string encodings from \todo{ref} to form the circuit $B$. More formally we have:
+\begin{theorem}\label{thm:two-source-to-avoid}
+There is a $\poly(n, \epsilon^{-1})$-time reduction from strongly explicit constructing $( \log n + 2 \log (1/\epsilon) + 2, \epsilon)$ 2-source extractors to Avoid. The circuits output by the reduction lie in $\cl{AC^0_2}$.
+\end{theorem}
+\begin{proof}
+Let $m= 2^k$. We require circuits $A,B$ of the following form. $A$ takes $2mn$ bits of input and outputs subsets of $\B^{2n}$ of size $m^2$; the range of $A$ contains all sets of the form $\{ (\ell,r) \mid \ell \in L, r \in R\}$ for some $|L| = |R| = m$, $L, R \subseteq \B^n$. $B$ takes as input strings of length $m^2(2n-1) + m^2 - \epsilon^2 m^2 + O(\log m)$ and outputs elements of $(\B^{2n})^{m^2}$; it's range contains all sequences $x^1, \ldots, x^{m^2} \in \B^{2n}$ such that the bits $x_1^1,\ldots,x_1^{m^2}$ havd bias $>\epsilon$ (the fraction which equal 1 differs from $\frac{1}{2}$ by more than $\epsilon$). $A$ may be constructed in the obvious way (it takes the description of $L,R$ and outputs all cross-concatenations). $B$ may be constructed using \todo{ref}. We may now apply Theorem~\ref{thm:general-extractor-to-avoid} to get a reduction to Avoid, provided $2mn + m^2(2n-1) + m^2 - \epsilon^2 m^2 + O(\log m) < 2nm^2$; for $n$ sufficiently large this is satisfied provided $m \geq \frac{4n}{\epsilon^2}$, in other words $k \geq \log n + 2 \log(1/\epsilon) + 2$.
+\end{proof}
+
+Recent advances have yielded 2-source extractors with parameters very close to optimal, but still not meeting the bounds attainable here \cite{li-extractor,extractors-survey}. Other kinds of structured-seed extractors studied in the literature include extractors for varieties and for affine spaces, see \cite{varieties,affine}; similar reductions exist for constructions of each of these using Theorem~\ref{thm:general-extractor-to-avoid}.
+\subsection{Other Problems (try to think of unifying theme?)}
+\begin{enumerate}
+    \item rigidity
+    \item cell Probe
+    \item (maybe expanders?)
+    \item cite linear codes results
+\end{enumerate}
+\section{Completeness}
+In this section, we exhibit several problems which are \emph{equivalent} to Avoid under suitable reductions. \todo{say more}. 
+
+We start with the following simple completeness result, which uses a more restricted form of reduction than the subsequent reductions: we only need to make \emph{nonadaptive} calls to an $\cl{NP}$ oracle for this reduction, whereas the subsequent reductions will require adaptive calls to an $\cl{NP}$ oracle.
+\begin{theorem}
+For any fixed constant $\epsilon > 0$, \todo{name} is equivalent to Avoid under many-one $\cl{FP^{NP}_\Vert}$ reductions.
+\end{theorem}
+\begin{proof}
+We have already shown a polynomial time many-one reduction from \todo{name} to Avoid in \todo{prev section}; we now show the reverse direction. Let $C: \B^n \to \B^{n+1}$ be an avoid instance and let $s$ be the circuit size of $C$. For some parameter $k$ to be chosen later, consider the circuit $C^{\otimes k} : \B^{kn} \to \B^{kn + k}$ which is obtained by concatenating $k$ copies of $C$. Let $m = kn + k$. Any string in the range of $C^{\otimes k}$ has $T:= O(m + ks)$-time bounded Kolmogorov complexity at most $s + m + O(\log m)$: we simply supply the description of $C$, together with the length $kn$ input and a $O(\log m)$ size program description of the following program: given a length $m$ string and a description of $C$, break the $m$-bit string into $k$ contiguous chunks of length $n$, applies $C$ to each chunk, and outputs the result. Setting $k\geq (s+ n)^{\frac{2}{\epsilon}}$ we have that $n, s \leq k^{\epsilon/2} \leq m^{\epsilon/2}$, therefore $T \leq m^{1 + \epsilon}$ and $kn \leq m - m^\epsilon$. Now, if $y \in \B^m$ is a string with $T$-time bounded Kolmogorov complexity $> kn$, then, after dividing $y$ into $k$ blocks of $n+1$ bits, we obtain a list of $k$ strings, one of which must be outside the range of $C$. Using $k$ parallel calls to an $\cl{NP}$ oracle we may determine which of these are indeed Avoid solutions for $C$ and output the lexicographically first.
+\end{proof}
+
+For our next results, we first require \todo{stretching reductions}.
+
+\todo{now give main completeness result}.
+
+Finally, we turn our attention to a problem originally defined in \cite{KKMP}, which captures the principle: every graph with bounded degree and many vertices must have large diameter.
+\begin{definition}[Remote Vertex]
+Remote Vertex is the following problem. The input is a circuit $N: \B^n \to (\B^n)^m$, a parameter $\ell \in \mathbb{N}$, and some $v \in \B^n$, such that $n > \ell \lceil \log m \rceil$. The interpretation is that $N$ defines the outgoing neighborhood function of a directed graph on vertex set $\B^n$, where $N(u)$ lists the set of $\leq m$ neighbors of $u$ (possibly with repetition). A solution is some $u \in \B^n$ such that there is no directed path from $v$ to $u$ of length at most $\ell$.
+
+In the Undirected Remote Vertex problem, the input is the same, but we allow as a solution any witness that $N$ fails to represent a undirected graph. In particular, we allow as a solution any pair $u,w \in \B^n$ such that $u \in N(w)$ but $w \notin N(u)$. 
+\end{definition}
+\todo{this problem captures som specail explicit construction problems, like lower bounds for words in groups; however we show it's just the same thing as avoid}
+
+\begin{theorem}
+Undirected Remote Vertex equivalent ot Avoid under many-one $\mathsf{FP}^{NP}$ reductions.
+\end{theorem}
+\begin{proof}
+The reduction of Undirected Remote Vertex to Avoid is easy does not require an $\cl{NP}$ oracle. Say that the Undirected Remote Vertex instance has $2^n$ vertices, degree $m$, path length $\ell$, and start node $v \in \B^n$. We simply take our avoid instance $C: \B^{\ell \lceil \log m \rceil} \to \B^n$ to be the map which takes as input a description of a walk of length $\ell$ starting at $v$, and outputs the node that it reaches. Note that this reduction works just as well for the harder Remote Vertex problem.
+
+We now prove the other direction. By \todo{prev}, we may assume the Avoid instance is of the form $C: \B^n \to \B^m$, $m \geq 2 n \log n$ (this is the only place we will use an $\cl{NP}$ oracle in our reduction). Consider a graph $G$ on vertex set $V = V_0 \times V_1$, with $V_0 = \mathbb{F}_2^n,  V_1 = \mathbb{F}_2^m$. A vertex $(x,y)$ has neighbors $(x + e_i, y)$ for each standard basis vector $e_i \in \mathbb{F}_2^n$, as well as the neighbor $(x, y+ C(x))$. This defines an undirected graph with degree at most $n + 1$ and $2^{n + m}$ vertices. For $\ell = 2n+2$, the instance $(G, 0^{n+m},\ell)$ defines a valid instance of of Undirected Remote Vertex provided $m + n  > \ell \lceil \log (n+1) \rceil $ which holds for our choice of parameters provided $n$ is sufficiently large. Notice that our instance defines an undirected graph by construction, so the only relevant solutions are vertices at distance $> \ell$ from $0^{n+m}$.
+We claim that if $(x,y)$ is a valid undirected remote vertex solution, than $y \notin \rng(C)$; equivalently, every $(x,y)$ with $y \in \rng(C)$ is reachable from the origin in at most $2n + 1$ steps. Say that $y = C(z)$ In $n$ steps we may traverse from the start vertex $(0^n, 0^m)$ to $(z, 0^m)$ using bit flips, then in one step we may traverse from $(z, 0^m)$ to $(z, C(z) + 0^m) = (z, y)$, and finally in $n$ more steps we may traverse from $(z,y)$ to $(x, y)$ using bit flips again. 
+\end{proof}
+\section{Direct Reductions to Hard Truth Tables}
+
+\section{A Brief Survey on Avoid}

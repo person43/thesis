@@ -15,9 +15,14 @@ A search problem is a relation $R \subseteq \B^* \times \B^*$; given an ``instan
 
 We will only concern ourselves in this thesis with search problems that are polynomially bounded, and primarily focus on \emph{total} search problems. The following are the most important complexity classes for total search problems we will consider:
 \begin{definition}
-We use $\mathsf{FP}$ to denote the set of search problems $R$ solvable by a polynomial time algorithm; more formally, there is a function $f$ solving $R$, such that $f(x)$ is computable from $x$ in $\poly(|x|)$ time. For a language $L$, we use $\cl{FP}^L$ to denote those search problems solvable in polynomial time with oracle access to $L$. If $\cl{C}$ is a class with a polynomial time complete problem, we write $\cl{FP^C}$ to denote $\cl{FP}^L$ for some complete problem $L$ (the definition is invariant to the choice of complete problem). 
+We use $\mathsf{FP}$ to denote the set of search problems $R$ solvable by a polynomial time algorithm; more formally, there is a function $f$ solving $R$, such that $f(x)$ is computable from $x$ in $\poly(|x|)$ time. For a language $L$, we use $\cl{FP}^L$ (resp. $\cl{FP}^L_{\cl{\Vert}}$) to denote those search problems solvable in polynomial time with oracle access to $L$ (resp., in polynomial time with nonadaptive calls to an $L$ oracle). If $\cl{C}$ is a class with a polynomial time many-one complete problem, we write $\cl{FP^C}$ ($\cl{FP^C_{\Vert}}$) to denote $\cl{FP}^L$ (resp. $\cl{FP}^L_{\cl{\Vert}}$) for some complete problem $L$ (the definition is invariant to the choice of complete problem). 
 
 For $1 \leq k\in \mathbb{N}$, $\cl{TF \Sigma_k^P}$ denotes the class of polynomially bounded, total search problems $R$ such that $R \in \cl{\Pi_{k-1}^P}$ (where $R \subseteq \B^* \times \B^*$ is considered as a language $R \subseteq \B^*$ via any standard pairing function). We will be particularly interested in the cases $k = 1, 2$, which form the classes $\cl{TFNP}$ and $\cl{TF\Sigma_2^P}$.
+\end{definition}
+
+Next, we define the notion of reducibility amongst search problems that will be used in this thesis:
+\begin{definition}
+Let $R_1, R_2$ be polynomially bounded search problems, and $\cl{C}$ a complexity class with a polynomial time complete problem. We say that $R_1$ is $\cl{FP^{C}}$ (resp. $\cl{FP^C_\cl{\Vert}}$) many-one reducible to $R_2$ if there is an $\cl{FP}$ function $f$ and a $\cl{FP^C}$ function (resp. $\cl{FP^C_\cl{\Vert}}$ function) $g$ so that the following holds: for any $x,y \in \B^*$, if $(f(x),y)\in R_2$ then $(x, g(x,y))\in R_1$.
 \end{definition}
 
 Finally, we recall \todo{recall?} our formal definition of an explicit construction problem:
