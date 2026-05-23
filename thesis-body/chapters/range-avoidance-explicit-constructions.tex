@@ -1,5 +1,14 @@
 % Chapter content to be written.
 In this chapter, we \todo{something}
+
+\todo{at the end, give an overview of primary results here}
+\todo{include the stuff from original info which gives some background on the various explicit construction problems such as rigidity. Say something brief like: many of these problems are famou and have recieved intense scrutiny, we give a very brief overview of some of the work here.}
+\section{Explicit Constructions and Circuit Lower Bounds are Total Search Problems}
+\todo{this is brief: give the key perspective here, that we can think of explicit constructions as total search problems and proving circuit lower bounds for exponential time classes as algorithms for total search problems}
+\todo{perhaps, remove the general definition of ``explicit construction search problems'' from the preliminaries and port it over to this section}
+\todo{ok but unsure how much of this should be in the intro vs this chapter}
+\todo{give an example of this perspective: Impagliazzo/nisan/wigderson is a polynomial time reduction from one explicit construction problem to another}
+
 \section{The Range Avoidance Search Problem}
 \begin{enumerate}
     \item Remind reader (again) the definition of the problem
@@ -97,13 +106,13 @@ Since $R$ has size $n^6$, this implies that $P$ correctly guesses the $j^{th}$ b
 
 Finally, we turn to the construction of strings of high time-bounded Kolmogorov complexity:
 \begin{definition}
-Let $U$ be any fixed universal Turing machine, and let $T: \mathbb{N} \rightarrow \mathbb{N}$ be a time bound. For a string $x$, $\cl{K}_U^T(x)$ denotes the length of the shortest string $y$ such that $U$ outputs $x$ on input $y$ in $\leq T(|x|)$ steps. 
+Let $U$ be any fixed Turing machine, and let $T: \mathbb{N} \rightarrow \mathbb{N}$ be a time bound. For a string $x$, $\cl{K}_U^T(x)$ denotes the length of the shortest string $y$ such that $U$ outputs $x$ on input $y$ in $\leq T(|x|)$ steps. 
 
-For a Turing machine $U$ and time bound $T$, we define the following explicit construction problem {\sc $\cl{K}_U^T$-Random}: given $1^n$, output an $n$ bit string $x$ such that $K_U^T(x) \geq n - 1$
+For a Turing machine $U$, time bound $T$, and ``length'' parameter $\ell: \mathbb{N} \to \mathbb{N}$ we define the following explicit construction problem {\sc $(\cl{K}^T_U, \ell)$-Random}: given $1^n$, output an $n$ bit string $x$ such that $K_U^T(x) \geq \ell(n)$. In the special case $\ell(n) = n-1$ we omit the parameter $\ell$.
 \end{definition}
 
 \begin{theorem}\label{thm:kt-random}
-For any fixed Turing machine $U$ and fixed polynomial time bound $t$, {\sc $K_U^t$-Random} reduces in polynomial time to {\sc Empty}.
+For any fixed Turing machine $U$ and fixed polynomial time bound $T$, {\sc $K_U^T$-Random} reduces in polynomial time to {\sc Empty}.
 \end{theorem}
 \begin{proof}
 We construct a circuit $C$ with $n-1$ input bits and $n$ output bits as follows. If the input is of the form $0^*1y$ ($0^*$ denotes an arbitrary length string of zeros), $C$ simulates $U$ on $y$ for $t(n)$ steps and outputs the result, padded/truncated to length $n$ if it is not already. Otherwise, $C$ outputs $0^n$. It is clear that $C$ can be produced in polynomial time given $1^n$ for any fixed $U,t$. Further, for any $n$-bit string $x$ with $K_U^t(x) \leq n - 2$, there is some $y$ of length $k \leq n-2$ such that $U$ outputs $x$ on input $y$ in $t(n)$ steps, and so $C$ will output $x$ on input $0^{n-k-2}1y$. So any string $x$ outside the range of $C$ must have $K_U^t(x) \geq n - 1$.
@@ -119,7 +128,7 @@ The idea behind the definition is as follows. We think of $\mathcal{A} \subseteq
 
 This existence argument can be improved in the following sense: say that instead of choosing the function $f \sim \B^n \to \B^n$ uniformly at random, we sampled it from a $k$-wise independent distribution $\mathcal{F}$: for every fixed $\{x_1,\ldots,x_k\} \in \B^n$ distinct, $(f(x_1),\ldots,f(x_k))$ is distributed uniformly on $(\B^{n})^k$ when $f \sim \mathcal{F}$. Then in this case we have $f(S) \notin \mathcal{B}$ with the same high probability over $f \sim \mathcal{F}$, and the rest of the argument goes through as before. Thus we can argue for the existence of an $(\mathcal{A},\mathcal{B})$ extractor inside of any $k$-wise independent function family $\mathcal{F}$.
 
-The following reduction formalizes this using the standard construction of $k$-wise independent families by univariate polynomials over a finite field. The reduction works provided that the ``smallness'' of $\mathcal{A}, \mathcal{B}$ can also be exhibitted by reductions to Range Avoidance, i.e. we can cover these sets by the range of some explicit length-expanding functions $A: \B^{\ell} \to \binom{\B^n}{k}$, $B: \B^{r} \to \B^{nk}$. The technique here is quite similar to an old result of Razborov \cite{razborov-ramsey}. 
+The following reduction formalizes this using the standard construction of $k$-wise independent families by univariate polynomials over a finite field. The reduction works provided that the ``smallness'' of $\mathcal{A}, \mathcal{B}$ can also be exhibitted by reductions to Range Avoidance, i.e. we can cover these sets by the range of some explicit length-expanding functions $A: \B^{\ell} \to \binom{\B^n}{k}$, $B: \B^{r} \to \B^{nk}$. The technique here is inspired by a construction of Razborov \cite{razborov-ramsey} showing that strongly explicit Ramsey graphs exist in $\cl{AC^0[2]}$.
 \begin{theorem}\label{thm:general-extractor-to-avoid}
 Let $A: \B^{\ell} \to \binom{\B^n}{k}$, $B: \B^{r} \to \B^{nk}$ be given as circuits. Provided $\ell + r < nk$, the following problem is reducible in polynomial time to range avoidance: output the description of a polynomial size circuit $f: \B^n \to \B^n$ which is an $(\rng(A), \rng(B))$ extractor. Moreover:
 \begin{enumerate}
@@ -149,27 +158,91 @@ Let $m= 2^k$. We require circuits $A,B$ of the following form. $A$ takes $2mn$ b
 \end{proof}
 
 Recent advances have yielded 2-source extractors with parameters very close to optimal, but still not meeting the bounds attainable here \cite{li-extractor,extractors-survey}. Other kinds of structured-seed extractors studied in the literature include extractors for varieties and for affine spaces, see \cite{varieties,affine}; similar reductions exist for constructions of each of these using Theorem~\ref{thm:general-extractor-to-avoid}.
-\subsection{Other Problems (try to think of unifying theme?)}
-\begin{enumerate}
-    \item rigidity
-    \item cell Probe
-    \item (maybe expanders?)
-    \item cite linear codes results
-\end{enumerate}
+\subsection{Miscellanious Reductions}
+We discuss here a few more important explicit construction problems which can be shown reducible to Range Avoidance. The first is the problem of \emph{matrix rigidity}, famously introduced by Valiant \cite{Valiant}:
+
+\begin{definition}\cite{Valiant}
+We say that $n \times n$ matrix $M$ over $\mathbb{F}_q$ is $(r, s)$ rigid if for any matrix $S \in \mathbb{F}_q^{n \times n}$ with at most $s$ non-zero entries, $M+S$ has rank greater than $r$.
+\end{definition}
+
+\begin{definition}
+For any $q: \mathbb{N} \rightarrow \mathbb{N}$ such that $q(n)$ is a prime power for all $n$, and let $r, s: \mathbb{N} \to \mathbb{N}$ be given. Then {\sc $(r(n), s(n), q)$-Rigid} is the following search problem: given $1^n$, output an $n \times n$ matrix $M$ over $\mathbb{F}_{q(n)}$ which is $(r(n), s(n))$ rigid.
+\end{definition}
+% epsilon, q rigid was the problem of rank \epsilon n, sparsity \epsilon n^2
+\begin{theorem}\label{thm:rigid-in-apepp}
+For any constant $\epsilon>0$ so that $H(\epsilon) + 3\epsilon < 1$, and any efficiently computable $q(n)$ satisfying the above, {\sc $(\epsilon n, \epsilon n^2, q(n))$-Rigid} reduces in polynomial time to Avoid.
+\end{theorem}
+In particular $\epsilon = \frac{1}{8}$ suffices.
+\begin{proof}
+Let $M$ be any $n \times n$ matrix over $\mathbb{F}_q$ which is not $(r,s)$ rigid. So there exists an $n \times r$ matrix $L$, an $r \times n$ matrix $R$, and an $n \times n$ matrix $S$ with at most $s$ non-zero entries, such that $M = LR + S$. It is clear that from the descriptions of $L,R,S$ we can efficiently compute $M$.
+
+$L$ and $R$ can each be described explicitly using $nr \log q$ bits. For $S$, we encode it by specifying an $n^2$-bit string $T$ of weight $s$ denoting the entries of $S$ which are nonzero, together with an $s \log q$-bit string $C$ giving the correct values of the nonzero entries. Using this scheme we may assume $s$ is exactly equal to $\epsilon n^2$ since if it is smaller we can add some arbitrary indices and put their unchanged values in $C$. Applying the encoding scheme in Lemma~\ref{lem:sparse-enc} for $T$, overall the number of bits in this encoding is at most $\log\binom{n^2}{s} + (2nr + s)\log q$. Setting $r = \epsilon n$ and $s= \epsilon n^2$ this is at most:
+\begin{gather*}
+\log\binom{n^2}{\epsilon n^2} + (3\epsilon n^2)\log q
+ \leq \\
+H(\epsilon)n^2 + (3 \epsilon n^2)\log q \leq \\
+(H(\epsilon) + 3\epsilon)n^2\log q
+\end{gather*}
+By our choice of $\epsilon$ this is bounded above by $(1- \Omega(1))n^2\log q$ bits, whereas an arbitrary matrix in  $\mathbb{F}_q^{n \times n}$ requires $n^2\log q$ bits.
+\end{proof}
+
+In section \todo{direc redctuons} of this chapter, we will show that 2 problems, namely the construction of communication matrices outside $\cl{PSPACE^{cc}}$ and data structure problems with near maximal bit-probe complexity, can be reduced directly to the construction of truth tables of circuit complexity $\frac{2^n}{n}$ (or indeed, complexity $s(n)$ for various smaller exponential bounds $s(n)$). Using Theorem~\ref{thm:truth-tables-in-apepp} this yields a reduction of each of these explicit construction problems to Avoid; we will leave the formal definition of these problems until Section \todo{section}. Finally, we include one more important problem which was subsequently shown to reduce to Avoid in \cite{guruswami2022range}:
+\begin{definition}[GV Codes]
+A matrix \todo{finish this}
+\end{definition}
 \section{Completeness}
 In this section, we exhibit several problems which are \emph{equivalent} to Avoid under suitable reductions. \todo{say more}. 
 
 We start with the following simple completeness result, which uses a more restricted form of reduction than the subsequent reductions: we only need to make \emph{nonadaptive} calls to an $\cl{NP}$ oracle for this reduction, whereas the subsequent reductions will require adaptive calls to an $\cl{NP}$ oracle.
 \begin{theorem}
-For any fixed constant $\epsilon > 0$, \todo{name} is equivalent to Avoid under many-one $\cl{FP^{NP}_\Vert}$ reductions.
+Let $\epsilon > 0$ be any fixed constant, $T(n) = n^{1+\epsilon}$, $\ell(n) = n - n^{\epsilon}$. Let $U$ be any fixed universal Turing machine. Then {\sc $(\cl{K}^T_U, \ell)$-Random} is equivalent to Avoid under many-one $\cl{FP^{NP}_\Vert}$ reductions.
 \end{theorem}
 \begin{proof}
-We have already shown a polynomial time many-one reduction from \todo{name} to Avoid in \todo{prev section}; we now show the reverse direction. Let $C: \B^n \to \B^{n+1}$ be an avoid instance and let $s$ be the circuit size of $C$. For some parameter $k$ to be chosen later, consider the circuit $C^{\otimes k} : \B^{kn} \to \B^{kn + k}$ which is obtained by concatenating $k$ copies of $C$. Let $m = kn + k$. Any string in the range of $C^{\otimes k}$ has $T:= O(m + ks)$-time bounded Kolmogorov complexity at most $s + m + O(\log m)$: we simply supply the description of $C$, together with the length $kn$ input and a $O(\log m)$ size program description of the following program: given a length $m$ string and a description of $C$, break the $m$-bit string into $k$ contiguous chunks of length $n$, applies $C$ to each chunk, and outputs the result. Setting $k\geq (s+ n)^{\frac{2}{\epsilon}}$ we have that $n, s \leq k^{\epsilon/2} \leq m^{\epsilon/2}$, therefore $T \leq m^{1 + \epsilon}$ and $kn \leq m - m^\epsilon$. Now, if $y \in \B^m$ is a string with $T$-time bounded Kolmogorov complexity $> kn$, then, after dividing $y$ into $k$ blocks of $n+1$ bits, we obtain a list of $k$ strings, one of which must be outside the range of $C$. Using $k$ parallel calls to an $\cl{NP}$ oracle we may determine which of these are indeed Avoid solutions for $C$ and output the lexicographically first.
+We have already shown a polynomial time many-one reduction from $(\cl{K}^T_U, \ell)$ to Avoid in the previous section; we now show the reverse direction. Let $C: \B^n \to \B^{n+1}$ be an avoid instance and let $s$ be the circuit size of $C$. For some parameter $k$ to be chosen later, consider the circuit $C^{\otimes k} : \B^{kn} \to \B^{kn + k}$ which is obtained by concatenating $k$ copies of $C$. Let $m = kn + k$. Any string in the range of $C^{\otimes k}$ has $T:= O(m + ks)$-time bounded Kolmogorov complexity at most $s + m + O(\log m)$: we simply supply the description of $C$, together with the length $kn$ input and a $O(\log m)$ size program description of the following program: given a length $m$ string and a description of $C$, break the $m$-bit string into $k$ contiguous chunks of length $n$, applies $C$ to each chunk, and outputs the result. Setting $k\geq (s+ n)^{\frac{2}{\epsilon}}$ we have that $n, s \leq k^{\epsilon/2} \leq m^{\epsilon/2}$, therefore $T \leq m^{1 + \epsilon}$ and $kn \leq m - m^\epsilon$. Now, if $y \in \B^m$ is a string with $T$-time bounded Kolmogorov complexity $> kn$, then, after dividing $y$ into $k$ blocks of $n+1$ bits, we obtain a list of $k$ strings, one of which must be outside the range of $C$. Using $k$ parallel calls to an $\cl{NP}$ oracle we may determine which of these are indeed Avoid solutions for $C$ and output the lexicographically first.
+\end{proof}
+\todo{do we remove most of the ``emtpy pigeonhole'' terminology in this chapter?}
+For our next results, we first require the following reduction which allows us to increase the \emph{stretch} of Avoid instances using an $\cl{NP}$ oracle. This result \todo{is from prior work}
+\begin{lemma}\label{lem:swapping-sizes}
+There is a ${\cl FP^{NP}}$ many-one reduction from Avoid to itself, which maps instances $C: \B^n \to \B^{n+1}$ to instances $C': \B^n \to \B^{2n}$.
+\end{lemma}
+\begin{proof}
+Let $C: \B^n \to \B^{n+1}$ be given. For a positive integer $i$, we define $C^i: \{0,1\}^n \rightarrow \{0,1\}^{n + i}$ inductively as follows. For the base case, $C^1$ is simply defined as $C$. For $i > 1$, we first compute $C^{i-1}$ on the input $x$ to obtain a string $x'$ of length $n + i - 1$, and then compute $C$ on the first $n$ bits of $x'$ and concatenate the output with the remaining bits of $x'$. Since $C$ replaces the first $n$ bits with $n+1$ bits, if $C^{i-1}$ has output length $n + i-1$ then $C^i$ has output length $n + i$. We claim that for any positive $i$, if we are given an $n+i$-bit string outside the range of $C^i$, we can find an $n$-bit string outside the range of $C$ in $i \cdot poly(|C|)$ time using an $\cl{NP}$ oracle. In particular, we prove by induction on $i$ that this can be accomplished with $i$ calls to an $\cl{NP}$ search solver. For $i=1$ this is trivially the case, since $C^1=C$. Now say $i > 1$. Let $y = xz$ be outside the range of $C^i$ for some $x \in \{0,1\}^{n+1}$, $z \in \{0,1\}^{i-1}$. We use the $\cl{NP}$ search solver to find a preimage of $x$ or report that none exist. If $x$ has no preimage we have solved Avoid for $C$ and are finished. Otherwise, we are given some preimage $x' \in \{0,1\}^n$ for $x$ under $C$. So then $x'z$ must be outside the range of $C^{i-1}$, since if it were not then $xz=y$ would have a preimage under $C^i$. By induction we may use this string $x'z$, and $i-1$ addition $\cl{NP}$ search oracle calls, to find an Avoid solution for $C$. Setting $i = n$ we get the stated result.
 \end{proof}
 
-For our next results, we first require \todo{stretching reductions}.
+\todo{fix references below}
+\begin{theorem}\label{thm:epsilon-hard-reduction}
+Let $\epsilon > 0$ be any constant. Then Avoid is $\cl{FP^{NP}}$ many-one reducible to {\sc $2^{\epsilon n}$-Hard}.
+\end{theorem}
 
-\todo{now give main completeness result}.
+\begin{proof}
+By \todo{ref} we know that Avoid is ${\cl FP^{NP}}$ many-one reducible to the case of instances stretchuing $n$ bits to $2n$ bits. Now, let $C: \B^n \to \B^{2n}$ be such an instance and let $k = 2 \lceil \log |C| \rceil \lceil \frac{1}{\epsilon}\rceil$. Consider the following map $C^*: \{0,1\}^n \rightarrow \{0,1\}^{2^kn}$, defined informally as follows: given a string $x \in \{0,1\}^n$, apply $C$ once to get two $n$-bit strings, then apply $C$ to both of those $n$-bit strings to get four, and continue $k$ times until we have $2^k$ many $n$-bit strings, or equivalently a $2^kn$-bit string. This process is illustrated in Figure~\ref{fig:circuit_tree} below:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{circuit_tree.pdf}
+    \caption{Extending a map $C: \{0,1\}^n \rightarrow \{0,1\}^{2n}$ to a map $C^*: \{0,1\}^n \rightarrow \{0,1\}^{2^kn}$. Dotted boxes indicate the number of bits along a wire.}
+    \label{fig:circuit_tree}
+\end{figure}
+
+To define this function more formally, first we define the following maps $L,R: \{0,1\}^{2n} \rightarrow \{0,1\}^n$, where $L$ takes a $2n$-bit string and outputs the first $n$ bits, and $R$ takes a $2n$-bit string and outputs the last $n$ bits. Given a nonempty sequence $\sigma_1, \ldots \sigma_t \in \{L,R\}^*$, let $C^{\sigma}: \{0,1\}^n \rightarrow \{0,1\}^n$ be the function $\sigma_t \circ C \circ \ldots \circ \sigma_1 \circ C$. Now, given a binary string, we can associate it with such a sequence by associating 0 with $L$ and 1 with $R$, and so we will abuse notation and write $C^x$ for a binary string $x$ as shorthand for $C^{\sigma}$ where $\sigma$ is the sequence of $L,R$ associated with the binary string $x$. We are now ready to formally define our function $C^*$. As $C^*$ is a map $\{0,1\}^n \rightarrow \{0,1\}^{2^kn}$, we can think of the output as being clumped into $2^k$ blocks, each containing $n$ bits. Given this terminology, $C^*$ behaves as follows: on input $x$, the $i^{th}$ block of the output of $C^*$ will be $C^{\|i\|}(x)$, where $\|i\|$ denotes the standard representation of $i$ as a $k$-bit binary string.
+
+From here, the proof proceeds in two steps. First, we show that, by setting $m = n 2^k = poly(|C|)$, any solution to {\sc $2^{\epsilon n}$-Hard} on input $1^m$ will be a string that is not in the range of $C^*$. Second, we will show that given a string outside the range of $C^*$, we can find a string outside the range of $C$ using only a polynomial number of calls to an $\cl{NP}$-oracle.
+
+To carry out the first of these steps, we will show that any string in the range of $C^*$, when interpreted as a truth table of length $m = n 2^k$ on $\lceil \log n \rceil + k$ variables, can be computed by a circuit of size $O(|C|k)$. Since, by construction of $k$, we have that $m \geq |C|^{\frac{2}{\epsilon}}$, a solution to {\sc $2^{\epsilon n}$-Hard} on input $1^m$ will be a truth table of length $m$ not computable by a circuit of size $m^{\epsilon} \geq |C|^2$, and thus a circuit of size $O(|C|k) = O(|C|\log |C|)$ would be a contradiction for all input lengths greater than some absolute constant. We construct such a circuit for any string in the range of $C^*$ as follows: let $y$ be a $2^kn$-bit string such that for some $x \in \{0,1\}^n$, $C^*(x)=y$. The circuit computing $y$ will have $x$ written as advice/constants, and will feed $x$ through $k$ copies of the circuit $C$ in series. We will split the $\lceil \log n \rceil + k$ input variables into a block of $k$ variables we call $i$, and a block of $\lceil \log n \rceil$ variables we call $j$. We then use $i$ to determine whether to apply $L$ or $R$ to the output of one of the copies of $C$ before feeding it into the next, to get some resulting string $x^i$, and then we use $j$ to index into the $j^{th}$ position of $x^i$, to get $y_{i,j}$. A diagram of this circuit is shown in Figure~\ref{fig:efficient_circuit}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{efficient_circuit_landscape.pdf}
+    \caption{A succinct circuit whose truth table is $y$, for any $y$ in the range of $C^*$. Dotted boxes indicate the number of bits along a wire. Note that although $x$ is shown as an input in this diagram, for any given $y$ we fix a preimage $x$ as constants/advice, and so the only true inputs to this circuit are $i,j$.}
+    \label{fig:efficient_circuit}
+\end{figure}
+
+To see that this circuit has size $O(|C|k)$, note that the subcircuits computing either $L$ or $R$ depending on a bit of $i$ can be computed easily with $O(n)$ gates over the basis $\{\land, \lor,\lnot\}$ (this is essentially a multiplexer), and also that the final subcircuit indexing into an $n$-bit string can be computed with $O(n)$ $\{\land, \lor,\lnot\}$ gates as well. Since $|C| \geq n$, and this circuit contains only $k$ copies of $C$ and the aforementioned subcircuits, plus the constants describing the string $x$ of length $n$, this circuit has $O(|C|k)$ size as claimed. 
+
+ Thus, we now know that any solution to {\sc $2^{\epsilon n}$-Hard} on input $1^m$ will not be in the range of $C^*$, and by assumption {\sc $2^{\epsilon n}$-Hard} is total for sufficiently large input lengths so such a solution exists. It remains only to show that we can use a string outside the range of $C^*$, together with a $\cl{NP}$ oracle, to find a string outside the range of $C$. We proceed exactly as in the proof of \todo{reference stretching reduction}. Let $y$ be any string outside the range of $C^*$. Refer to Figure~\ref{fig:circuit_tree} which gives a diagram of a circuit computing $C^*$; at a layer $i \in [k]$ of this circuit, we have $2^i$ blocks of $n$ bits feeding into $2^i$ copies of $C$, and these copies of $C$ then output $2^{i+1}$ blocks of $n$ bits at the next layer. So working back from the output layer $k$, we can test if any consecutive $2n$-bit block of $y$ is outside of the range of $C$. If none of them are, then we find a preimage for all blocks, interpret this as the output of the previous layer, and continue our search from there. We follow this process all the way back to the input layer or until we find an empty pigeonhole of $C$. If we never find an empty pigeonhole of $C$, then this process will terminate at the input layer with a string $x$ such that $C^*(x) = y$, which is impossible by assumption, so at some point we must indeed find a string outside the range of $C$. Checking whether a particular string is an empty pigeonhole, or finding a preimage if it's not, can be accomplished with polynomially many callse to an $\cl{NP}$ oracle. We perform this test at most $2^k = poly(|C|)$ times (once for every copy of $C$ in the diagram in Figure~\ref{fig:circuit_tree}), so overall this process can be accomplished in polynomial time with an ${\cl NP}$ oracle.
+\end{proof}
+
+\todo{transition}
 
 Finally, we turn our attention to a problem originally defined in \cite{KKMP}, which captures the principle: every graph with bounded degree and many vertices must have large diameter.
 \begin{definition}[Remote Vertex]
@@ -180,7 +253,7 @@ In the Undirected Remote Vertex problem, the input is the same, but we allow as 
 \todo{this problem captures som specail explicit construction problems, like lower bounds for words in groups; however we show it's just the same thing as avoid}
 
 \begin{theorem}
-Undirected Remote Vertex equivalent ot Avoid under many-one $\mathsf{FP}^{NP}$ reductions.
+Undirected Remote Vertex is equivalent to Avoid under many-one $\mathsf{FP}^{NP}$ reductions.
 \end{theorem}
 \begin{proof}
 The reduction of Undirected Remote Vertex to Avoid is easy does not require an $\cl{NP}$ oracle. Say that the Undirected Remote Vertex instance has $2^n$ vertices, degree $m$, path length $\ell$, and start node $v \in \B^n$. We simply take our avoid instance $C: \B^{\ell \lceil \log m \rceil} \to \B^n$ to be the map which takes as input a description of a walk of length $\ell$ starting at $v$, and outputs the node that it reaches. Note that this reduction works just as well for the harder Remote Vertex problem.
@@ -189,5 +262,114 @@ We now prove the other direction. By \todo{prev}, we may assume the Avoid instan
 We claim that if $(x,y)$ is a valid undirected remote vertex solution, than $y \notin \rng(C)$; equivalently, every $(x,y)$ with $y \in \rng(C)$ is reachable from the origin in at most $2n + 1$ steps. Say that $y = C(z)$ In $n$ steps we may traverse from the start vertex $(0^n, 0^m)$ to $(z, 0^m)$ using bit flips, then in one step we may traverse from $(z, 0^m)$ to $(z, C(z) + 0^m) = (z, y)$, and finally in $n$ more steps we may traverse from $(z,y)$ to $(x, y)$ using bit flips again. 
 \end{proof}
 \section{Direct Reductions to Hard Truth Tables}
+Ideally we could extend the main completeness result of the previous section \todo{reference} to work with polynomial time reductions, as opposed to ${\cl FP}^{\cl NP}$ reductions. However, the {\cl NP} oracle seems highly necessary for the proof techniques used above. Indeed, subsequent to the initial publication of this work, \cite{ILW} gave strong cryptographic evidence that the completeness result in Theorem~\ref{thm:apepp-completeness} requires an ${\cl NP}$ oracle, a result which we will discuss further \todo{somewhere?}. Despite this obstacle, we show that there are some important explicit construction problems, which are not \emph{obviously} about circuit complexity, which nonetheless can be reduced to the problem of finding truth tables of hard functions via {\cl FP} reductions. 
 
-\section{A Brief Survey on Avoid}
+A simple way to phrase the following results is that any truth table with sufficiently large circuit complexity will necessarily satisfy a variety of other pseudorandom properties for which no explicit constructions are known, including: rigidity over $\mathbb{F}_2$, high space-bounded communication complexity, and high bit-probe complexity. To show this, we demonstrate that the failure of a string $x$ to possess any of these properties implies a smaller than worst case circuit for $x$. 
+
+% \begin{definition}
+% {\sc $\delta$-Quite Hard} is the following problem: given $1^N$, output an $N$-bit truth table with hardness $\frac{\delta N}{\log N}$
+% \end{definition}
+% This problem is total for sufficiently small $\delta$. We recall also the definition of {\sc $\epsilon$-Hard}, where we must construct a truth table of hardness $N^{\epsilon}$.
+\todo{make sure the rigidity definition below matches}
+
+\subsection{Rigidity}
+We begin with the case of rigidity. We recall the definition of the search problem {\sc $(\epsilon,2)$-Rigid}, wherein given $1^N$ we are asked to produce an $N \times N$ matrix over $\mathbb{F}_2$ which requires changing $\geq \epsilon N^2$ entries to reduce its rank to $\epsilon N$. Any matrix achieving $(\epsilon,2)$ rigidity for an absolute constant $\epsilon >0$ (or even $\epsilon >> \frac{1}{\log \log N}$) would be sufficient to carry out Valiant's program \cite{Valiant}.
+
+% \begin{definition}
+% {\sc $\epsilon$-Rather Rigid} is the following search  problem: given $1^N$, construct an $N \times N$ matrix over $\mathbb{F}_2$ which is $(\epsilon N, \epsilon N^2)$-rigid.
+% \end{definition}
+
+% These parameters are the best possible up to constant factors, and in particular would be sufficient to carry out Valiant's program over $\mathbb{F}_2$.
+
+\begin{theorem}~\label{thm:rigidity-circuit}
+For any sufficiently small $\delta > 0$, there exists some $\epsilon > 0$ such that {\sc $\epsilon$-Rather Rigid} reduces in polynomial time to {\sc $\delta \frac{2^n}{n}$-Hard}.
+\end{theorem}
+
+\begin{proof}
+To prove this, it suffices to show that for any $N \times N$ matrix $M$ which is not $(\epsilon N, \epsilon N^2)$-rigid, we can construct a Boolean circuit with $f(\epsilon)O(\frac{N^2}{\log N})$ gates which decides the value of $M_{i,j}$ given the $2\lceil \log N \rceil$-bit input $(i,j)$, for some function $f$ which approaches zero as $\epsilon$ approaches zero. This then implies that for any fixed $\delta$, an $N^2$-bit truth table requiring circuits of size $\frac{\delta N^2}{\log N}$ must be $(\epsilon N, \epsilon N^2)$-rigid  for some $\epsilon > 0$ which is a function only of $\delta$ (and otherwise determined by $f$ and the constants hidden in the $O(\cdot)$ term).
+
+Say $M$ is not $(\epsilon N, \epsilon N^2)$-rigid. So there exists an $N \times \epsilon N$ matrix $L$, an $\epsilon N \times N$ matrix $R$, and an $N \times N$ matrix $S$ with at most $\epsilon N^2$ nonzero entries, such that $LR \oplus S = M$. We will construct a circuit allowing us to efficiently index $M$ which uses these matrices $L, R, S$ as advice. To encode $L$ and $R$, we can utilize the well-known theorem of Shannon that any truth table of length $N$ can be computed by a circuit of size $O(\frac{N}{\log N})$ \cite{Shannon}. Thus, $L$ can be specified as a list of $\epsilon N$ circuits, each of size $O(\frac{N}{\log N})$, where the $j^{th}$ circuit $L_j$ represents the $j^{th}$ column, and $L_j(i)$ computes $L_{i,j}$. The same can then be done for $R$ (indexing columns instead). To encode $S$, we employ a refinement of Shannon's result due to Lupanov \cite{Coin-Problem}, which tells us that for sufficiently large $N$, any truth table of length $N$ with at most $\epsilon N$ nonzero entries can be computed by circuit of size
+\[
+\frac{\log\binom{N}{\epsilon N}}{\log \log \binom{N}{\epsilon N}} + o\left(\frac{N}{\log N}\right) \leq H(\epsilon) O(\frac{N}{\log N})
+\]
+Where $H$ denotes the binary entropy function. Thus $S$ can be computed by a circuit of size $H(\epsilon) O(\frac{N^2}{\log N})$.
+
+It remains to show that the additional circuitry we need to compute $M_{i,j}$ given $i, j$ and the encodings of $L,R,S$ does not increase things too much. By definition, we have that: 
+\[M_{i,j} = \langle row_i(L), col_j(R) \rangle \oplus S_{i,j}\]
+where the dot product is taken over $\mathbb{F}_2$. Now consider the circuit diagram shown in Figure~\ref{fig:rigid}:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\textwidth]{Non_Rigid_Circuit.pdf}
+    \caption{A small circuit for a non-rigid truth table}
+    \label{fig:rigid}
+\end{figure}
+The subcircuit computing $\text{row}_i(L)$ is defined as follows: as described above, $L$ represents a $N \times \epsilon N$ matrix, specified as a list of $\epsilon N$ circuits of size $O(\frac{N}{\log N})$, each computing a column of $L$. $\text{row}_i(L)$ feeds $i$ into each of these circuits in parallel to get an $\epsilon N$-bit string giving value of the $i^{th}$ row of $L$. $\text{col}_j(R)$ is defined analogously. The circuit $S_{i,j}$ simply computes the $(i,j)^{th}$ entry of $S$ given $i,j$. Finally, the subcircuit $\oplus(X)$ computes the parity of its input string, the subcircuit $\land(X,Y)$ computes the bit-wise AND of two equal length strings, and the terminal gate computes the two-bit parity function. Given the previous equation relating the $(i,j)^{th}$ index of $M$ to the $(i,j)^{th}$ rows/columns/indices of $L, R, S$, it is straightforward to see that this circuit performs the necessary calculation.
+It is clear that the $\oplus(X)$ and $\land(X,Y)$ can be implemented with a number of gates linear in their input size, which in this case is $\epsilon N$. From the analysis above, each of $\text{row}_i(L)$ and $\text{col}_j(R)$ can be implemented using $\epsilon O(\frac{N^2}{\log N})$ gates, and $S_{i,j}$ can be implemented using $H(\epsilon)  O(\frac{N^2}{\log N})$ gates. So overall, this circuit has size $(H(\epsilon) + \epsilon)O(\frac{N^2}{\log N})$. Since $H(\epsilon) + \epsilon$ approaches zero for decreasing  $\epsilon$, this implies that for any fixed $\delta > 0$, an $N^2$-bit truth table requiring circuits of size $\frac{\delta N^2}{\log N}$ must be $(\epsilon N, \epsilon N^2)$ rigid for some $\epsilon>0$ which is a function only of $\delta$ (and which is otherwise determined by the constants hidden in the $O(\cdot)$ expressions above).
+\end{proof}
+
+We thus conclude that if {\cl E} contains a language of circuit complexity $\Omega(\frac{2^n}{n})$, then there is a polynomial time construction of $(\Omega(n), \Omega(n^2))$-rigid matrices over $\mathbb{F}_2$.
+
+\subsection{Space-Bounded Communication Complexity}
+
+The class ${\cl PSPACE^{CC}}$ was defined originally in \cite{communication-classes} as a generalization of the class ${\cl PH^{CC}}$ to an unbounded alternation of quantifiers. We will not give this original definition, but rather a simplification due to \cite{space-communication}.
+
+\begin{definition}
+Let $f: \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$. We say $f$ has a space-$s$ protocol if there is a deterministic protocol deciding $f$ of the following form. Alice receives $x \in \{0,1\}^n$, and Bob receives $y \in \{0,1\}^n$. There is an $s$-bit shared memory, and Alice and Bob alternate turns writing to this memory. On a player's turn, they can modify the contents of the $s$-bit shared memory as a function only of its previous contents and their private input $x$ or $y$, or decide to halt and output some $z \in \{0,1\}$ (this decision is also a function only of their input and the shared memory's previous state). This protocol is valid if $f(xy) = z$ for all $x,y$.
+\end{definition}
+
+
+By a result of Song \cite{space-communication}, we have that if $f  \in {\cl PSPACE^{CC}}$ then $f$ has a $poly(\log n)$ space protocol (Song uses a slightly different model where Alice and Bob have private $s$-bit tapes, but our model is at least as strong up to a doubling in space since sharing the tape only increases their ability to communicate). Due to a basic counting argument, most functions $f$ require $\Omega(n)$ space, and any such function must lie outside of $ {\cl PSPACE^{CC}}$. However, it has been a long standing open problem to give an explicit construction a communication matrix outside of even ${\cl PH^{CC}}$ \cite{space-communication}. We thus define the following search problem:
+
+\begin{definition}
+{\sc $\delta$-SPACE} is the following search problem. Given $1^N$, where $N=2^n$, output a communication matrix $\{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ such that $f$ requires space-$\delta n$ communication protocols.
+\end{definition}
+
+\begin{theorem}\label{thm:space-circuit}
+For any $\delta < \epsilon < \frac{1}{2}$, {\sc $\delta$-Space} reduces in polynomial time to {\sc $2^{(\frac{1}{2} + \epsilon)n}$-Hard}.
+\end{theorem}
+
+\begin{proof}
+The proof follows the exact same strategy as above, constructing a smaller-than-worst-case circuit for any matrix with a $\delta n$-space protocol. We will omit the detailed construction of our circuit since it is very similar to that of the above proof, but give here a clear sketch of its essential structure. Let $f: \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$, and let $N = 2^n$. We can represent a space $s$ protocol for $f$ as $2s + 4$ different $N \times 2^s$ binary matrices, with each of the first $2s$ matrices telling us how one of the two players will modify a certain cell of the shared memory as a function of its previous state and their input, and the last four matrices determining whether a certain player will halt or continue and the value they will output if they halt, again as a function of their input and the shared memory contents. For $s = \epsilon \log N$ (with $\epsilon < 1$), we can then take these matrices as advice to our circuit, for a total of $O(\epsilon N^{1 + \epsilon} \log N)$ bits of advice. We can then add circuitry to simulate $2^{s+1} = 2N^{\epsilon}$ steps of this protocol on a given input $x,y \in \{0,1\}^n \times \{0,1\}^n$, indexing into the advice matrices in order to determine what to do next using the same indexing constructions we had for the proof of Theorem~\ref{thm:rigidity-circuit}. Any matrix solvable by a space $s$ protocol will be solved by a protocol that halts after $2^{s+1}$ steps (otherwise it will loop forever), so simulating for $2^{s+1}$ steps suffices. Since each of the indexing operations can be implemented using a number of gates linear in $\epsilon N^{1 + \epsilon} \log N$ using the constructions from the proof of Theorem~\ref{thm:rigidity-circuit}, our overall circuit for $f$ will have size $O(2N^{\epsilon}\epsilon N^{1 + \epsilon} \log N) = O(N^{1 + 2\epsilon} \log N)$. Thus, for any $\epsilon < \frac{1}{2}$, a truth table of length $N^2$ requiring circuits of size $N^{1 + 2\epsilon}$ will require $\delta \log N$-space protocols for any $\delta < \epsilon$.
+\end{proof}
+
+\subsection{Bit Probe Lower Bounds}
+In \cite{Elias-Flower}, Elias and Flower defined a broad model for studying the space/query complexity of data structure problems, known as the ``bit-probe model.'' 
+\begin{definition}
+Given two sets $D,Q$, a function $f: D \times Q \rightarrow \{0,1\}$ and an integer $b$, the bit-probe complexity of $f$ for space $b$, denoted $BC_b(f)$, is the minimum over all encodings $G: D \rightarrow \{0,1\}^b$ of the number of bits of $G(x)$ that need to be probed in order to determine $f(x,y)$ for the worst case $x \in D,y \in Q$, given access to $y$.
+\end{definition}
+In this general definition of a data structure problem, we think of $D$ as the set of all possible pieces of ``data'' we might wish to encode in our data structure, $b$ as the number of bits we can use to encode a piece of data, $Q$ as the set of queries we wish to answer about an encoded piece of data, and $f$ as telling us the correct answers to all data/query pairs. $BC_b(f)$ then tells us the minimum number of probes required by any space-$b$ data structure in order to answer every query correctly for every possible piece of data.
+
+This model was investigated further by Miltersen \cite{Bro}, who showed, using a simple counting argument, that most problems require an infeasible amount of space/probes in this model, but pointed out that no explicit data structure problem is known to be infeasible in this sense. We thus define the following explicit construction problem:
+\begin{definition}
+{\sc $\delta$-Probe} is the following search problem: given $1^N$ where $N = 2^n$ output a truth table $f: \{0,1\}^n \times \{0,1\}^n \rightarrow \{0,1\}$ such that $BC_{2^{\delta n}}(f) > \delta n$.
+\end{definition}
+
+\begin{theorem}\label{thm:probe-circuit}
+For any $\delta < 2\epsilon < 1$, {\sc $\delta$-Probe} reduces in polynomial time to {\sc $2^{(\frac{1}{2} + \epsilon)n}$-Hard}.
+\end{theorem}
+\begin{proof}
+
+Say $f$ is a function $f: D \times Q \rightarrow \{0,1\}$ such that $BC_b(f) \leq k$. So in particular there is an encoding $G: D \rightarrow \{0,1\}^b$ such for any $x \in D$, $y \in Q$, given access to $y$ we can determine $f(x,y)$ using at most $k$ probes to $G(x)$. Let $H: Q \rightarrow [b]^k$ be the function which, given $y$, tells us which positions of $G(x)$ to query. Finally, let $\phi: \{0,1\}^k \times Q \rightarrow \{0,1\}$ be the function which determines $f(x,y)$ given the results of the probes and the value of $y$. We will now give a compact representation for $f$, and then use it to construct a circuit computing $f$.
+
+Let $R$ be a $|D| \times b$ binary matrix whose rows are indexed by elements of $D$, where $R_{i,j}$ gives the value of the $j^{th}$ bit of $G(i)$. Let $S$ be a $|Q| \times k \lceil \log b \rceil$ matrix whose rows are indexed by elements of $Q$, such that the $i^{th}$ row of $S$ is $H(i) \in [b]^k$. Finally, let $Z$ be a $2^k \times |Q|$ matrix such that $Z_{i,j} = \phi(i,j)$.
+
+Now, given $x \in D$, $y \in Q$, we can use $S,R,Z$ to determine $f(x,y)$ as follows. First find the $y^{th}$ row of $S$ to get $H(y)$, which is a list of $k$ indices in $[b]$. Next, find the $x^{th}$ row of $R$, which is the $b$-bit string $G(x)$. Then, probe the indices specified by $H(y)$ to get some $k$-bit string $w$, and finally output $Z_{w, y}$, which is precisely $\phi(w,y) = f(x,y)$.
+
+As in the previous proofs, it can easily be shown that these indexing operations can be accomplished with circuits of size linear in $S,R,Z$. Therefore, $f$ has a circuit of size $O(|S| + |R| + |Z|) = O(|Q|k\log b + |D|b + 2^k|Q|)$. So for any function $D \times Q \rightarrow \{0,1\}^n$ requiring circuits of size $\omega(|Q|k\log b + |D|b + 2^k|Q|)$, we must have $BC_b(f) > k$. 
+
+In particular, if we take $D = Q = \{0,1\}^n$, and for any fixed $\epsilon < 1$ we take $b= 2^{\epsilon n}$, $k = \epsilon n$, we get that for any function $f: \{0,1\}^{2n} \rightarrow \{0,1\}$ requiring circuits of size $\omega(2^{(1 +\epsilon) n})$, it must be the case that $BC_{2^{\epsilon n}}(f) > \epsilon n$, since 
+\[
+|Q|k\log b + |D|b + 2^k|Q| = 2^n \epsilon^2 n^2 + 2^n2^{\epsilon n} + 2^{\epsilon n}2^n = O(2^{(1+\epsilon) n})
+\]
+So if we take $\delta < \epsilon$, any truth table of length $N^2$ with hardness $N^{1+\epsilon}$, or in other words any solution to {\sc $2^{(\frac{1}{2} + \frac{\epsilon}{2})n}$-Hard} on input $1^{N^2}$, must satisfy $BC_{2^{\delta n}}(f) > \delta n$. 
+\end{proof}
+
+\section{A Brief Survey of Subsequent Developments}
+Since the publication of \cite{Korten}, a significant body of work on Range Avoidance has emerged. We discuss here some of the key developments in the area by other researchers which will not otherwise be covered in the later chapters of this thesis. 
+\begin{enumerate}
+    \item Hardness of Avoid
+    \item Algorithmic method
+    \item CHR/Li
+    \item Restricted variants of Avoid
+\end{enumerate}
