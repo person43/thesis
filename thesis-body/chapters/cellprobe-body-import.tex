@@ -5,7 +5,8 @@
 % commands have been omitted for thesis integration.
 
 \section{Introduction}
-We start by briefly introducing the three main subjects of this chapter: static data structure lower bounds, $\mathsf{NC}^0$ pseudorandom generators, and range avoidance for $\mathsf{NC}^0$ circuits. 
+\todo{need to transition here}
+We start by briefly introducing the three main subjects of this chapter: static data structure lower bounds, $\mathsf{NC}^0$ pseudorandom generators, and Range Avoidance for $\mathsf{NC}^0$ circuits. 
 ~\\~\\
 {\bf \noindent Static Data Structure Lower Bounds:} 
 The cell probe model of data structures introduced in \cite{eliasflower,Yao} is a fundamental computational model in which to study tradeoffs between storage space and access time for information retrieval problems. In the \emph{static} cell probe model, a data structure problem $F: [N] \times [M] \to \B$ is fixed, where $[M]$ is an abstract set of ``datapoints,'' $[N]$ is an abstract set of ``queries'' one might wish to make about a data point, and $F(x,y)$ is the correct answer to the $x^{th}$ query about the datapoint $y$. The goal is to preprocess any given datapoint $y\in [M]$ into a data structure $\mathcal{E}(y) \in \Sigma^S$ consisting of $S$ ``cells,'' each cell holding a character from some finite alphabet $\Sigma$, so that later we may answer different queries $x \in \N$ about $y$ by reading at most $t$ cells from the data structure $\mathcal{E}(y)$. $S$ is called the ``space complexity,'' $t$ the ``time complexity,'' and $w=\log|\Sigma|$ the ``word-length'' (number of bits to store the contents of a single cell).
@@ -28,13 +29,13 @@ The existence of such PRGs has been the subject of a great deal of work over the
 An important parameter is the \emph{stretch} of the generator, which denotes the relation between $n,m$. We say that $G$ has nontrivial stretch if $m >n$, and polynomial stretch if $m \geq n^{1+\Omega(1)}$. $\mathsf{NC}^0$ generators with nontrivial stretch can be shown to exist under standard number theoretic cryptographic assumptions \cite{randomized-encodings}, however their utility has so far been limited. On the other hand, $\mathsf{NC}^0$ generators with polynomial stretch are not known to exist under any more standard hardness assumptions, but have been found to have a wide range of advanced cryptographic applications \cite{ishai2008cryptography}, most notably in the construction of Indistinguishability Obfuscation \cite{jls1,jls2}. For this reason, a great deal of work has gone into studying the existence of polynomial stretch $\mathsf{NC}^0$ PRGs as a foundational assumption in its own right, and various algorithmic methods for distinguishing such PRGs have been studied. The current state of the art shows that an $\mathsf{NC}_t^0$ generator $G: \B^n \to \B^m$ can be broken in polynomial time once $m >> n^{\frac{t}{2}}$ (\cite{mossel-epsilon,aow,semirandom}).
 ~\\~\\
 {\bf \noindent $\mathsf{NC}^0$ Range Avoidance:}
-We finally turn to our third main subject of study, $\mathsf{NC}^0$ range avoidance. The object in question here is the same as above: an $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with $m >n$ and $t = O(1)$. However, instead of trying the distinguish the output of $G$ from random, our goal now is to solve the Range Avoidance problem for $G$.
+We finally turn to our third main subject of study, $\mathsf{NC}^0$ Range Avoidance. The object in question here is the same as above: an $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with $m >n$ and $t = O(1)$. However, instead of trying the distinguish the output of $G$ from random, our goal now is to solve the Range Avoidance problem for $G$.
 %  output a string $y \in \B^m$ such that $y \notin \rng(G)$. The range avoidance problem (for general $G: \B^n \to \B^m$ computed by polynomial size circuits) was introduced in \cite{KKMP}, and shown in \cite{Korten} to be intimately connected to derandomization and to the problem of proving circuit lower bounds for exponential time classes. 
 %  In all cases, it is already of great interest to develop algorithms for this problem that use an $\mathsf{NP}$ oracle.
- \cite{RSW} was the first to investigate the range avoidance problem for $\mathsf{NC^0}$ circuits, and showed that a $\mathsf{FP^{NP}}$ algorithm for this problem would imply the breakthrough circuit lower bound $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$. The same question of \emph{stretch} arises here: the aforementioned result of \cite{RSW} requires us to solve instances with barely nontrivial stretch. On the other hand unconditional algorithms have been given once the stretch is sufficiently large, in particular once $m >> \frac{n^{t-1}}{\log n}$ (\cite{guruswami2022range,karthik}). An important question posed in \cite{RSW} is whether unconditional $\mathsf{FP^{NP}}$ algorithms for $\mathsf{NC}^0$ range avoidance can be found in the general polynomial stretch regime.
+ \cite{RSW} was the first to investigate the Range Avoidance problem for $\mathsf{NC^0}$ circuits, and showed that a $\mathsf{FP^{NP}}$ algorithm for this problem would imply the breakthrough circuit lower bound $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$. The same question of \emph{stretch} arises here: the aforementioned result of \cite{RSW} requires us to solve instances with barely nontrivial stretch. On the other hand unconditional algorithms have been given once the stretch is sufficiently large, in particular once $m >> \frac{n^{t-1}}{\log n}$ (\cite{guruswami2022range,karthik}). An important question posed in \cite{RSW} is whether unconditional $\mathsf{FP^{NP}}$ algorithms for $\mathsf{NC}^0$ Range Avoidance can be found in the general polynomial stretch regime.
 ~\\~\\
 {\bf \noindent The Main Correspondence:}
-The starting point of our work is the observation that the 3 problems discussed above are tightly related to one another. The relation between $\mathsf{NC}^0$ PRGs and $\mathsf{NC}^0$ range avoidance is rather obvious (although still insufficiently explored prior to this work), and so the key point is the relation we observe between these two topics pertaining to $\mathsf{NC}^0$ circuits on the one hand, and the project of proving cell probe lower bounds on the other. This relationship follows directly from the definitions of the objects in question, and is more appropriately understood as a \emph{perspective shift} rather than a new result. 
+The starting point of our work is the observation that the 3 problems discussed above are tightly related to one another. The relation between $\mathsf{NC}^0$ PRGs and $\mathsf{NC}^0$ Range Avoidance is rather obvious (although still insufficiently explored prior to this work), and so the key point is the relation we observe between these two topics pertaining to $\mathsf{NC}^0$ circuits on the one hand, and the project of proving cell probe lower bounds on the other. This relationship follows directly from the definitions of the objects in question, and is more appropriately understood as a \emph{perspective shift} rather than a new result. 
 
 To state the connection in its simplest form, we focus our attention for now on a special setting of the cell probe model: the word length is 1 (i.e. $\Sigma = \B$, often called the \emph{bit probe} model), and the data structures in question are \emph{nonadpative}. Here, nonadpative means that the data structure will decide which cells to probe as a function only of the query, in contrast to a general \emph{adaptive} data structure which may decide on the next cell to probe based on the outcomes of previous probes. In this setting we have:
 \begin{observation*}
@@ -48,14 +49,14 @@ Let $F: [N] \times [M] \to \B$ be a data structure problem, which we interpret a
 Say that $F$ has nonadaptive bit probe data structures of space $S$ and time $t$. Then, to every $y \in [M]$ we may associate an encoding $E_y \in \B^S$, so that for every $x \in [N]$ we may determine $F(x,y)$ by probing (nonadaptively) $t$ bits of $E_y$. Considering the $y^{th}$ column of $F$ as a string $f_y\in \B^N$, we see that there is a $\mathsf{NC}^0_t$ function $G: \B^S \to \B^N$ so that $G(E_y) = f_y$ for every $y\in [M]$; in particular, the $x^{th}$ output of $G$ runs the data structure's nonadaptive query procedure corresponding to the query $x$. The same reasoning applies in the reverse direction.
 \end{proof}
 
-In other words, finding an explicit data structure problem $F:\N \times [M] \to \B$ which requires large space for time $t$ in the nonadaptive bit probe model is \emph{exactly equivalent} to constructing explicit \emph{list-solutions} for $\mathsf{NC}^0_t$ range avoidance. By a list-solution, we mean a list of candidate strings, so that for \emph{any instance} of $\mathsf{NC}^0_t$ range avoidance $G$ (with appropriate parameters), one of the strings in this list must be a range avoidance solution for $G$. 
+In other words, finding an explicit data structure problem $F:\N \times [M] \to \B$ which requires large space for time $t$ in the nonadaptive bit probe model is \emph{exactly equivalent} to constructing explicit \emph{list-solutions} for $\mathsf{NC}^0_t$ Range Avoidance. By a list-solution, we mean a list of candidate strings, so that for \emph{any instance} of $\mathsf{NC}^0_t$ Range Avoidance $G$ (with appropriate parameters), one of the strings in this list must be a Range Avoidance solution for $G$. 
 We emphasize that an analogous connection exists for the general cell probe model (adaptive and with arbitrary word length), which is explained formally in Section~\ref{cellprobe:subsec:gen-vs-cell}.
-The problem of finding list-solutions for $\mathsf{NC}^0$ range avoidance was considered already in \cite{guruswami2022range}. Indeed, via the above correspondence the results of \cite{guruswami2022range} recover a nonadaptive bit-probe lower bound of \cite{golovnev} in a certain range of parameters.
+The problem of finding list-solutions for $\mathsf{NC}^0$ Range Avoidance was considered already in \cite{guruswami2022range}. Indeed, via the above correspondence the results of \cite{guruswami2022range} recover a nonadaptive bit-probe lower bound of \cite{golovnev} in a certain range of parameters.
 
 The connection between $\mathsf{NC}^0$-PRGs and cell probe lower bounds is more difficult to state formally, but even more central to our main results. In one direction, we will show how to use the best known methods for distinguishing $\mathsf{NC}^0$ PRGs to achieve state of the art lower bounds in the cell probe model; this is the most significant contribution in this work, and after stating our main results below we will describe this methodology in more detail in Section~\ref{cellprobe:subsec:techniques} (``Our Techniques'').
 In the other direction we will use the conjectured security of various $\mathsf{NC}^0$ PRGs to exhibit a \emph{natural properties barrier} for data structure lower bounds, in the spirit of Razborov-Rudich \cite{natural-proofs}.
 
-We note that connections of a similar flavor have been utilized in the literature on sampling lower bounds initiated by Viola \cite{viola-sampling}. Connections between restricted variants of range avoidance and data structures were first observed in \cite{guruswami2022range}, who used a cell probe data structure from \cite{succincter} to develop more efficient reductions to range avoidance; this proof was our original inspiration to explore more deeply the connections between $\mathsf{NC}^0$ range avoidance and the cell probe model.
+We note that connections of a similar flavor have been utilized in the literature on sampling lower bounds initiated by Viola \cite{viola-sampling}. Connections between restricted variants of Range Avoidance and data structures were first observed in \cite{guruswami2022range}, who used a cell probe data structure from \cite{succincter} to develop more efficient reductions to Range Avoidance; this proof was our original inspiration to explore more deeply the connections between $\mathsf{NC}^0$ Range Avoidance and the cell probe model.
 
 \subsection{Our Results}
 
@@ -92,7 +93,7 @@ Let $F: [N] \times [M] \to \B$ be a data structure problem such that there exist
 Then the same lower bound as in the first presentation of Theorem~\ref{cellprobe:thm:k-wise-lb} (above) holds for $F$ provided $\gamma \leq  N^{t} 2^{-O(ktw)}$.
 \end{theorem*}
 An important consequence of this improvement is that, using known constructions of almost independent distributions \cite{naornaor}, in the case $t,w=O(1)$ we can set $k= O(\log N), \gamma = N^{-O(1)}$ and obtain an explicit problem $F: [N] \times [M] \to \B$ with $M \leq \poly(N)$ and satisfying the lower bound $S \geq \tilde{\Omega}(N^{\frac{2}{t}})$.
-This improvement will be necessary later on for obtaining polynomial time range avoidance algorithms with minimum possible stretch. 
+This improvement will be necessary later on for obtaining polynomial time Range Avoidance algorithms with minimum possible stretch. 
 
 We next establish a lower bound that improves on the previous theorems in the special setting of \emph{nonadaptive bit probe} data structures; remember that ``bit probe'' denotes the word length setting $w= 1$. For this lower bound, the hardness property of our data structure problems is \emph{small bias} \cite{naornaor}: a distribution over $\B^N$ is $\gamma$-biased if it fools all parity functions with error $\leq \frac{\gamma}{2}$.
 \begin{theorem}
@@ -109,7 +110,7 @@ Using explicit constructions of small bias probability spaces (again \cite{naorn
 We emphasize that, because of the optimality of the bound in Theorem~\ref{cellprobe:thm:k-wise-lb} (there is an upper bound almost matching the bound in Theorem~\ref{cellprobe:thm:k-wise-lb} even in the nonadaptive bit probe setting and even for odd values of $t$), the above Theorem~\ref{cellprobe:thm:biased-lb} is provably unattainable using \emph{only limited independence}. More formally, to construct any data structure problem $F: [N] \times [M] \to \B$ satisfying a lower bound $S \geq N^{\frac{2}{t} + \epsilon}$ for any constants $t > 1$, $\epsilon>0$, and $M \leq \exp(N^{o(1)})$, we provably cannot use $k$-wise independence as our only hardness property for the problem $F$. This result is therefore of special interest, as it the first example of a cell probe lower bound that is provably stronger than the best bound provable using limited independence alone: all of the previous best lower bound methods \cite{Siegel89,panigrahy,kasper,viola-maximal,golovnev}\footnote{Viola's lower bound for $t=2$ nonadaptive bit probe data structures \cite{viola-maximal} does no use $k$-wise independence, but $k$-wise independence was shown to achieve the same quantitative lower bound in the follow up work of \cite{golovnev}.} can be carried out using limited independence as the sole hardness condition.
 ~\\~\\
 {\bf \noindent $\mathsf{NC}^0$ Range Avoidance Algorithms:}
-In Section~\ref{cellprobe:sec:avoid-and-linear-attack} we give the best known unconditional algorithms for $\mathsf{NC}^0$ range avoidance. Using our primary observation connecting range avoidance to data structure lower bounds together with known constructions of limited independence and small bias spaces \cite{naornaor}, we can immediately obtain state of the art $\mathsf{P^{NP}}$ algorithms for $\mathsf{NC}^0$ range avoidance using our new cell probe lower bounds as a black box. In the case of Theorem~\ref{cellprobe:thm:biased-lb} we get:
+In Section~\ref{cellprobe:sec:avoid-and-linear-attack} we give the best known unconditional algorithms for $\mathsf{NC}^0$ Range Avoidance. Using our primary observation connecting Range Avoidance to data structure lower bounds together with known constructions of limited independence and small bias spaces \cite{naornaor}, we can immediately obtain state of the art $\mathsf{P^{NP}}$ algorithms for $\mathsf{NC}^0$ Range Avoidance using our new cell probe lower bounds as a black box. In the case of Theorem~\ref{cellprobe:thm:biased-lb} we get:
 
 \begin{theorem}
 \label{cellprobe:thm:pnp-avoid-odd}
@@ -118,15 +119,15 @@ Let $t = O(1)$ be a fixed odd number. There is a polynomial time algorithm which
 \[
 m \geq  \tilde{O}( n^{\frac{t}{2} - \frac{t-2}{2(t+2)}})
 \]
-one of the strings in the list must be a range-avoidance solution for $G$. In particular, there is a polynomial time $\mathsf{NP}$-oracle algorithm for range avoidance on instances of the above form.
+one of the strings in the list must be a range-avoidance solution for $G$. In particular, there is a polynomial time $\mathsf{NP}$-oracle algorithm for Range Avoidance on instances of the above form.
 \end{theorem}
 
-For our lower bound in Theorem~\ref{cellprobe:thm:k-wise-lb}, we are able to analyse it more effectively (rather than applying it as a black box) and remove the use of an $\mathsf{NP}$ oracle in the associated range avoidance algorithm:
+For our lower bound in Theorem~\ref{cellprobe:thm:k-wise-lb}, we are able to analyse it more effectively (rather than applying it as a black box) and remove the use of an $\mathsf{NP}$ oracle in the associated Range Avoidance algorithm:
 
 \begin{theorem}
 \label{cellprobe:thm:polytime-avoid}
 %[Theorem~\ref{cellprobe:thm:polytime-avoid}]
-Let $t,n$ be given with $t$ even. There is a $m^{O(t^2)}$-time algorithm which solves range avoidance given any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
+Let $t,n$ be given with $t$ even. There is a $m^{O(t^2)}$-time algorithm which solves Range Avoidance given any $\mathsf{NC}^0_t$ generator $G: \B^n \to \B^m$ with
 \[
 m \geq  n^{\frac{t}{2}} \log n \cdot t^{\frac{t}{2} + o(t)}
 \]
@@ -164,11 +165,11 @@ Next, in Section~\ref{cellprobe:sec:connections} we use our main correspondence 
 ~
 \begin{enumerate}
     \item If there is an explicit data structure problem $F:[N] \times [M] \to \B$ with $M \leq \exp(N^{o(1)})$ which requires space $S \geq N - N^{o(1)}$ for data structures making 4 nonadaptive bit probes, then $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$.
-    \item If there is a universal constant $\epsilon>0$ and an explicit data structure problem $F:[N] \times [M] \to \B$ with $M = \poly(N)$ requiring space $S \geq N^{\epsilon}$ for nonadaptive data structures making $O(1)$ bit probes, then there is a polynomial time $\mathsf{NP}$ oracle algorithm for $\mathsf{NC}^0$ range avoidance with polynomial stretch.
+    \item If there is a universal constant $\epsilon>0$ and an explicit data structure problem $F:[N] \times [M] \to \B$ with $M = \poly(N)$ requiring space $S \geq N^{\epsilon}$ for nonadaptive data structures making $O(1)$ bit probes, then there is a polynomial time $\mathsf{NP}$ oracle algorithm for $\mathsf{NC}^0$ Range Avoidance with polynomial stretch.
 \end{enumerate}
 \end{theorem}
 
-The conclusion in (1) above would be a monumental breakthrough in complexity theory and is considered extremely hard. The conclusion in (2) above was directly posed in \cite{RSW} as an important direction in unconditional range avoidance algorithms.
+The conclusion in (1) above would be a monumental breakthrough in complexity theory and is considered extremely hard. The conclusion in (2) above was directly posed in \cite{RSW} as an important direction in unconditional Range Avoidance algorithms.
 We note that (1) of Theorem~\ref{cellprobe:thm:explicit-vs-avoid} has a strong similarity to results in \cite{viola-maximal} and \cite{omri}. \cite{viola-maximal} shows that improved data static data structure lower bounds imply breakthrough circuit lower bounds for multi-output functions. The implied circuit lower bounds are of two kinds: lower bounds against low-depth circuits over a complete basis of large fan-in gates, and lower bounds against linear size log-depth circuits with bounded fan-in gates. 
 % Viola's results seem formally incomparable to ours; in terms of the required cell probe lower bound, \cite{viola-maximal} applies in a broader range of settings on the space/time tradeoff curve, and in general requires weaker lower bounds on the space $S$ but larger lower bounds on the time $t$ (super-constant). 
 % The circuit lower bounds in the conclusions of \cite{viola-maximal} and Theorem~\ref{cellprobe:thm:explicit-vs-avoid} are also apparently incomparable.
@@ -266,7 +267,7 @@ Finally, we highlight two closely related problems: removing the $\mathsf{NP}$ o
 \begin{problem}\label{cellprobe:prob:constructive-moore}
 For $\mathsf{NC}^0_t$ generators $G:\B^n \to \B^m$:
 \begin{enumerate}
-    \item[(a)] for any $t\geq 3, \epsilon>0$, give a subexponential time deterministic algorithm that solves range avoidance for $G$ whenever $m \geq n^{\frac{t}{2} - \epsilon}$
+    \item[(a)] for any $t\geq 3, \epsilon>0$, give a subexponential time deterministic algorithm that solves Range Avoidance for $G$ whenever $m \geq n^{\frac{t}{2} - \epsilon}$
     \item[(b)] for any $t \geq 5, \epsilon>0$, give a subexponential time uniform algorithm that distinguishes $G$ with subexponential advantage whenever $m \geq n^{\frac{t}{2}-\epsilon}$
 \end{enumerate}
 \end{problem}
@@ -338,7 +339,7 @@ Finally, we rely on the following construction of explicit small-bias probabilit
 \begin{theorem*}[\cite{naornaor}]
 For every $\gamma,k,N$ there exists an explicit distribution on $\{\pm 1\}^N$ with support size $(\frac{k\log N}{\gamma})^{O(1)}$.
 \end{theorem*}
-We elaborate on our notion of explicit: for the purposes of our range avoidance algorithms in Section~\ref{cellprobe:sec:avoid-and-linear-attack}, we can take explicit to mean, there is a uniform algorithm which, given $k,N,\epsilon$ will run in time $\poly(N, k, \frac{1}{\epsilon})$ and output a list of strings in $\{\pm 1\}^N$, such that the uniform distribution on these strings is $(\gamma,k)$-biased. The distributions in \cite{naornaor} are also explicit in the more standard/informal sense, being supplied by a direct construction. 
+We elaborate on our notion of explicit: for the purposes of our Range Avoidance algorithms in Section~\ref{cellprobe:sec:avoid-and-linear-attack}, we can take explicit to mean, there is a uniform algorithm which, given $k,N,\epsilon$ will run in time $\poly(N, k, \frac{1}{\epsilon})$ and output a list of strings in $\{\pm 1\}^N$, such that the uniform distribution on these strings is $(\gamma,k)$-biased. The distributions in \cite{naornaor} are also explicit in the more standard/informal sense, being supplied by a direct construction. 
 
 \subsection{Generators and Data Structures}\label{cellprobe:subsec:gen-vs-cell}
 We now define the two main objects of study in our work: the cell probe model of static data structures on the one hand, and locally-computable generators on the other. We then state the tight connection between them, giving some more detail than was supplied in the introduction. Broader implications of this connection will be explored in more depth in Section~\ref{cellprobe:sec:connections}.
@@ -672,7 +673,8 @@ Let $\mathcal{B} = (B_x)_{x \in \N}$ be a matrix ensemble in $\mathbb{R}^{m \tim
 \]
 \end{lemma}
 \begin{proof}
-Set $\epsilon:= 2^{-k}$, $r:= \mathrm{tr}((\sum_x B_x)^{\bowtie k})$. Say that $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]} \geq \delta] \geq \epsilon$, hence  $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \delta^k] \geq \epsilon$ and therefore $\Exp \norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \epsilon \delta^k$. By the trace/norm inequality, we know that for all $f$, $ \mathrm{tr}(\mathcal{B}[f]^{\bowtie k}) \geq \norm{\mathcal{B}[f]}^k $, hence we have $\Exp \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) \geq \epsilon \delta^k$. Since $\mathrm{tr}(B[\cdot]^{\bowtie k})$ is a degree $k$ polynomial with total monomial weight $\leq r$, we have that $|\Exp \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) - \Exp \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k})| \leq \gamma r 2^k$, hence $\Exp \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k}) \geq \epsilon \delta^k - \gamma r2^k \geq \frac{1}{2} \epsilon \delta^k$ and therefore, applying the other side of the trace/norm inequality, $\mathbb{E}\norm{\mathcal{B}[\bm{f}]}^k \geq \frac{\epsilon \delta^k}{2m}$. Thus $\Pr[\norm{\mathcal{B}[\bm{f}]}^k \geq   \frac{\epsilon \delta^k}{4m} ] \geq  \frac{\epsilon \delta^k}{4m} $ (we use here that $\norm{\mathcal{B}[\bm{f}]}\leq 1$ probability 1), and so $\Pr[\norm{\mathcal{B}[\bm{f}]} >  \delta (\frac{\epsilon}{4m})^{1/k} ] \geq  \frac{\epsilon \delta^k}{4m}$. Recall that $\epsilon = 2^{-k}$, so $\delta(\frac{\epsilon}{4m})^{1/k} = \delta (8m)^{1/k}$. 
+Set $\epsilon:= 2^{-k}$, $r:= \mathrm{tr}((\sum_x B_x)^{\bowtie k})$. Say that $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]} \geq \delta] \geq \epsilon$, hence  $\Pr[\norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \delta^k] \geq \epsilon$ and therefore $\Exp \norm{\mathcal{B}[\bm{\hat{f}}]}^k \geq \epsilon \delta^k$. By the trace/norm inequality, we know that for all $f$, $ \mathrm{tr}(\mathcal{B}[f]^{\bowtie k}) \geq \norm{\mathcal{B}[f]}^k $, hence we have $\Exp \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) \geq \epsilon \delta^k$. 
+Since $\mathrm{tr}(B[\cdot]^{\bowtie k})$ is a degree $k$ polynomial with total monomial weight $\leq r$, we have that $|\Exp \mathrm{tr}(\mathcal{B}[\bm{\hat{f}}]^{\bowtie k}) - \Exp \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k})| \leq \gamma r 2^k$, hence $\Exp \mathrm{tr}(\mathcal{B}[\bm{f}]^{\bowtie k}) \geq \epsilon \delta^k - \gamma r2^k \geq \frac{1}{2} \epsilon \delta^k$ and therefore, applying the other side of the trace/norm inequality, $\mathbb{E}\norm{\mathcal{B}[\bm{f}]}^k \geq \frac{\epsilon \delta^k}{2m}$. Thus $\Pr[\norm{\mathcal{B}[\bm{f}]}^k \geq   \frac{\epsilon \delta^k}{4m} ] \geq  \frac{\epsilon \delta^k}{4m} $ (we use here that $\norm{\mathcal{B}[\bm{f}]}\leq 1$ probability 1), and so $\Pr[\norm{\mathcal{B}[\bm{f}]} >  \delta (\frac{\epsilon}{4m})^{1/k} ] \geq  \frac{\epsilon \delta^k}{4m}$. Recall that $\epsilon = 2^{-k}$, so $\delta(\frac{\epsilon}{4m})^{1/k} = \delta (8m)^{-1/k}$. 
 \end{proof}
 
 It then remains only to argue that, for the ensemble $\mathcal{B}$ arising in our argument, $\norm{\mathcal{B}[\bm{f}]}$ has a suitably decaying upper tail when $\bm{f}$ is a uniformly random signing. For this we rely on the Matrix Bernstein inequality. 
@@ -778,7 +780,7 @@ Let $G: \{\pm 1\}^S \to \{\pm 1\}^N$ be an $\mathsf{NC}^0_t$ generator. Then the
 \end{enumerate}
 \end{theorem}
 \begin{proof}
-For each $x \in \N$, $G_x: \{\pm 1\}^S \to \{\pm 1\}$ depends on $t$ input cells which we list in some fixed order $p_x^1,\ldots,p_x^t$. For each $x$ there is a predicate $h_x: \{\pm 1\}^t \to \{\pm 1\}$ so that if, on input $E \in \{\pm 1\}^S$, $G_x(E)$ sees the query outcomes $\xi_1 =E(p^1_x),\ldots, \xi_t=E(p_x^t)$, then $G_x(E) = h_x(\xi)$. Hence there exists $h: \{\pm 1\}^t \to \{\pm 1\}$ so that, for the set $X = \{ x\in \N\mid h_x = h\}$ we have $|X| \geq 2^{2^{-t}}N$. Fix this choice $X,h$ for the remainder of the proof.
+For each $x \in \N$, $G_x: \{\pm 1\}^S \to \{\pm 1\}$ depends on $t$ input cells which we list in some fixed order $p_x^1,\ldots,p_x^t$. For each $x$ there is a predicate $h_x: \{\pm 1\}^t \to \{\pm 1\}$ so that if, on input $E \in \{\pm 1\}^S$, $G_x(E)$ sees the query outcomes $\xi_1 =E(p^1_x),\ldots, \xi_t=E(p_x^t)$, then $G_x(E) = h_x(\xi)$. Hence there exists $h: \{\pm 1\}^t \to \{\pm 1\}$ so that, for the set $X = \{ x\in \N\mid h_x = h\}$ we have $|X| \geq 2^{-2^{t}}N$. Fix this choice $X,h$ for the remainder of the proof.
 
 Let $V^1,\ldots,V^t$ be copies of $[S]$. For each $u \subseteq [t]$, we define the XOR scheme $\mathcal{C}_u = (X,V^u,c^u)$ indexed by $X$ with variable set $V^u=\cup_{j \in u} V^j$ and constraints $c^u_x = \{p^j_x \mid j \in u\}$ where $p^j_x$ is considered to live inside $V^j$; note that this is well-defined even for $u = \emptyset$, in which case we get a $0$-XOR scheme $\mathcal{C}_\emptyset$ over 0 variables with $\Opt(\mathcal{C}_\emptyset,f) = \Exp_{x \in X} f_x$. The function $h$ may be expressed uniquely as $h(\xi)= \sum_{u \subseteq [t]} \hat{h}(u) \cdot \prod_{ j \in u} \xi_j$, where $(\hat{h}(u))_{u \subseteq [t]}$ are its Fourier coefficients. Now let $f\in \rng(G)$ with encoding $E_f$, we have:
 \begin{gather*}
@@ -818,7 +820,7 @@ For $R \in \{\pm 1\}^V$, let $
 Then we have $\mathrm{Val}(\mathcal{C},f,R) = |\mathrm{Sat}(\mathcal{C},f,R) - \mathrm{Sat}(\mathcal{C},-f,R)|$ for every $R$. We will show that $ \Pr[\mathrm{Sat}(\mathcal{C},\bm{f}) > 1-\delta ] \leq \frac{2}{5}$ for $\delta =  \epsilon \cdot \frac{K^{\frac{t}{2}}\log^{4t}K}{10N L^{\frac{t}{2}+1}}$ for a sufficiently small constant $\epsilon > 0$ depending on $t$. Since the property of being $\gamma$-biased is invariant under negation, the same bound will hold for $-\bm{f}$ and so the theorem will follow by a union bound.
 % ; hence if we can show that $\mathrm{Sat}(\mathcal{C},f), \mathrm{Sat}(\mathcal{C},-f) \leq 1-\delta$ for all $R$ with probaility $1-\epsilon$ over $f \sim \bm{f}$, then we have $\mathrm{Val}(\mathcal{C},f,R) \leq 2\delta$ \todo{rephrase this more simply}
 By Theorem~\ref{cellprobe:thm:moore}, there exists a collection of disjoint nonempty sets $E_1,\ldots,E_r \subseteq \N$, $r \geq \epsilon \cdot L^{-1}(\frac{K}{L})^{\frac{t}{2}} \log^{4t}K$, such that for each $j \leq r$ we have $\mathop{\Delta}\limits_{x \in E_j} c_x = \emptyset$ where $\Delta$ denotes the symmetric difference operator.
-We now observe, as in \cite{FKO,smoothed}, the following: for any $f$, if $\prod_{x \in E_j} f_x = -1$, then \emph{for every} $R \in \{\pm 1 \}^V$, there exists $x \in E_x$ so that $f_x \neq \prod_{i \in c_x} R(i)$. This follows since
+We now observe, as in \cite{FKO,smoothed}, the following: for any $f$, if $\prod_{x \in E_j} f_x = -1$, then \emph{for every} $R \in \{\pm 1 \}^V$, there exists $x \in E_j$ so that $f_x \neq \prod_{i \in c_x} R(i)$. This follows since
 \begin{gather*}
 \prod_{x \in E_j} \prod_{i \in c_x} R(i) = \prod_{i \in (\mathop{\Delta}\limits_{x\in E_j}c_x)} R(i) = \prod_{i \in \emptyset} R(i) = 1
 \end{gather*}
@@ -842,7 +844,7 @@ Where the final inequality follows provided $r$ is sufficiently large, which in 
 \end{proof}
 We also need the following easy fact:
 \begin{observation}\label{cellprobe:obs:csp-padding}
-Let $\mathcal{C} = (\N,V,c)$ be a $t$-XOR scheme. Then for any $t' \geq t$ there is a $t'$-XOR scheme $\mathcal{C'}=(\N,V',c')$ with $|V'| \leq |V|+ (t'-t)$ so that $\Opt(\mathcal{C},f) \leq \Opt(\mathcal{C'},f)$ for every $f \in \{\pm 1\}^X$.
+Let $\mathcal{C} = (\N,V,c)$ be a $t$-XOR scheme. Then for any $t' \geq t$ there is a $t'$-XOR scheme $\mathcal{C'}=(\N,V',c')$ with $|V'| \leq |V|+ (t'-t)$ so that $\Opt(\mathcal{C},f) \leq \Opt(\mathcal{C'},f)$ for every $f \in \{\pm 1\}^N$.
 \end{observation}
 \begin{proof}
 Let $r = t'-t$ and set $V' = V \cup \{1,\ldots,r\}$, $c'_x = c_x \cup \{1,\ldots,r\}$.
@@ -952,14 +954,14 @@ The only reason we needed to assume $t$ is odd is in our application of Theorem~
 
 \section{Algorithmic Implications of Our Lower Bounds}\label{cellprobe:sec:avoid-and-linear-attack}
 \subsection{Range Avoidance}
-As referenced in the introduction, our main correspondence (Observation~\ref{cellprobe:obs:main-correspondence}) immediately implies that explicit cell probe lower bounds yield $\mathsf{NP}$ oracle algorithms for range avoidance. We give a more formal version of this statement here:
+As referenced in the introduction, our main correspondence (Observation~\ref{cellprobe:obs:main-correspondence}) immediately implies that explicit cell probe lower bounds yield $\mathsf{NP}$ oracle algorithms for Range Avoidance. We give a more formal version of this statement here:
 \begin{lemma}\label{cellprobe:lem:lb-yields-pnp-avoid}
-Let $G: \Sigma^S \to \B^N$ be a locally computable generator (resp. nonadaptive) with word length $w = \lceil \log |\Sigma|\rceil $ and time complexity $t$. There is a polynomial time $\mathsf{NP}$ oracle algorithm which, given $G$ and a data structure problem $F \in \B^{N \times M}$ which does not have space $S$, time $t$, word length $w$ (resp. nonadaptive) data structures, solves the range avoidance problem for $G$.
+Let $G: \Sigma^S \to \B^N$ be a locally computable generator (resp. nonadaptive) with word length $w = \lceil \log |\Sigma|\rceil $ and time complexity $t$. There is a polynomial time $\mathsf{NP}$ oracle algorithm which, given $G$ and a data structure problem $F \in \B^{N \times M}$ which does not have space $S$, time $t$, word length $w$ (resp. nonadaptive) data structures, solves the Range Avoidance problem for $G$.
 \end{lemma}
 \begin{proof}
 By Observation~\ref{cellprobe:obs:main-correspondence}, the data structure lower bound for $F$ implies that one of its columns must lie outside the range of $G$. We may use a $\mathsf{NP}$ oracle to test each column in order and find the lexicographically first which lies outside the range of $G$.
 \end{proof}
-Hence, our new explicit cell probe lower bounds immediately imply new polynomial time $\mathsf{NP}$-oracle algorithms for range avoidance in a completely black box sense. 
+Hence, our new explicit cell probe lower bounds immediately imply new polynomial time $\mathsf{NP}$-oracle algorithms for Range Avoidance in a completely black box sense. 
 For one of our lower bounds (Theorem~\ref{cellprobe:thm:k-wise-lb}), we will be able to analyze the argument in a non black box way and remove the $\mathsf{NP}$ oracle. For Theorem~\ref{cellprobe:thm:biased-lb} we are unable to make such an improvement. We start with this latter result, where using known constructions of small bias probability spaces (\cite{naornaor}) we get:
 
 \begin{theorem*}[Theorem \ref{cellprobe:thm:pnp-avoid-odd}, restated]
@@ -967,7 +969,7 @@ Let $t = O(1)$ be a fixed odd number. There is a polynomial time algorithm which
 \[
 m \geq  \tilde{O}( n^{\frac{t}{2} - \frac{t-2}{2(t+2)}})
 \]
-one of the strings in the list must be a range-avoidance solution for $G$. In particular, there is a polynomial time $\mathsf{NP}$-oracle algorithm for range avoidance on instances of the above form.
+one of the strings in the list must be a range-avoidance solution for $G$. In particular, there is a polynomial time $\mathsf{NP}$-oracle algorithm for Range Avoidance on instances of the above form.
 \end{theorem*}
 
 We now move on to our first lower bound from Theorem~\ref{cellprobe:thm:k-wise-lb}, which applies to more general adaptive generators with larger word lengths. Compared to Theorem~\ref{cellprobe:thm:pnp-avoid-odd}, we will be able to remove the use of an $\mathsf{NP}$ oracle, and we will also be able to solve even the \emph{remote point} problem for $G$, finding a string which is $(\frac{1}{2} -\epsilon)$-far in relative hamming distance from every string in the range of $G$ for an arbitrarily small constant $\epsilon$.
@@ -1056,22 +1058,22 @@ In all of our main results here, we may replace the assumption that $F$ is defin
 
 As has been observed repeatedly in complexity theory, this formal notion of \emph{explicitness} is perhaps overly broad compared to the typical \emph{informal} use of the word; indeed, in many places it is preferred to use the more stringent notion of explicitness, requiring $F(x,y)$ to be computable uniformly in $\poly(\log N, \log M)$ time, which still captures apparently every data structure problem in the literature for which an interesting cell probe lower bound is currently known.
 \subsection{Consequences of Explicit Bit Probe Lower Bounds}\label{cellprobe:subsec:explicit-vs-avoid}
-Recall Lemma~\ref{cellprobe:lem:lb-yields-pnp-avoid} from the previous section, which was a direct corollary of our main correspondence (Observation~\ref{cellprobe:obs:main-correspondence}): every explicit data structure lower bound yields a $\mathsf{NP}$ oracle range avoidance algorithm for locally computable generators with corresponding parameters.
+Recall Lemma~\ref{cellprobe:lem:lb-yields-pnp-avoid} from the previous section, which was a direct corollary of our main correspondence (Observation~\ref{cellprobe:obs:main-correspondence}): every explicit data structure lower bound yields a $\mathsf{NP}$ oracle Range Avoidance algorithm for locally computable generators with corresponding parameters.
 We apply this as follows:
 \begin{theorem*}[Theorem \ref{cellprobe:thm:explicit-vs-avoid}, restated]
 ~
 \begin{enumerate}
     \item If explicit super-strong bit probe lower bounds with subexponentially many datapoints (Goal~\ref{cellprobe:goal:super-strong}, $M = \exp(N^{o(1)})$) are achievable, then $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$.
-    \item If explicit strong bit probe lower bounds with polynomially many datapoints (Goal~\ref{cellprobe:goal:strong}, $M=\poly(N)$) are achievable, then there is a polynomial time $\mathsf{NP}$ oracle algorithm for $\mathsf{NC}^0$ range avoidance with polynomial stretch.
+    \item If explicit strong bit probe lower bounds with polynomially many datapoints (Goal~\ref{cellprobe:goal:strong}, $M=\poly(N)$) are achievable, then there is a polynomial time $\mathsf{NP}$ oracle algorithm for $\mathsf{NC}^0$ Range Avoidance with polynomial stretch.
 \end{enumerate}
 \end{theorem*}
 \begin{proof}
-(1) If Goal~\ref{cellprobe:goal:super-strong} with $M(N) = \exp(N^{o(1)})$ is achievable than we can solve $\mathsf{NC}^0_t$ range avoidance in the stretch regime $n \mapsto n + n^{o(1)}$ in subexponential time with an $\mathsf{NP}$ oracle using Lemma~\ref{cellprobe:lem:lb-yields-pnp-avoid}. By \cite{RSW}, this implies the separation $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$.
+(1) If Goal~\ref{cellprobe:goal:super-strong} with $M(N) = \exp(N^{o(1)})$ is achievable than we can solve $\mathsf{NC}^0_t$ Range Avoidance in the stretch regime $n \mapsto n + n^{o(1)}$ in subexponential time with an $\mathsf{NP}$ oracle using Lemma~\ref{cellprobe:lem:lb-yields-pnp-avoid}. By \cite{RSW}, this implies the separation $\mathsf{EXP^{NP}} \not\subseteq \mathsf{NC}^1$.
 
-(2) By well known composition reductions (see \cite{Korten}), we may reduce any $\mathsf{NC}^0$ range avoidance $G: \B^n \to \B^{n^{1+ \Omega(1)}}$ to a second $\mathsf{NC}^0$ instance $G': \B^n \to \B^{n^c}$ where $c=O(1)$ is an arbitrarily large constant in polynomial time with an $\mathsf{NP}$ oracle. If Goal~\ref{cellprobe:goal:strong} is achievable than by Lemma~\ref{cellprobe:lem:lb-yields-pnp-avoid} we can solve range avoidance in this regime using an $\mathsf{NP}$ oracle in polynomial time.
+(2) By well known composition reductions (see \cite{Korten}), we may reduce any $\mathsf{NC}^0$ Range Avoidance $G: \B^n \to \B^{n^{1+ \Omega(1)}}$ to a second $\mathsf{NC}^0$ instance $G': \B^n \to \B^{n^c}$ where $c=O(1)$ is an arbitrarily large constant in polynomial time with an $\mathsf{NP}$ oracle. If Goal~\ref{cellprobe:goal:strong} is achievable than by Lemma~\ref{cellprobe:lem:lb-yields-pnp-avoid} we can solve Range Avoidance in this regime using an $\mathsf{NP}$ oracle in polynomial time.
 \end{proof}
 
-In (2) above, if we instead achieved Goal~\ref{cellprobe:goal:strong} with $M = \exp(\poly \log N)$ we would obtain a quasipolynomial time algorithm; if we achieved it with $M=\exp(N^{o(1)})$ we would obtain a subexponential time algorithm. Obtaining $\mathsf{P^{NP}}$ algorithms for $\mathsf{NC}^0$ range avoidance in the polynomial stretch regime was explicitly posed as an open problem in \cite{RSW}.
+In (2) above, if we instead achieved Goal~\ref{cellprobe:goal:strong} with $M = \exp(\poly \log N)$ we would obtain a quasipolynomial time algorithm; if we achieved it with $M=\exp(N^{o(1)})$ we would obtain a subexponential time algorithm. Obtaining $\mathsf{P^{NP}}$ algorithms for $\mathsf{NC}^0$ Range Avoidance in the polynomial stretch regime was explicitly posed as an open problem in \cite{RSW}.
 
 \subsection{Natural Bit Probe Lower Bounds Break $\mathsf{NC^0}$ PRGs}\label{cellprobe:subsec:natural-vs-prg}
 We present here a natural proofs barrier to both ``strong'' and ``super-strong'' bit probe lower bounds. The natural proofs paradigm, introduced in the seminal work of Razborov and Rudich \cite{natural-proofs}, identified the following pattern in all preceeding known lower bounds in complexity theory. For a lower bound problem, we have in mind in some resource-bounded computational model $\mathcal{C}$ for computing boolean valued functions $f: U\to \B$, where $U$ is a finite set with some structure (e.g. $U = \B^n$ or $U = [N] \times [N]$). We would like to present an explicit function $f_{\mathrm{explicit}}: U \to \B$ which we can unconditionally prove requires a large amount of resources for computations in the class $\mathcal{C}$. Razborov and Rudich observed that, in those cases where we \emph{can} prove such an explicit lower bound, the proof can be extended (with only minimal-to-moderate additional work) to have the following features: (1) the proof defines an efficiently decidable ``property of functions $f: U \to \B$'' so that $f_{\mathrm{explicit}}$ has the property, and whenever $f$ has this property it is hard for the class $\mathcal{C}$, and (2) not only does $f_{\mathrm{explicit}}$ have this property, but so does a \emph{uniformly random} function $f: U \to \B$ (with high probability). The ``property of functions'' referenced above is called a \emph{natural property} in \cite{natural-proofs}, and by ``efficiently'' we mean time polynomial/subexponential in the description size of $f$, which in this case is $|U|$. Razborov and Rudich then went on to show:
@@ -1234,9 +1236,9 @@ for some $L_{i,j}:\B^n\to \B$, $R_{i,j}: \B^m \to \B$
 If $F:\B^n \times \B^m$ has $(t,k)$-parallel protocols then $\mathsf{\Sigma_2^{cc}}(F) \leq k + t + \log t$ 
 \end{lemma}
 \begin{proof}
-Say that $F(x,y) = h(g_1(x,y),\ldots,g_t(x,y))$ with $g_j$ having one way communication complexity at most $k$. So $g_j(x,y) = R_j(\Pi_j(x),y)$ for some $\Pi_j: \B^n \to \B^k$, $R_j: \B^k \times \B^n \to \B$. Hence
+Say that $F(x,y) = h(g_1(x,y),\ldots,g_t(x,y))$ with $g_j$ having one way communication complexity at most $k$. So $g_j(x,y) = R_j(\Pi_j(x),y)$ for some $\Pi_j: \B^n \to \B^k$, $R_j: \B^k \times \B^m \to \B$. Hence
 \[
-F(x,y)=\bigvee_{\xi \in h^{-1}(1)} \bigwedge_{\substack{j \leq t,\\ z \in \B^k}} \mathbbm{1}\{\Pi_j(x) \neq z\} \lor \mathbbm{1}\{R(z,y) = \xi_j\}
+F(x,y)=\bigvee_{\xi \in h^{-1}(1)} \bigwedge_{\substack{j \leq t,\\ z \in \B^k}} \mathbbm{1}\{\Pi_j(x) \neq z\} \lor \mathbbm{1}\{R_j(z,y) = \xi_j\}
 \]
 \end{proof}
 

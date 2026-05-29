@@ -1,3 +1,41 @@
 % !TeX root = ../main.tex
 
 % Author-written thesis introduction goes here.
+
+\section{Motivation: Circuit Lower Bounds and Explicit Constructions}
+
+The central goal of complexity theory is to prove unconditional lower bounds on the resources needed to compute functions. Despite decades of intense study, we are still far from proving strong lower bounds for any functions of practical interest when the computational resource is sufficiently powerful, e.g. circuit size.  We may roughly divide the current approaches to circuit lower bounds into two categories:
+
+\begin{enumerate}
+    \item High-end: Here, the plan is to start with some explicit function of practical interest, and prove lower bounds for this function in restricted classes of circuits, hopefully increasing the strength of the circuit class one can lower bound against over time.
+    \item Low-end: Here, the goal is to start with an unnatural/contrived function which is provably hard for general circuits, and try to find more and more efficient algorithms for it in some incomparable computational model such as nondeterministic time or space. If we find a function $f$ which requires large circuit complexity, and are able to ``push it down'' into a small complexity class like $\mathsf{NP, PSPACE, EXP}$, we will have succeeded in proving a lower bound for the \emph{complete} problems for  $\mathsf{NP/PSPACE/ EXP}$, which are natural and important.
+\end{enumerate}
+The low-end approach has been a central focus since the 1980's. Despite significant progress, it so far can only achieve lower bounds against highly restricted classes of circuits, in particular circuits which are heavily restricted in their depth \todo{Ajtai83,FSS,razborov}.
+The high-end approach is a more recent development, having been brought to attention by the pioneering work of Williams on the \emph{algorithmic method} \todo{ryan-sat, ryan-acc} (William's method in fact utilizes aspects of both the high-end and low-end approaches).
+
+\begin{quote}
+    \textit{A primary goal of this thesis will be to give a general algorithmic framework in which to cast this ``high-end approach'' to circuit lower bounds; in particular, we will cast this approach as the study of the complexity of a total search problem called Range Avoidance.}
+\end{quote}
+
+\todo{now say, this problem is not unique to circuit lower bounds, we may think of that as just one special case of a more general phenomenon}
+
+\section{The Search Problem Perspective}
+\begin{enumerate}
+    \item explain how we can view explicit constructions and circuit lower bounds for exponential time classes as total search problems
+    \item give a bit the history of total search problems, explain how they are studied via the logic perspective; talk here a bit about bounded arithmetic
+\end{enumerate}
+
+\section{Range Avoidance}
+\begin{enumerate}
+    \item define Range Avoidance, explain how it captures the probabilistic method, use the example of ramsey graphs from the Survey
+    \item (more?)
+\end{enumerate}
+
+\section{Our Results}
+\begin{enumerate}
+    \item give a complexity class for explicit constructions
+    \item an algorithmic framework in which to attack lower bound problems
+    \item give conditional algorithms that solve explicit construction problems (specialized hardness randomness; two sections can be explained in this way)
+    \item classify relativizing circuit lower bounds via black box $TF\Sigma_2$; give first separations here using tools from bounded depth circuit complexity
+    \item get algorithms for a special case of avoid, and using a shift in perspective, new lower bounds in a classical model of computation (cell probe)
+\end{enumerate}

@@ -6,7 +6,7 @@ We use $\poly(n)$ to denote an unspecificed function of $n$, $f(n)$, which is bo
 
 \section{Complexity Classes, Search Problems, and Explicit Construction Problems}
 
-We assume familiarity with the standard complexity classes such as $\cl{P}, \cl{NP}, \cl{E} = \cl{Time}[2^{\poly(n)}]$, $\cl{EXP} = \cl{Time}[2^{O(n)}]$, etc, which we always write in sans-serif font. For background on complexity classes and other standard notions in complexity theory, the reader may consult \cite{arora-barak}. For a general decisional complexity class $\cl{C}$ (i.e. a set of languages) we use $\mathsf{i.o.\dash C}$ to denote the set of languages $L$ so that there exists $L' \in \cl{C}$ such that for infinitely many $n$, $L$ and $L'$ contain the same $n$-bit strings. We say that $\cl{C} \not\subseteq_{i.o.} \cl{C'}$, or that ``$\cl{C}$ is separated from $\cl{C'}$ almost everywhere,'' if there exists $L \in \cl{C} \setminus \cl{i.o.\dash C'}$. 
+We assume familiarity with the standard complexity classes such as $\cl{P}, \cl{NP}, \cl{E} = \cl{Time}[2^{O(n)}]$, $\cl{EXP} = \cl{Time}[2^{\poly(n)}]$, etc, which we always write in sans-serif font. For background on complexity classes and other standard notions in complexity theory, the reader may consult \cite{arora-barak}. For a general decisional complexity class $\cl{C}$ (i.e. a set of languages) we use $\mathsf{i.o.\dash C}$ to denote the set of languages $L$ so that there exists $L' \in \cl{C}$ such that for infinitely many $n$, $L$ and $L'$ contain the same $n$-bit strings. We say that $\cl{C} \not\subseteq_{i.o.} \cl{C'}$, or that ``$\cl{C}$ is separated from $\cl{C'}$ almost everywhere,'' if there exists $L \in \cl{C} \setminus \cl{i.o.\dash C'}$. 
  
 We procede to define \emph{search problems}, a primary subject of this thesis:
 \begin{definition}
@@ -25,7 +25,7 @@ Next, we define the notion of reducibility amongst search problems that will be 
 Let $R_1, R_2$ be polynomially bounded search problems, and $\cl{C}$ a complexity class with a polynomial time complete problem. We say that $R_1$ is $\cl{FP^{C}}$ (resp. $\cl{FP^C_\cl{\Vert}}$) many-one reducible to $R_2$ if there is an $\cl{FP}$ function $f$ and a $\cl{FP^C}$ function (resp. $\cl{FP^C_\cl{\Vert}}$ function) $g$ so that the following holds: for any $x,y \in \B^*$, if $(f(x),y)\in R_2$ then $(x, g(x,y))\in R_1$.
 \end{definition}
 
-Finally, we recall \todo{recall?} our formal definition of an explicit construction problem:
+Finally, we recall our formal definition of an explicit construction problem:
 \begin{definition}
 An explicit construction problem is defined by a language $\Pi \subseteq \B^*$, which we interpret as defining some combinatorial property of boolean strings. The associated search problem is $EC_\Pi = \{(x,y) \mid y\in \Pi, |y|=|x|\}$; equivalently, given $1^n$, find some $y \in \B^n$ which has the property $\Pi$. 
 \end{definition}
@@ -33,17 +33,16 @@ We observe that explicit construction problems are special cases of \emph{sparse
 
 \section{Range Avoidance}
 
-We recall here \todo{are we recalling?} the definition of Range Avoidance, which is also abbreviated ``Avoid:''
-\begin{definition}[Range Avoidance/ Avoid]
-Range Avoidance is a search problem in which the instance is a boolean circuit $C: \B^n\to \B^m$, $ m> n$, and the solutions are any $y \in \B^m$ such that $y \notin \rng(C)$. If $\cl{C}$ is a subclass of the family of all multi-output boolean circuits, we denote $\cl{C}$-Avoid the search problem in which we restrict attention to inputs $C$ which are in the circuit class $\cl{C}$.
+We recall here the definition of Range Avoidance, which is also abbreviated ``\avoid:''
+\begin{definition}[Range Avoidance/ \avoid]
+Range Avoidance is a search problem in which the instance is a boolean circuit $C: \B^n\to \B^m$, $ m> n$, and the solutions are any $y \in \B^m$ such that $y \notin \rng(C)$. If $\cl{C}$ is a subclass of the family of all multi-output boolean circuits, we denote $\cl{C}$-\avoid the search problem in which we restrict attention to inputs $C$ which are in the circuit class $\cl{C}$.
 \end{definition}
 
-We make a note about the history of the name ``Range Avoidance.'' When the above search problem was originally introduced in \cite{KKMP}, it went under the name ``Empty;'' to be more precise, Empty was used to refer to a more general (harder) search problem, of which Range Avoidance is a special case and refered to as ``$1$-Empty.'' In the followup work \cite{Korten21} this name persists, although the prefix 1 is dropped. Finally, in \cite{RSW}, the name Range Avoidance was coined, and since then it has become the accepted terminology, which we will use throughout this thesis. Finally, we note that in Chapter~\ref{chap:lop}, we will investigate the harder variant of Avoid first studied in \cite{KKMP} under the name ``Empty;'' in that chapter, we refer to the harder variant as ``Strong Avoid'' and the standard Avoid problem as ``Weak Avoid.''
+We make a note about the history of the name ``Range Avoidance.'' When the above search problem was originally introduced in \cite{KKMP}, it went under the name ``{\sc Empty};'' to be more precise, {\sc Empty} was used to refer to a more general (harder) search problem, of which Range Avoidance is a special case and refered to as ``{\sc 1-Empty}.'' In the followup work \cite{Korten21} this name persists, although the prefix 1 is dropped. Finally, in \cite{RSW}, the name Range Avoidance was coined, and since then it has become the accepted terminology, which we will use throughout this thesis. Finally, we note that in Chapter~\ref{chap:lop}, we will investigate the harder variant of \avoid first studied in \cite{KKMP} under the name ``{\sc Empty};'' in that chapter, we refer to the harder variant as ``Strong \avoid'' and the standard \avoid problem as ``Weak \avoid.''
 
 We also make note of a complexity class definition which appears throughout \cite{total,Korten21}:
 \begin{definition}
 $\cl{APEPP}$ is the class of all polynomially bounded search problems which are polynomial time many-one reducible to Range Avoidance.
 \end{definition}
-This definition is in line with the standard practice in total search problem complexity (and complexity more generally) of grouping search problems into completeness classes characterized by some key problem. Unlike ``Empty,'' the term $\cl{APEPP}$ has not been replaced in subsequent work, however it has mostly fallen out of use. This is primarily due to the fact that there are two distinct notions of reduction that can be used to reduce problems to Range Avoidance (polynomial time and $\cl{FP^{NP}}$ respectively), both of which are interesting and seemingly distinct in their power. Rather than making two separate definitions based on the type of reduction used, we will simply refer to problems as being  ``$\cl{FP}$-equivalent'' or ``$\cl{FP^{NP}}$-equivalent'' to Range Avoidance (in the first case, we will also say polynomial-time equivalent). 
-
+This definition is in line with the standard practice in total search problem complexity (and complexity more generally) of grouping search problems into completeness classes characterized by some key problem. Unlike ``{\sc Empty},'' the term $\cl{APEPP}$ has not been replaced in subsequent work, however it has mostly fallen out of use. This is primarily due to the fact that there are two distinct notions of reduction that can be used to reduce problems to Range Avoidance (polynomial time and $\cl{FP^{NP}}$ respectively), both of which are interesting and seemingly distinct in their power. Rather than making two separate definitions based on the type of reduction used, we will simply refer to problems as being  ``$\cl{FP}$-equivalent'' or ``$\cl{FP^{NP}}$-equivalent'' to Range Avoidance (in the first case, we will also say polynomial-time equivalent). 
 
