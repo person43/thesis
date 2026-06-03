@@ -16,7 +16,7 @@
 \usepackage{newtxmath}
 \usepackage[explicit]{titlesec}
 \usepackage[titles]{tocloft}
-\usepackage[backend=bibtex, sorting=none, bibstyle=ieee]{biblatex}
+\usepackage[backend=bibtex, sorting=nyt, bibstyle=ieee]{biblatex}
 \usepackage{appendix}
 \usepackage{bm}
 \usepackage{float}
@@ -30,6 +30,9 @@
 \usepackage{xcolor}
 \usepackage{xspace}
 \usepackage{complexity}
+
+% Avoid splitting short footnotes across page breaks.
+\interfootnotelinepenalty=10000
 
 % newtxmath ties \mathsf to the active sans text font, which in this thesis
 % font stack does not provide the uppercase Greek glyphs needed for complexity
@@ -77,9 +80,12 @@
 \titleformat{\chapter}[display]
   {\normalfont\bfseries\filcenter}{}{0pt}
   {\large\chaptertitlename\ \large\thechapter : \large\bfseries\filcenter{#1}}
+\titleformat{name=\chapter,numberless}[display]
+  {\normalfont\bfseries\filcenter}{}{0pt}
+  {\large\bfseries\filcenter{#1}}
 \titlespacing*{\chapter}{0pt}{0pt}{30pt}
 \titleformat{\section}{\normalfont\bfseries}{\thesection}{1em}{#1}
-\titleformat{\subsection}{\normalfont}{\thesubsection}{0em}{\hspace{1em}#1}
+\titleformat{\subsection}{\normalfont\bfseries}{\thesubsection}{0em}{\hspace{1em}#1}
 \titleformat{\subsubsection}{\normalfont}{\thesubsubsection}{0em}{\hspace{1em}#1}
 
 \newtheorem{theorem}{Theorem}[chapter]
@@ -105,7 +111,7 @@
 \newtheorem{goal}[theorem]{Goal}
 \newtheorem*{goal*}{Goal}
 
-\theoremstyle{definition}
+\theoremstyle{plain}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem*{definition*}{Definition}
 

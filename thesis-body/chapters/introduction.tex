@@ -2,40 +2,202 @@
 
 % Author-written thesis introduction goes here.
 
-\section{Motivation: Circuit Lower Bounds and Explicit Constructions}
+\section{Motivation: Circuit Lower Bounds, Explicit Constructions and the Probabilistic Method}
 
 The central goal of complexity theory is to prove unconditional lower bounds on the resources needed to compute functions. Despite decades of intense study, we are still far from proving strong lower bounds for any functions of practical interest when the computational resource is sufficiently powerful, e.g. circuit size.  We may roughly divide the current approaches to circuit lower bounds into two categories:
 
 \begin{enumerate}
-    \item High-end: Here, the plan is to start with some explicit function of practical interest, and prove lower bounds for this function in restricted classes of circuits, hopefully increasing the strength of the circuit class one can lower bound against over time.
-    \item Low-end: Here, the goal is to start with an unnatural/contrived function which is provably hard for general circuits, and try to find more and more efficient algorithms for it in some incomparable computational model such as nondeterministic time or space. If we find a function $f$ which requires large circuit complexity, and are able to ``push it down'' into a small complexity class like $\mathsf{NP, PSPACE, EXP}$, we will have succeeded in proving a lower bound for the \emph{complete} problems for  $\mathsf{NP/PSPACE/ EXP}$, which are natural and important.
+    \item \emph{Low-end:} Here, the plan is to start with some explicit function of practical interest, and prove lower bounds for this function against restricted classes of circuits, hopefully increasing the strength of the circuit class one can lower bound against over time.
+    \item \emph{High-end:} Here, the plan is to start with an unnatural/contrived function which is provably hard for general circuits, and try to find more and more efficient algorithms for it in some incomparable computational model such as nondeterministic time or space. If we find a function $f$ which requires large circuit complexity, and are able to ``push it down'' into a small complexity class like $\cl{NP, PSPACE}$, or $\cl{EXP}$, we will have succeeded in proving a lower bound for the \emph{complete} problems for  $\cl{NP/PSPACE/ EXP}$, which are natural and important.
 \end{enumerate}
-The low-end approach has been a central focus since the 1980's. Despite significant progress, it so far can only achieve lower bounds against highly restricted classes of circuits, in particular circuits which are heavily restricted in their depth \todo{Ajtai83,FSS,razborov}.
-The high-end approach is a more recent development, having been brought to attention by the pioneering work of Williams on the \emph{algorithmic method} \todo{ryan-sat, ryan-acc} (William's method in fact utilizes aspects of both the high-end and low-end approaches).
+The low-end approach has been a central focus since the 1980's. Despite significant progress, it so far can only achieve lower bounds against highly restricted classes of circuits, in particular circuits which are heavily restricted in their depth \cite{Ajtai83,FSS,hastad-switching, razborov-polynoms,smolensky-ac0p,hajnal-threshold}.
+The high-end approach is a more recent development, having been brought to attention by the pioneering work of Williams on the \emph{algorithmic method} \cite{williams-sat, ryan-acc} (William's method in fact utilizes aspects of both the high-end and low-end approaches). 
 
 \begin{quote}
     \textit{A primary goal of this thesis will be to give a general algorithmic framework in which to cast this ``high-end approach'' to circuit lower bounds; in particular, we will cast this approach as the study of the complexity of a total search problem called Range Avoidance.}
 \end{quote}
 
-\todo{now say, this problem is not unique to circuit lower bounds, we may think of that as just one special case of a more general phenomenon}
+Our inability to prove strong circuit lower bounds is particularly frusturating in light of a classical theorem of Shannon from 1949:
+\begin{theorem*}[Shannon's Bound \cite{Shannon}]
+A random boolean function $f: \B^n \to \B$ requires circuit complexity $\geq 2^{n}/n$ with probability $\geq 1 - 2^{-2^{\Omega(n)}}$.
+\end{theorem*}
+This fact puts complexity theorists in a curious situation: we are in search of a kind of object which we know exists in overwhelming abundance, and yet we are unable to identify even one example of such an object. The familiar reader may recognize that this problem is actually not at all unique to complexity theory; mathematics abounds with nonconstructive arguments which seem to yield no information about the objects they prove to exist. Two years prior to Shannon's seminal 1949 paper, Erd\H{o}s used the same kind of nonconstructive argument to show the existence of $n$-vertex graphs with no clique or independent size of size $>> \log n$ \cite{Erdos}, introducing a style of proof that has since come to be known as the \emph{probabilistic method}. In the ensuing century this method has become a standard and surprisingly versatile tool in theoretical computer science and combinatorics; see \cite{probabilistic-method} for a comprehensive textbook on the subject. 
 
-\section{The Search Problem Perspective}
+In many cases, an application of the probabilistic method proving the existence of an interesting class of object has spawned a deep line of work dedicated to producing a concrete example of one such object. The project of replacing a nonconstructive argument by a constructive example is known generically as an \emph{explicit construction problem}. In some fortunate cases, such as Ramsey graphs, error corrected codes, and expander graphs, decades of hard work eventually lead to optimal or near-optimal solutions. In many other cases no significant progress has been made to date. 
+In light of Shannon's aforementioned nonconstructive argument for the existence of exponentially hard boolean functions, we may also cast the central challenge in complexity theory as a special case of this more general challenge of finding explicit constructions to match probabilistic arguments. A priori, there is no reason to believe that framing is at all useful. Indeed, it has become common wisdom that the probabilistic method is \emph{inherently nonconstructive} as a proof method, and so in each case it is applied we must start from scratch in trying to match it constructively. Nonetheless we may ask:
+
+\begin{quote}
+($\dagger$) \textit{Can we view Shannon's probabilistic argument for the existence of hard boolean functions as a nontrivial first step in the direction of proving interesting circuit complexity lower bounds? More generally, is there any nontrivial information that can be \textbf{generically extracted} from the probabilistic method, beyond mere existence?}
+\end{quote}
+
+The extent to which we can expect a positive answer to this question will depend on our motivations behind studying explicit construction problems. There are (at least) two common motivations we are aware of, the first being of an informal \emph{philosophical} nature, and the second being of a formal \emph{computational} nature. The philosophical motivation can be summarized by a maxim asserting that we do not fully understand a concept until we can produce an example. When we have some combinatorial property, the mere existence of objects satisfying that property does not give us any deeper information about \emph{why} a certain object achieves the property. If we succeed in the quest of finding an explicit object, and have a mathematical proof that this object \emph{in particular} has the relevant property, this proof will usually contain within it a furtherance of our general understanding of the concept in question.
+
+This informal motivation utilizes a rather vague definition of the term ``explicit.'' In this framework, we would call an object, such as a Ramsey graph $G \subseteq \binom{[n]}{2}$, ``explicit'' provided we can present it by a comprehensible definition from which we can extract and compute various other properties of the object by direct mathematical argument. The class of \emph{computational} motivations for studying explicit constructions centers itself on a more concrete definition of the notion of ``explicitness:'' in this context we will say that an object is explicit if it can be produced by a certain kind of algorithm. In the example of a Ramsey graph $G \subseteq \binom{[n]}{2}$, we might say that it is explicit if there is a $\poly(n)$ time algorithm which outputs its adjacency matrix given $n$; embedded in this kind of definition is the necessity of reserving the notion of explicitness for \emph{sequences of objects} rather than individuals. 
+
+\todo{below is where we want to go}
 \begin{enumerate}
-    \item explain how we can view explicit constructions and circuit lower bounds for exponential time classes as total search problems
-    \item give a bit the history of total search problems, explain how they are studied via the logic perspective; talk here a bit about bounded arithmetic
+    \item want to say, first of all, on the formal/computational side of things, (1) we can try to give a positive answer to the key question by designing algorithms which can solve some general class of explicit construction problems whose definition contains all of those provable by the probabilistic method, and (2) if we succeed in getting a positive answer, this would have applications to circuit lower bounds
+    \item In the philosophical case, we won't expect a strong positive answer, i.e. there probably isn't some grand theory of combinatorics which lets us generically extract an interesting theory of some concept from a probabilistic exisentece proof. However, we still think that our investigations cast light on the philosophical stuff... and for example, we can hope to rank objects according to the strength of property, if there's some ``universal'' object which implies all other properties this is of informal interest....
 \end{enumerate}
 
+
+
+% \begin{enumerate}
+%     \item one might say, the random argument of shannon is useless and we need a completely different approach... especially since, so many other objects are proven this way, an mathematicians have come to the informal understanding that these type of arguments get us no further than existence
+%     \item This thesis asks the question, how far can we get by using Shannon's argument as a genuine starting point? More broadly, can we in general extract more from the probabilistic method than mere existence?
+%     \item Now we want to talk about what is meant by explicitness, and how our question connects to the traditional study of explicit constructions in fields less directly connected to computation, e.g. combinatorics. In those fields, we seek explicitness for mathematical understanding... it's unlikely we can find some grand theory which makes us automatically understand every combinatorial property given that we have a probabilistic existence argument; however we can study these problems computationally... 
+% \end{enumerate}
+\section{The Search Problem Perspective}
+To get a positive answer to our key question ($\dagger$), we need the following ingredients:
+\begin{enumerate}
+    \item Formally define a class of explicit construction problems, which contains all of the key examples of unsolved explicit construction problems studied in combinatorics and theoretical computer science.
+    \item Find some explicit construction procedure which can solve all problems in the aforementioned class.
+\end{enumerate}
+We \todo{start with 1}. A general definition of an explicit construction problem is as follows:
+\begin{definition*}
+An explicit construction problem is defined by a set $\Pi \subseteq \B^*$, which we interpret as defining some combinatorial property of boolean strings, i.e. $x \in \Pi$ if and only if $x$ has some desired property. The associated computational problem is: given $n$, find some $x \in \B^n$ which has the property $\Pi$ (meaning $x \in \B^n \cap \Pi$).
+\end{definition*}
+As per our previous discussion, it is reasonable to measure the complexity of algorithms solving an explicit construction problem in terms of the \emph{length of the object produced}, i.e. $n$ in the above case; we will say that an algorithm is efficient if it runs in time polynomial in $n$. It is standard in complexity theory to have the length of the input to a problem be the primary ``complexity parameter,'' and so for problems as above for which the input is simply a number $n$, we will formally define the input to the problem to be the unary input $1^n$.
+We now make two observations about the kind of computational problem we have just defined. 
+\begin{enumerate}
+    \item There may be more than one possible solution for a given input $1^n$, i.e. $|\Pi \cap \B^n| > 1$ for some $n$. This means the explicit construction problem is inherently a \emph{search problem}, as opposed to a \emph{decision/function problem}.
+    \item For all of the properties $\Pi$ of interest, there will be \emph{at least one solution} for every input $1^n$, i.e. $\Pi \cap \B^n \neq \emptyset$, since explicit construction problems are only of interest once a nonconstructive proof of existence has been established. In complexity terminology, this makes the explicit construction problem a \emph{total search problem}.
+\end{enumerate}
 \section{Range Avoidance}
+\todo{make sure to emphasize KKMP as the introducer of avoid...}
 \begin{enumerate}
     \item define Range Avoidance, explain how it captures the probabilistic method, use the example of ramsey graphs from the Survey
     \item (more?)
 \end{enumerate}
 
 \section{Our Results}
+\todo{maybe change section title, something to the effect of ``contents'', ``our results'' sounds a bit to conference-paper-y...}
+
 \begin{enumerate}
     \item give a complexity class for explicit constructions
     \item an algorithmic framework in which to attack lower bound problems
     \item give conditional algorithms that solve explicit construction problems (specialized hardness randomness; two sections can be explained in this way)
     \item classify relativizing circuit lower bounds via black box $TF\Sigma_2$; give first separations here using tools from bounded depth circuit complexity
     \item get algorithms for a special case of avoid, and using a shift in perspective, new lower bounds in a classical model of computation (cell probe)
+\end{enumerate}
+
+\subsection{Chapter 1: A Complexity Theory for Explicit Constructions}
+In the first chapter of this thesis, based on work first appearing in \cite{Korten}, we develope a complexity theory for explicit construction problems centered around the Range Avoidance problem. Our first batch of results in this chapter consists of a sequence of reductions showing that a wide range of important unsolved explicit construction problems can be reduced in polynomial time to \avoid. Our results cover the following explicit construction problems:
+\begin{itemize}
+    \item Functions $f: \B^n \to \B$ with exponential circuit complexity (Theorem~\ref{thm:truth-tables-in-apepp})
+    \item Pseudorandom generators (Theorem~\ref{thm:prg})
+    \item Strongly explicit two-source randomness extractors with 1 bit output for min-entropy $\log n + O(\log(1/\epsilon))$, and thus strongly explicit $O(\log n)$-Ramsey graphs in both the bipartite and non-bipartite case (Theorem~\ref{thm:two-source-to-avoid})
+    \item Matrices with high rigidity over any finite field (Theorem~\ref{thm:rigid-in-apepp})
+    \item Strings of time-bounded Kolmogorov complexity $n - 1$ relative to any fixed polynomial time bound and any fixed Turing machine (Theorem~\ref{thm:kt-random})
+    \item Communication problems outside of $\cl{PSPACE^{CC}}$ (Theorem~\ref{thm:space-circuit})
+    \item Explicit data structure problems with extremely high bit-probe complexity (Theorem~\ref{thm:probe-circuit})
+\end{itemize}
+
+Together, these reductions give a very strong indication that \avoid is \emph{at least as hard} as many of the core explicit construction problems of interest in the field. Our second main result is to show that some of the above explicit construction problems are actually \emph{equivalent} in complexity to \avoid, meaning that a reduction also exists in the reverse direction, provided with increase the power of our reductions. The most important of these results is the following:
+\begin{theorem*}[Theorem~\ref{thm:epsilon-hard-reduction}]
+For any $\epsilon > 0$, there is a polynomial time $\cl{NP}$-oracle reduction from \avoid to the problem {\sc $2^{\epsilon n}$-Hard} of producing functions $f: \B^n \to \B$ requiring $2^{\epsilon n}$-size boolean circuits.
+\end{theorem*}
+This can be interpretted as a kind of \emph{completeness result}: if we take $\cl{FP^{NP}}$ reductions as our basic notion of reducibility, and ``problems reducible to \avoid'' as our complexity class for explicit constructions, then this theorem tells us that the construction of hard truth tables is a complete problem for this class; in other words it is the \emph{hardest explicit construction problem}. As we shall explain in more detail \todo{later? or before?}, for all of the explicit construction problems mentioned above, $\cl{FP^{NP}}$ algorithms are unknown and would constitute significant breakthroughs. Hence, building a complexity class around $\cl{FP^{NP}}$ reductions is still of great interest, although of course gives a weaker notion of equivalent than standard polynomial time reductions. \todo{mention jerabek}
+
+Theorem~\ref{thm:epsilon-hard-reduction} is interesting for a few other reasons. First, using our previously mentioned equivalence between explicit construction algorithms and circuit lower bounds \todo{reference}, we conclude that \avoid allows us to exactly characterize the truth of a certain circuit lower bound in terms of the solvability of a total search problem:
+
+\begin{theorem*}[Theorem~\ref{thm:avoid-iff-enp-lb}]
+The following are equivalent:
+\begin{enumerate}
+    \item $\cl{E^{NP}} \not\subseteq_{i.o.} \cl{size}[2^{o(n)}]$.
+    \item $\avoid \in \cl{FP^{NP}}$
+\end{enumerate}
+\end{theorem*}
+% \begin{proof}
+% By Observation~\ref{obs:avoid-algs-are-ckt-lbs}, (1) holds if and only if there is a $\cl{FP^{NP}}$ algorithm for {\sc $2^{\epsilon n}$-Hard} for some fixed constant $\epsilon > 0$. Combining Theorems \ref{thm:truth-tables-in-apepp} and \ref{thm:epsilon-hard-reduction}, {\sc $2^{\epsilon n}$-Hard} and \avoid are $\cl{FP^{NP}}$ equivalent, hence {\sc $2^{\epsilon n}$-Hard}$\in \cl{FP^{NP}}$ if and only if $\avoid \in \cl{FP^{NP}}$.
+% \end{proof}
+
+% The astute reader may observe that, chaining together the reduction of {\sc $2^{n}/n$-Hard} to \avoid from Theorems \ref{thm:truth-tables-in-apepp} and \ref{range:thm:chr-hard-tt-to-avoid} with the reduction from \avoid to {\sc $2^{\epsilon n}$-Hard} in Theorem~\ref{thm:epsilon-hard-reduction}, we obtain a reduction from {\sc $2^{n}/n$-Hard} to {\sc $2^{\epsilon n}$-Hard}; in other words, there is an $\cl{FP^{NP}}$ algorithm which takes truth tables with mildly exponential circuit complexity, and transforms them into truth tables with near maximal circuit complexity. As an immediate consequence we obtain the following unusual \emph{hardness amplification} theorem for $\cl{E^{NP}}$:
+
+
+\todo{this realizes our first goal set out in begining: we have cast the problem of proving circuit lower bounds for $\cl{E^{NP}}$, an important case of the ``high-end,'' precisely in terms of algorithms for a total search problem}
+
+Another important implication of Theorem~\ref{thm:epsilon-hard-reduction} is that it yields a method for \emph{amplifying} circuit lower bounds in the class $\cl{E^{NP}}$. Recall that Theorem~\ref{thm:epsilon-hard-reduction} gives a reduction from \avoid to {\sc $2^{\epsilon n}$-Hard} for any $\epsilon > 0$. On the other hand, in Theorem~\ref{thm:truth-tables-in-apepp} we will show that the problem {\sc $2^n/n$-Hard} of producing functions of circuit complexity $\geq 2^n/n$ is reducible in polynomial time to \avoid. Taken together, this yields an $\cl{FP^{NP}}$ reduction from producing functions of near-maximum circuit complexity to producing functions of mildly exponential circuit complexity. Using again the equivalence between explicit constructions and circuit lower bounds for $\cl{E^{NP}}$ \todo{ref} we obtain:
+
+\begin{theorem*}[Theorem~\ref{thm:enp-amp}]
+The following are equivalent:
+\begin{enumerate}
+    \item $\cl{E^{NP}} \not\subseteq_{i.o.} \cl{size}[2^{o(n)}]$.
+    \item  $\cl{E^{NP}} \not\subseteq_{i.o.} \cl{size}[2^{n}/n]$.
+\end{enumerate}
+\end{theorem*}
+
+
+\todo{give some concluding remarks; mention that there's been a ton of follow up work on Avoid validating this perspective... say that we'll give a brief survey at the end of chapter 1}
+
+\subsection{Chapter 2: Algorithmic Circuit Lower Bounds and the Structure of $\mathsf{TF\Sigma_2^P}$}
+After the publication of \cite{Korten} and the subsequent investigation by various authors into \avoid as an avenue through which to understand circuit lower bounds, an amazing breakthrough was achieved in a pair of works by Chen, Hirahara and Ren \cite{CHR} and Li \cite{Li}, who showed:
+\begin{theorem*}[\cite{CHR, Li}]
+The complexity classes $\cl{S_2^E} \subseteq \cl{ZPE^{NP}} \subseteq \cl{\Sigma_2^E}$ contain languages with circuit complexity $\geq 2^n/n$ for all sufficiently large $n$.
+\end{theorem*}
+These results were obtained by giving new and surprising algorithms for \avoid. This is a direct realization of the goal we described above: make progress along the \emph{high-end approach} to lower bounds, by casting lower bounds as an algorithmic problem and finding nontrivial \todo{reductions/procedure}. The proof of these results utilized a technique used in the proof of Theorem~\ref{thm:epsilon-hard-reduction} showing the $\cl{FP^{NP}}$ equivalence of {\sc $2^{\epsilon n}$-Hard} and \avoid. 
+
+In Chapter 2, based on joint work with Toniann Pitassi first appearing in \cite{KP24}, we embark on a more formal investigation into the structure of total search problems in the second level of the polynomial hierarhcy ($\cl{TF\Sigma_2^P}$), with the intent of illuminating the mechanisms behind the new circuit lower bounds in \cite{CHR,Li}: how can these methods be extended, and what are their limitations? \todo{make sure to mention KKMP here}
+
+A key property we identify which makes the main results of \cite{CHR, Li} possible is a polynomial time reduction from \avoid to a $\cl{TF\Sigma_2^P}$ search problem which has a \emph{unique solution} on every input.  We study a generalized version of \avoid called \strongavoid, first defined in \cite{KKMP}, in which the input is a circuit $C: (\B^n \setminus \{0^n\}) \to \B^n$ and the goal is to find $y \in \B^n \setminus \rng(C)$. We show that in the relativized/black-box setting, \strongavoid is not polynomial time reducible to \emph{any problem} with unique solutions. More strongly, we show that it is not solvable with polynomially many nonadaptive calls to a $\cl{\Sigma_2^P}$ decision oracle (it is easy to show that this property implies the previous). This result shows that the new circuit lower bounds in \cite{CHR,Li} crucially rely on a certain \emph{generousity} in Shannon's counting argument proving the existence of hard boolean functions: if the counting argument \emph{merely} showed that the total number of boolean functions exceded the number of small circuits by at least 1, this would not in general be sufficient to obtain the kinds of algorithms needed for the main circuit lower bounds in \cite{CHR24, Li}. After this, we exhibit a different natural problem (a problem whose complexity lies strictly in between that of \avoid and \strongavoid), which has the property that (1) it \emph{is} reducible to a problem with unique solutions, however (2) in the black-box setting, it \emph{does not} have $\cl{FZPP^{NP}}$ or even $\cl{FBPP^{NP}}$ algorithms. This result shows that \todo{of some structural interest}.
+
+In the last part of Chapter 2, we strengthen the algorithmic upper bound for \avoid given by Chen, Hirahara, Ren, and Li in \cite{CHR24, Li}, by showing that \avoid has a polynomial time reduction to a natural search problem {\sc Linear Ordering Principle} which has the following two properties:
+\begin{enumerate}
+    \item Every input to {\sc Linear Ordering Principle} has a unique solution.
+    \item There is a $\cl{FZPP^{NP}}$ algorithm which solves  {\sc Linear Ordering Principle}.
+\end{enumerate}
+The definition of  {\sc Linear Ordering Principle} is simple and natural: given a circuit $R: \B^n \times \B^n \to \B$ which purports to define the comparison relation of some total order on $\B^n$ (i.e. $R(x,y)=1 \leftrightarrow x < y$), find either (1) a witness that $R$ fails to define a total order, or (2) the least element in the order it defines \footnote{As stated the problem may have multiple valid solutions, but it is easily shown equivalent to a problem with unique solutions.}. \todo{fix footnote leaking}\todo{was studied by krajicek}
+
+\todo{mention Volkavic paper}
+\subsection{Chapters 3 and 4: Deterministic Algorithms for Explicit Construction Problems}
+Chapters \ref{chap:lossy} and \ref{chap:randomstrings} are dedicated to the following question:
+\begin{quote}
+\textit{Under what assumptions can we obtain deterministic polynomial time algorithms for important explicit construction problems?}
+\end{quote}
+Obtaining deterministic algorithms for problems solvable with randomness is known as \emph{derandomization} and is a central subject of study in complexity theory \todo{cite something... arora barak?}. The classical hardness/randomness paradigm of Nisan and Wigderson (developed also in earlier work of \cite{Yao}) tells us that in many cases, we can achieve derandomization for very broad classes of problems if we assume strong (but widely-believed) \emph{computational hardness assumptions}. The most famous and striking instantiation of this equivalence is due to Impagliazzo and Wigderson who proved:
+\begin{theorem*}[\cite{IW97}]
+If $\cl{E} \not\subseteq_{i.o.} \cl{size}[2^{o(n)}]$ then $\cl{BPP} = \cl{P}$.
+\end{theorem*}
+
+In Chapter~\ref{chap:lossy}, based on work originally appearing in \cite{time-space}, we examine a special case of the Range Avoidance problem called {\sc Lossy Code} which seems to be of a markedly lower complexity: it lies inside $\cl{TFNP}$ rather than the larger class $\cl{TF\Sigma_2^P}$. {\sc Lossy Code} is defined as follows: we are given a pair of circuits $C: \B^n \to \B^{n-1}, D: \B^{n-1} \to \B^n$, and must find $x \in \B^n$ such that $D(C(x)) \neq x$. We think of $C$ as defining a ``compression algorithm'' which compresses every $n$ bit string into an $n-1$ bit string, and $D$ as a decompression procedure which attempts to invert $C$; the {\sc Lossy Code} problem is to find a string on which this compression/decompression procedure fails to recover the original string. Observe that, if we treat $D$ as an instance of \avoid, than any \avoid solution on $D$ must be a {\sc Lossy Code} solution for $(C,D)$, hence this problem is at most as difficult as \avoid. 
+
+In the original publication of this work, the primary motivation for studying {\sc Lossy Code} was mostly exploratory: we did not know of any concrete explicit construction problem which directly reduced to it, but it seemed to be an important special case of \avoid which lay in an interesting intersection of complexity classes: $\cl{TFNP}$ and $\cl{FZPP}$. We also provided two examples of explicit construction problems which are weakly related to {\sc Lossy Code}, namely the construction of large primes and the construction of hard truth tables. The connections of these two problems to {\sc Lossy Code} are the following: in each case there is an $\cl{NP}$ search problem famously not known to be $\cl{NP}$ complete (the integer factoring and circuit minimization problems respectively), so that if this problem collapses to $\cl{FP}$ then the explicit construction problem (large primes and hard truth tables repsectively) reduces to {\sc Lossy Code}. In subsequent work of \cite{lossy-cl}, a much stronger motivation for studying {\sc Lossy Code} was given: they show that any problem solvable in \emph{catalytic logspace} could be reduced in polynomial time to {\sc Lossy Code}. The class catalytic logspace has long been known to be contained in $\cl{ZPP}$, but has resisted unconditional derandomization into $\cl{P}$. 
+
+Since {\sc Lossy Code} is solvable by random sampling (like \avoid), and solutions are checkable in polynomial time (unlike \avoid), we can directly apply the aforementioned theorem of Impagliazzo-Wigderson to show:
+\begin{corollary*}
+If $\cl{E} \not\subseteq_{i.o.} \cl{size}[2^{o(n)}]$ then {\sc Lossy Code} is solvable in deterministic polynomial time.
+\end{corollary*}
+Our main result in Chapter~\ref{chap:lossy} is that we can achieve the same conclusion under a type of hardness assumption which is categorically different than the above, and more generally which is different from any hardness assumption used in prior work on derandomization that we are aware of. In the classical hardness-randomness paradigm, to obtain deterministic polynomial time derandomization, we need to make a hardness assumption which posits hardness against a complexity class \emph{at least as strong as } randomized polynomial time \cite{IW97,IW98,CT21b}. Note that the Impagliazzo-Wigderson theorem requires hardness against \emph{non-uniform} algorithms, which is even stronger. In contrast, we give a conditional derandomization for {\sc Lossy Code} under a hardness assumption against \emph{deterministic, uniform} time-bounded algorithms, provided we restrict their space. Specifically, one of our main results is:
+\begin{theorem*}
+Assume that for some $\epsilon > 0$ and some time-constructible time bound $T(n) = 2^{\Theta(n)}$, there is a language $L$ such that:
+\begin{enumerate}
+    \item $L$ is decidable in time $T(n)$ on a Turing machine with random-access memory.
+    \item Any one-tape Turing machine running in time $T(n)^{1+\epsilon}$ and space $T(n)^\epsilon$ fails to correctly decide $L$ on more than finitely many input lengths.
+\end{enumerate}
+Then any explicit construction problem which is polynomial time reducible to {\sc Lossy Code} is solvable in deterministic polynomial time.
+\end{theorem*}
+\todo{talk about the rest of this work}
+
+In Chapter~\ref{chap:randomstrings}, based on joint work with Rahul Santhanam originally appearing in \cite{KortenSanthanam25}, we move our attention back to the Range Avoidance problem and the plethora of important explicit construction problems which reduce to it. Unlike the case of {\sc Lossy Code}, the Impagliazzo-Wigderson theorem or any of its subsequent relatives (e.g. \cite{IW98,AM-derandomization,shaltiel-umans,umans}) do not indicate any natural hardness assumption under which we can solve \avoid in polynomial time; they merely give conditions under which it can be solved in in deterministic polynomial time \emph{with an $\cl{NP}$-oracle}. This is is due to the fact that the complexity of verifying \avoid solutions is a $\cl{coNP}$ problem rather than a $\cl{P}$ problem. Work of Ilango, Li and Williams \cite{ILW23} (and followup work in \cite{CL24, Ilango25ODH,RWZ26}
+) has shown that this is no accident: under widely-believed cryptographic/complexity-theoretic assumptions, there is no polynomial time algorithm for \avoid in the worst case; in particular, no reasonable ``hardness assumption'' should imply such a strong derandomization. However, as observed already in \cite{ILW23}, their worst-case hardness results for \avoid do not imply the hardness of any of the important explicit construction problems that reduce to it. A key distinction is that explicit construction problems have \emph{unary input} (given $1^n$, output a string of length $n$ with some property). For this reason, if we have an explicit construction problem which reduces in polynomial time to \avoid, then there is some \emph{uniform instance sequence} $(C_n)_{n \in \mathbb{N}}$ so that $C_n$ is an \avoid instance of size $\poly(n)$, there is a uniform $\poly(n)$-time algorithm which produces $C_n$ given $1^n$, and any algorithm solving \avoid \emph{only on this sequence of instances} can be transformed into an algorithm solving our explicit construction problem. The hardness results for \avoid in \cite{ILW, CL24, Ilango25ODH,RWZ26} are not able to show hardness for such a uniform instance sequence. Hence, it remains a possibility that we can solve \avoid on all uniform instance sequences in polynomial time, without contradicting any known hardness assumptions. 
+
+In Chapter~\ref{chap:randomstrings} we achieve precisely this, under one additional stipulation: the \avoid instances in question have sufficiently superlinear \emph{stretch}, e.g. of the form $C_n: \B^n \to \B^{n \log n}$ or $C_n: \B^n \to \B^{n \log \log n}$. The hardness asumptions underlying the correctness of our algorithm are of the following form: there is some language decidable in time $T(n)$, which cannot be solved in time $T(n)^{\epsilon}$ with $2^{\epsilon n}$ bits of advice for some positive constant $\epsilon$. Such assumptions are well-studied and considered standard in the literature in the case $T(n) = 2^{\Theta(n)}$; the key distinction is that we need to make such assumptions in the setting $T(n) >> 2^n$, e.g. $T(n) = 2^{2^n}$ or $2^{2^{2^n}}$. The precise details of our hardness assumptions will determine the runtime of our algorithms; under sufficiently strong assumptions we achieve polynomial time algorithms, while in other cases our algorithms will have larger (but still strongly subexponential runtimes), e.g. quasipolynomial or $2^{\mathrm{quasipoly}(\log n)}$. Despite the exotic runtimes involved, we believe our hardness assumptions are natural and highly plausible, and yield the first complexity theoretic evidence \emph{of any kind} that a wide class of explicit construction problems can be solved by efficient deterministic algorithms. Some key examples of such results in the case of matrix rigidity and explicit circuit lower bounds are:
+
+\begin{theorem*}[See Theorems~\ref{randomstrings:thm:conditional-ecs-strong} and \ref{randomstrings:thm:conditional-ecs-weak}]
+~
+\begin{enumerate}
+    \item Assuming that there is a language in $\TIME[2^{2^n}]$ that is not computable in $\TIME^\NP[2^{\epsilon 2^n}]/2^{\epsilon n}$ (even infinitely often), then for some constant $C$ there is (1) a quasipolynomial time algorithm which produces a matrix $M \in \mathbb{F}_2^{n \times n}$ which requires changing $\geq \frac{n^2}{\log^C n}$ entries to drop its rank below $\frac{n}{\log^C n}$, and (2) a language in $\EXP$ that requires Boolean circuits of size $\frac{2^n}{n^C}$ for all $n$.
+    \item Under a suitably strengthened hardness assumption for triply-exponential time bounds, there is a $\poly(n)$ time algorithm which produces a matrix $M \in \mathbb{F}_2^{n \times n}$ which is Valiant-Rigid whenever $n$ is a power of 2.
+\end{enumerate}
+\end{theorem*}
+
+At a high level, our approach is the following. An easy argument (first explained in \cite{RSW}) shows that to achieve deterministic algorithms for uniform range avoidance which stretch $n$ bits to $>> n \log n$ bits, it suffices to give a polynomial time algorithm which can produce $n$-bit strings with polynomial time-bounded Kolmogorov complexity $\frac{n}{\log n}$. Another easy argument shows that to achieve this, it suffices to have a deterministic algorithm which can produce a list of $\log n$ many $n$-bit strings, each of which has time-bounded Kolmogorov complexity very close to $n$. Given such a list we can simply concatenate all of its constituent strings to achieve our target. So our task is reduced to the problem of constructing very short lists of strings, with the guarantee that one of them must have very large time-bounded kolmogorov complexity. We accomplish this by designing a complexity-theoretic PRG which \emph{fools the test of having high Kolmogorov complexity} and whose seed length is $ \leq \log \log n$; enumerating all of the seeds of this PRG yeilds our desired list. In general such a short seed length is not possible if the tests we are trying to fool have advice, but in our case we only wish to fool a \emph{single, uniformly defined} test. Using this critical fact, we are able to recursively apply classical hardness-based pseudorandom generators \cite{NW,IW97,umans} on a sequence of exponentially shrinking input lengths to iteratively reduce the seed length.
+
+\subsection{Chapter 5: Connections to Static Data Structures, Random CSP Refutation, and More}
+
+In the final chapter of our thesis, we describe a web of connections between the following three topics:
+\begin{enumerate}
+    \item Algorithms for $\cl{NC^0}\dash \avoid$, which is the special case of \avoid in which the instance $C: \B^n \to \B^m$ has every output bit depending on only $O(1)$ many inputs. 
+    \item Static data structure lower bounds in the bit probe model.
+    \item Cryptographic pseudorandom generators in $\cl{NC^0}$, and the closely related subject of semi-random CSP refutation.
 \end{enumerate}

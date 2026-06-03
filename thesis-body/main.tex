@@ -20,7 +20,6 @@
 \begin{singlespace}
 \tableofcontents
 \listoffigures
-\listoftables
 \end{singlespace}
 
 % Optional front matter.
@@ -28,10 +27,6 @@
 \phantomsection
 \addcontentsline{toc}{chapter}{Acknowledgments}
 \input{frontmatter/acknowledgements}
-
-\phantomsection
-\addcontentsline{toc}{chapter}{Dedication}
-\input{frontmatter/dedication}
 
 \clearpage
 \pagenumbering{arabic}
@@ -41,10 +36,19 @@
 % \addcontentsline{toc}{chapter}{Introduction or Preface}
 % \input{frontmatter/preface}
 
-\chapter{Introduction and Background}
+\chapter*{Introduction and Background}
+\phantomsection
+\addcontentsline{toc}{chapter}{Introduction and Background}
+\setcounter{section}{0}
+\setcounter{secnumdepth}{0}
 \input{chapters/introduction}
+\setcounter{secnumdepth}{3}
 
-\chapter{Preliminaries}\label{chap:prelims}
+\chapter*{Preliminaries}
+% The preliminaries are unnumbered as a chapter, but numbered internally as 0.x.
+\setcounter{chapter}{-1}
+\refstepcounter{chapter}\label{chap:prelims}
+\addcontentsline{toc}{chapter}{Preliminaries}
 \input{chapters/master-preliminaries}
 
 \chapter{Range Avoidance and the Complexity of Explicit Constructions}\label{chap:range}
@@ -64,12 +68,6 @@
 
 % \chapter{Total Functions}
 % \input{chapters/totalfuncs}
-
-\clearpage
-\phantomsection
-\addcontentsline{toc}{chapter}{Conclusion or Epilogue}
-\chapter*{Conclusion}
-\input{chapters/conclusion}
 
 \clearpage
 \phantomsection
